@@ -33,3 +33,10 @@ cmake-build-debug
 *.exe
 *.out
 *.app
+
+configuration.hpp
+CMakeFiles
+CMakeCache.txt
+Makefile
+Voxel
+cmake_install.cmake
