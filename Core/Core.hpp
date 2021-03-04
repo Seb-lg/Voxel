@@ -20,21 +20,15 @@ public:
     bool run();
 
 private:
-
     Core();
     ~Core();
 
     std::shared_ptr<Pixel> getTile(int x, int y);
 
     void updateTexture();
-    void drawSquare(unsigned char *pos, int size, std::shared_ptr<Pixel> color);
-    void display();
 
 private:
     sf::RenderWindow screen;
-    std::vector<uchar> pixels;
-    sf::Sprite sprite;
-    sf::Texture texture;
     sf::Vector2i position;
 
 

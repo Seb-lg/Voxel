@@ -4,6 +4,10 @@
 
 #pragma once
 
-#define granularity 10
-#define height 1080
-#define width 1920
+#define pixel_size 10
+#define height 100
+#define width 200
+#define fps 0
+
+auto rd = [](){std::srand(std::time(nullptr));return std::rand();};
+auto getTime = [](){return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();};
