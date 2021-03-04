@@ -18,19 +18,11 @@ Core::Core(): perlin([](){std::srand(std::time(nullptr));return std::rand();}())
     texture.create(width, height);
     pixels.resize(width * height * 4, 255);
 
-    auto rgba = pixels.data();
     for (int y = 0 ; y < height / granularity ; ++y) {
         std::cout << "Map init: " << (float)y / (height / granularity) * 100.0 << "%\r" << std::flush;
         for (int x = 0 ; x < width / granularity; ++x) {
             getTile(x, y);
-            if (y == 0) {
-                rgba[0] = 255;
-                rgba[1] = 0;
-                rgba[2] = 0;
-                rgba += granularity * 4;
-            }
         }
-        rgba += width * (granularity-1) * 4;
     }
     std::cout << "Map init: 100%" << std::endl;
     texture.update(pixels.data());
@@ -55,12 +47,13 @@ bool Core::run() {
 }
 
 void Core::updateTexture() {
-    for (int x = 0 ; x < width / granularity + 1; ++x) {
+    for (int x = 0 ; x < width / granularity; ++x) {
         auto rgba = pixels.data();
         auto const xEnd = map[x].end();
         for (auto it = map[x].begin(); it != xEnd; ++it){
             auto next = it;
             next++;
+            std::cout << (int)it->first << " " << (int)next->first << std::endl;
 //            if (it->second == 0 && next->second == 255) {
 //                it->second = 255;
 //                next->second = 0;
