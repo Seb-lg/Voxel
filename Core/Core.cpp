@@ -13,7 +13,7 @@
 Core::Core(): perlin([](){std::srand(std::time(nullptr));return std::rand();}()) {
     screen.create(sf::VideoMode(width, height, 32), "SandEngine", sf::Style::Titlebar | sf::Style::Close);
 //    screen.setVerticalSyncEnabled(true);
-    screen.setFramerateLimit(0);
+    screen.setFramerateLimit(10);
 
     texture.create(width, height);
     pixels.resize(width * height * 4, 255);
@@ -51,32 +51,33 @@ void Core::updateTexture() {
     for (int x = 0 ; x < width / granularity; ++x) {
         auto const xEnd = map[x].end();
         for (auto it = map[x].begin(); it != xEnd; ++it){
-            auto next = it;
-            next++;
+            if (!it->second)
+                continue;
+            it->second->update(map, x, it->first);
 //            if (it->second == 0 && next->second == 255) {
 //                it->second = 255;
 //                next->second = 0;
 //            }
-            if (next->second == 0 && it->second == 255) {
-                next->second = 255;
-                it->second = 0;
-            }
+//            if (next->second == 0 && it->second == 255) {
+//                next->second = 255;
+//                it->second = 0;
+//            }
             int vara = x * granularity * 4;
             int varb = it->first * width * granularity * 4;
             drawSquare(rgba + vara + varb, granularity, it->second);
         }
     }
-    drawSquare(pixels.data(), granularity, 125);
+//    drawSquare(pixels.data(), granularity, 125);
 }
 
-void Core::drawSquare(unsigned char *pos, int size, unsigned char color) {
+void Core::drawSquare(unsigned char *pos, int size, std::shared_ptr<Pixel> color) {
     for (int x = 0; x < size; ++x) {
         for (int y = 0; y < size; ++y) {
-            *pos = color;
+            *pos = color->r;
             ++pos;
-            *pos = color;
+            *pos = color->g;
             ++pos;
-            *pos = color;
+            *pos = color->b;
             ++pos;
             ++pos;
         }
@@ -84,7 +85,7 @@ void Core::drawSquare(unsigned char *pos, int size, unsigned char color) {
     }
 }
 
-unsigned char Core::getTile(int x, int y) {
+std::shared_ptr<Pixel> Core::getTile(int x, int y) {
     static const double frequency = 8*granularity;
     static const int octaves = 10;
     static const double fx = (float)width  / frequency;
@@ -98,16 +99,13 @@ unsigned char Core::getTile(int x, int y) {
     }
 
     auto noise = static_cast<unsigned char>(perlin.accumulatedOctaveNoise2D_0_1(x / fx, y / fy, octaves) * 255.0);
-    map[x][y] = noise > 255.0/2 ? 255: 0;
-
-    return noise > 255.0/2 ? 255: 0;
+    return map[x][y] = noise > 255.0/2 ? std::make_shared<Pixel>(): std::make_shared<Sand>();
 }
 
 void Core::display() {
     screen.clear(sf::Color::White);
 
     texture.update(pixels.data());
-    sprite.setTexture(texture, true);
     screen.draw(sprite);
 
     screen.display();

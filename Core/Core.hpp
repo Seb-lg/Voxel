@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 #include "Perlin/PerlinNoise.hpp"
+#include "../Components/Pixel.hpp"
 
 class Core {
 public:
@@ -23,20 +24,20 @@ private:
     Core();
     ~Core();
 
-    unsigned char getTile(int x, int y);
+    std::shared_ptr<Pixel> getTile(int x, int y);
 
     void updateTexture();
-    void drawSquare(unsigned char *pos, int size, unsigned char color);
+    void drawSquare(unsigned char *pos, int size, std::shared_ptr<Pixel> color);
     void display();
 
 private:
     sf::RenderWindow screen;
-    std::vector<uint8_t> pixels;
+    std::vector<uchar> pixels;
     sf::Sprite sprite;
     sf::Texture texture;
     sf::Vector2i position;
 
 
     siv::PerlinNoise perlin;
-    std::map<int, std::map<int, unsigned char>> map;
+    std::map<int, std::map<int, std::shared_ptr<Pixel>>> map;
 };
