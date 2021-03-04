@@ -47,13 +47,12 @@ bool Core::run() {
 }
 
 void Core::updateTexture() {
+    auto rgba = pixels.data();
     for (int x = 0 ; x < width / granularity; ++x) {
-        auto rgba = pixels.data();
         auto const xEnd = map[x].end();
         for (auto it = map[x].begin(); it != xEnd; ++it){
             auto next = it;
             next++;
-            std::cout << (int)it->first << " " << (int)next->first << std::endl;
 //            if (it->second == 0 && next->second == 255) {
 //                it->second = 255;
 //                next->second = 0;
@@ -67,6 +66,7 @@ void Core::updateTexture() {
             drawSquare(rgba + vara + varb, granularity, it->second);
         }
     }
+    drawSquare(pixels.data(), granularity, 125);
 }
 
 void Core::drawSquare(unsigned char *pos, int size, unsigned char color) {
@@ -85,10 +85,10 @@ void Core::drawSquare(unsigned char *pos, int size, unsigned char color) {
 }
 
 unsigned char Core::getTile(int x, int y) {
-    const double frequency = 8*granularity;
-    const int octaves = 10;
-    const double fx = (float)width  / frequency;
-    const double fy = (float)height  / frequency;
+    static const double frequency = 8*granularity;
+    static const int octaves = 10;
+    static const double fx = (float)width  / frequency;
+    static const double fy = (float)height  / frequency;
 
     auto itX = map.find(x);
     if (itX != map.end()) {
