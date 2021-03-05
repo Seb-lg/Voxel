@@ -4,7 +4,11 @@
 
 #pragma once
 #define uchar unsigned char
-#include "../configuration.hpp"
+
+#include <map>
+#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/PrimitiveType.hpp>
+#include "../conf.hpp"
 
 enum class PixelType {
     Air = 0,

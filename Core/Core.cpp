@@ -3,14 +3,14 @@
 //
 
 #include <iostream>
-#include <chrono>
 #include <thread>
 #include "Core.hpp"
+#include "../conf.hpp"
 
 
 Core::Core(): perlin(rd()) {
     screen.create(sf::VideoMode(1920, 1080, 32), "SandEngine", sf::Style::Titlebar | sf::Style::Close);
-    screen.setVerticalSyncEnabled(true);
+//    screen.setVerticalSyncEnabled(true);
     screen.setFramerateLimit(fps);
 
     for (int y = 0 ; y < height ; ++y) {

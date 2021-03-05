@@ -18,12 +18,12 @@ public:
     }
 
     bool run();
+    std::shared_ptr<Pixel> getTile(int x, int y);
 
 private:
     Core();
-    ~Core();
 
-    std::shared_ptr<Pixel> getTile(int x, int y);
+    ~Core();
 
     void updateTexture();
 
