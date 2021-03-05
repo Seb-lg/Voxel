@@ -14,9 +14,11 @@ public:
     Chunk(int x, int y);
 
     void update();
-
 private:
+
     std::vector<std::shared_ptr<Pixel>> pixels;
+    int posX;
+    int posY;
 };
 
 

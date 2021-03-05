@@ -8,21 +8,24 @@
 #include "../conf.hpp"
 
 
-Core::Core(): perlin(rd()) {
+Core::Core(): perlin(6969420) {
     screen.create(sf::VideoMode(1920, 1080, 32), "SandEngine", sf::Style::Titlebar | sf::Style::Close);
 //    screen.setVerticalSyncEnabled(true);
     screen.setFramerateLimit(fps);
+}
 
-    for (int y = 0 ; y < height ; ++y) {
-        std::cout << "Map init: " << (float)y / height * 100.0 << "%\r" << std::flush;
-        for (int x = 0 ; x < width; ++x) {
-            getTile(x, y);
+Core::~Core() noexcept = default;
+
+void Core::initChunks() {
+    int size = 2;
+    for (int x = 0; x < size; ++x) {
+        for (int y = 0; y < size; ++y) {
+            std::cout << "Map init: " << (float)(x*size+y) / (size*size) * 100.0 << "%\r" << std::flush;
+            chunks[x][y] = std::make_shared<Chunk>(x,y);
         }
     }
     std::cout << "Map init: 100%" << std::endl;
 }
-
-Core::~Core() noexcept = default;
 
 bool Core::run() {
     auto now = getTime();
@@ -41,15 +44,11 @@ bool Core::run() {
 }
 
 void Core::updateTexture() {
-    for (int x = 0 ; x < width; ++x) {
-        auto it = std::prev(map[x].end());
-        for (int i = 0; i < height; --it, ++i){
-            it->second->update(map, x, it->first, screen);
+    for (auto &column : chunks) {
+        for (auto &elem : column.second) {
+            elem.second->update();
         }
     }
-    for(auto &column : map)
-        for(auto &elem: column.second)
-            elem.second->processed = false;
 }
 
 std::shared_ptr<Pixel> Core::getTile(int x, int y) {

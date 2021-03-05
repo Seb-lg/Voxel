@@ -9,6 +9,7 @@
 #include <string>
 #include "Perlin/PerlinNoise.hpp"
 #include "../Components/Pixel.hpp"
+#include "../Components/Chunk.hpp"
 
 class Core {
 public:
@@ -17,6 +18,7 @@ public:
         return core;
     }
 
+    void initChunks();
     bool run();
     std::shared_ptr<Pixel> getTile(int x, int y);
 
@@ -27,11 +29,13 @@ private:
 
     void updateTexture();
 
-private:
+public:
     sf::RenderWindow screen;
+private:
     sf::Vector2i position;
 
 
     siv::PerlinNoise perlin;
+    std::map<int, std::map<int, std::shared_ptr<Chunk>>> chunks;
     std::map<int, std::map<int, std::shared_ptr<Pixel>>> map;
 };
