@@ -23,81 +23,193 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
 
     /** update bottom row */
     auto ptr = pixels.data() + chunk_size * chunk_size - 1;
-//    for (int y = 0; y < chunk_size; ++y) {
-//        for (int x = 0; x < chunk_size; ++x) {
     for (int y = chunk_size - 1; y >= 0; --y) {
         for (int x = chunk_size - 1; x >= 0; --x) {
-            Surrounding surround;
+            Surrounding surround(ptr);
 
-            if (y == chunk_size - 1) {
+            /** Checking Y axis first */
+            /** First row */
+            if (y == 0) {
+                /** Checking X axis */
+                /** First column */
                 if (x == 0) {
+                    // left
                     if (chunks[posX - 1][posY]) {
-                        auto ptrLeft = chunks[posX - 1][posY]->pixels.data();
-                        surround.ul = ptrLeft + (y - 1) * chunk_size;
-                        surround.l = ptrLeft + (y - 0) * chunk_size;
+                        auto left = chunks[posX-1][posY]->pixels.data();
+                        surround.l = left + chunk_size;
+                    } else {
+                        surround.l = nullptr;
                     }
-                    if (chunks[posX - 1][posY + 1]) {
-                        auto prtDLeft = chunks[posX - 1][posY + 1]->pixels.data();
-                        surround.dl = prtDLeft + chunk_size;
+                    // up Left
+                    if (chunks[posX - 1][posY - 1]) {
+                        auto up = chunks[posX - 1][posY - 1]->pixels.data();
+                        surround.ul = up + chunk_size* chunk_size - 1;
+                    } else {
+                        surround.ul = nullptr;
                     }
-                }else if (x == chunk_size - 1) {
+                    // up
+                    if (chunks[posX][posY - 1]) {
+                        auto up = chunks[posX][posY - 1]->pixels.data();
+                        surround.u = up + x + (chunk_size - 1) * chunk_size;
+                        surround.ur = up + x + 1 + (chunk_size - 1) * chunk_size;
+                    } else {
+                        surround.u = nullptr;
+                        surround.ur = nullptr;
+                    }
+                }
+                /** Last column */
+                else if (x == chunk_size - 1) {
+                    // right
                     if (chunks[posX + 1][posY]) {
-                        auto ptrRight = chunks[posX + 1][posY]->pixels.data();
-                        surround.ur = ptrRight + (chunk_size - 2) * chunk_size;
-                        surround.r = ptrRight + (chunk_size - 1) * chunk_size;
+                        auto right = chunks[posX + 1][posY]->pixels.data();
+                        surround.r = right;
+                    } else {
+                        surround.r = nullptr;
                     }
-                    if (chunks[posX + 1][posY + 1]) {
-                        auto prtDRight = chunks[posX + 1][posY + 1]->pixels.data();
-                        surround.dr = prtDRight + chunk_size - 1;
+                    // right up
+                    if (chunks[posX + 1][posY - 1]) {
+                        auto up = chunks[posX + 1][posY - 1]->pixels.data();
+                        surround.ur = up + (chunk_size - 1) * chunk_size;
+                    } else {
+                        surround.ur = nullptr;
                     }
-                    surround.ul = ptr - 1 - chunk_size;
-                    surround.l = ptr - 1;
-                    if (chunks[posX][posY + 1]) {
-                        auto ptrDown = chunks[posX][posY + 1]->pixels.data();
-                        surround.d = ptrDown + x;
-                        surround.dl = ptrDown + x - 1;
-                    }
-                } else {
-                    surround.ul = ptr - 1 - chunk_size;
-                    surround.l = ptr - 1;
-                    if (chunks[posX][posY + 1]) {
-                        auto ptrDown = chunks[posX][posY + 1]->pixels.data();
-                        surround.d = ptrDown + x;
-                        surround.dl = ptrDown + x - 1;
+                    // up
+                    if (chunks[posX][posY - 1]) {
+                        auto up = chunks[posX][posY - 1]->pixels.data();
+                        surround.ul = up + x - 1 + (chunk_size - 1) * chunk_size;
+                        surround.u = up + x + (chunk_size - 1) * chunk_size;
+                    } else {
+                        surround.ul = nullptr;
+                        surround.u = nullptr;
                     }
                 }
-            } else {
+                /** Intermediate column */
+                else {
+                    // up
+                    if (chunks[posX][posY - 1]) {
+                        auto up = chunks[posX][posY - 1]->pixels.data();
+                        surround.ul = up + x - 1 + (chunk_size - 1) * chunk_size;
+                        surround.u = up + x + (chunk_size - 1) * chunk_size;
+                        surround.ur = up + x + 1 + (chunk_size - 1) * chunk_size;
+                    } else {
+                        surround.ul = nullptr;
+                        surround.u = nullptr;
+                        surround.ur = nullptr;
+                    }
+                }
+            }
+            /** Last row */
+            else if (y == chunk_size - 1) {
+                /** Checking X axis */
+                /** First column */
+                if (x == 0) {
+                    // left
+                    if (chunks[posX - 1][posY]) {
+                        auto left = chunks[posX-1][posY]->pixels.data();
+                        surround.l = left + chunk_size * chunk_size - 1;
+                    } else {
+                        surround.l = nullptr;
+                    }
+                    // down Left
+                    if (chunks[posX - 1][posY + 1]) {
+                        auto down = chunks[posX - 1][posY + 1]->pixels.data();
+                        surround.dl = down + chunk_size;
+                    } else {
+                        surround.dl = nullptr;
+                    }
+                    // down
+                    if (chunks[posX][posY + 1]) {
+                        auto down = chunks[posX][posY + 1]->pixels.data();
+                        surround.d = down + x;
+                        surround.dr = down + x;
+                    } else {
+                        surround.d = nullptr;
+                        surround.dr = nullptr;
+                    }
+                }
+                    /** Last column */
+                else if (x == chunk_size - 1) {
+                    // right
+                    if (chunks[posX + 1][posY]) {
+                        auto right = chunks[posX + 1][posY]->pixels.data();
+                        surround.r = right;
+                    } else {
+                        surround.r = nullptr;
+                    }
+                    // right down
+                    if (chunks[posX + 1][posY + 1]) {
+                        auto down = chunks[posX + 1][posY + 1]->pixels.data();
+                        surround.dr = down;
+                    } else {
+                        surround.dr = nullptr;
+                    }
+                    // down
+                    if (chunks[posX][posY + 1]) {
+                        auto up = chunks[posX][posY + 1]->pixels.data();
+                        surround.d = up + x;
+                        surround.dl = up + x - 1;
+                    } else {
+                        surround.d = nullptr;
+                        surround.dl = nullptr;
+                    }
+                }
+                    /** Intermediate column */
+                else {
+                    // down
+                    if (chunks[posX][posY + 1]) {
+                        auto down = chunks[posX][posY + 1]->pixels.data();
+                        surround.dl = down + x - 1;
+                        surround.d = down + x;
+                        surround.dr = down + x + 1;
+                    } else {
+                        surround.dl = nullptr;
+                        surround.d = nullptr;
+                        surround.dr = nullptr;
+                    }
+                }
+            }
+            /** Intermediate row */
+            else {
+                /** Checking X axis */
+                /** First column */
                 if (x == 0) {
                     if (chunks[posX - 1][posY]) {
-                        auto ptrLeft = chunks[posX - 1][posY]->pixels.data();
-                        surround.ul = ptrLeft + (y - 1) * chunk_size;
-                        surround.l = ptrLeft + (y - 0) * chunk_size;
-                        surround.dl = ptrLeft + (y + 1) * chunk_size;
+                        auto left = chunks[posX - 1][posY]->pixels.data();
+//                        surround.ul = left + chunk_size * (y - 1);
+//                        surround.l = left + chunk_size * (y);
+//                        surround.dl = left + chunk_size * (y + 1);
+                        surround.ul = nullptr;
+                        surround.l = nullptr;
+                        surround.dl = nullptr;
+                    } else {
+                        surround.ul = nullptr;
+                        surround.l = nullptr;
+                        surround.dl = nullptr;
                     }
-                } else {
-                    surround.ul = ptr - 1 - chunk_size;
-                    surround.l = ptr - 1;
-                    surround.dl = ptr - 1 + chunk_size;
                 }
-                surround.d = ptr + chunk_size;
+                    /** First column */
+                else if (x == chunk_size - 1) {
+                    if (chunks[posX + 1][posY]) {
+                        auto right = chunks[posX + 1][posY]->pixels.data();
+                        surround.ur = right + chunk_size * (y - 1);
+                        surround.r = right + chunk_size * (y);
+                        surround.dr = right + chunk_size * (y + 1);
+
+//                        surround.ur = nullptr;
+//                        surround.r = nullptr;
+//                        surround.dr = nullptr;
+                    } else {
+                        surround.ur = nullptr;
+                        surround.r = nullptr;
+                        surround.dr = nullptr;
+                    }
+                }
+                /** Intermediate column handled by the constructor */
             }
+
             surround.c = ptr;
             (*ptr)->update(surround, x, y, scrn, posX, posY);
             --ptr;
         }
     }
-    /** update center rows */
-    /** update up row */
-
-
-//    for (auto const &elem : pixels)
-//        elem->processed = false;
 }
-//void Chunk::update() {
-//    auto ptr = pixels.data() + chunk_size * chunk_size - 1;
-//    auto &scrn = Core::get().screen;
-//    for (int i = chunk_size * chunk_size - 1; i >= 0 ; --i, --ptr)
-//        (*ptr)->update(pixels.data(), i % chunk_size, i / chunk_size, scrn, posX, posY);
-//    for (auto const &elem : pixels)
-//        elem->processed = false;
-//}

@@ -44,6 +44,26 @@ public:
 };
 
 struct Surrounding{
+    Surrounding(std::shared_ptr<Pixel>* ptr) {
+        ul = ptr - 1 - chunk_size;
+        u = ptr - chunk_size;
+        ur = ptr + 1 - chunk_size;
+        l = ptr - 1;
+        c = ptr;
+        r = ptr + 1;
+        dl = ptr - 1 + chunk_size;
+        d = ptr + chunk_size;
+        dr = ptr + 1 + chunk_size;
+//        ul = nullptr;
+//        u = nullptr;
+//        ur = nullptr;
+//        l = nullptr;
+//        c = nullptr;
+//        r = nullptr;
+//        dl = nullptr;
+//        d = nullptr;
+//        dr = nullptr;
+    }
     std::shared_ptr<Pixel> *ul = nullptr;
     std::shared_ptr<Pixel> *u = nullptr;
     std::shared_ptr<Pixel> *ur = nullptr;
@@ -112,6 +132,11 @@ public:
                 auto tmp = (*surround.c);
                 (*surround.c) = (*surround.dl);
                 (*surround.dl) = tmp;
+                draw(window, cx * chunk_size + x - 1, cy * chunk_size + y + 1);
+            } else if (surround.r && (*surround.r)->type == PixelType::Air && surround.dr && (*surround.dr)->type == PixelType::Air) {
+                auto tmp = (*surround.c);
+                (*surround.c) = (*surround.dr);
+                (*surround.dr) = tmp;
                 draw(window, cx * chunk_size + x - 1, cy * chunk_size + y + 1);
             }
                 /*else if (x>0 &&
