@@ -5,10 +5,11 @@
 #pragma once
 
 #define pixel_size 5
-#define height 100
-#define width 200
+#define height 1080
+#define width 1920
 #define fps 144
 #define chunk_size 64
+#define nb_chunk 2
 
 #include <chrono>
 

@@ -33,12 +33,12 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                 if (x == 0) {
                     if (chunks[posX - 1][posY]) {
                         auto ptrLeft = chunks[posX - 1][posY]->pixels.data();
-                        surround.ul = ptrLeft + (y - 1) * chunk_size + chunk_size;
-                        surround.l = ptrLeft + y * chunk_size + chunk_size;
+                        surround.ul = ptrLeft + (y - 1) * chunk_size;
+                        surround.l = ptrLeft + (y - 0) * chunk_size;
                     }
                     if (chunks[posX - 1][posY + 1]) {
                         auto prtDLeft = chunks[posX - 1][posY + 1]->pixels.data();
-                        surround.dl = prtDLeft + chunk_size - 1;
+                        surround.dl = prtDLeft + chunk_size;
                     }
                 }else if (x == chunk_size - 1) {
                     if (chunks[posX + 1][posY]) {
@@ -50,18 +50,29 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                         auto prtDRight = chunks[posX + 1][posY + 1]->pixels.data();
                         surround.dr = prtDRight + chunk_size - 1;
                     }
-                }
-                if (chunks[posX][posY + 1]) {
-                    auto ptrDown = chunks[posX][posY + 1]->pixels.data();
-                    surround.d = ptrDown + x;
+                    surround.ul = ptr - 1 - chunk_size;
+                    surround.l = ptr - 1;
+                    if (chunks[posX][posY + 1]) {
+                        auto ptrDown = chunks[posX][posY + 1]->pixels.data();
+                        surround.d = ptrDown + x;
+                        surround.dl = ptrDown + x - 1;
+                    }
+                } else {
+                    surround.ul = ptr - 1 - chunk_size;
+                    surround.l = ptr - 1;
+                    if (chunks[posX][posY + 1]) {
+                        auto ptrDown = chunks[posX][posY + 1]->pixels.data();
+                        surround.d = ptrDown + x;
+                        surround.dl = ptrDown + x - 1;
+                    }
                 }
             } else {
                 if (x == 0) {
                     if (chunks[posX - 1][posY]) {
                         auto ptrLeft = chunks[posX - 1][posY]->pixels.data();
-                        surround.ul = ptrLeft + (y - 1) * chunk_size + chunk_size;
-                        surround.l = ptrLeft + y * chunk_size + chunk_size;
-                        surround.dl = ptrLeft + (y + 1) * chunk_size + chunk_size;
+                        surround.ul = ptrLeft + (y - 1) * chunk_size;
+                        surround.l = ptrLeft + (y - 0) * chunk_size;
+                        surround.dl = ptrLeft + (y + 1) * chunk_size;
                     }
                 } else {
                     surround.ul = ptr - 1 - chunk_size;

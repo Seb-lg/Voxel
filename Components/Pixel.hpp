@@ -108,7 +108,7 @@ public:
                 (*surround.c) = (*surround.d);
                 (*surround.d) = tmp;
                 draw(window, cx * chunk_size + x, cy * chunk_size + y + 1);
-            } else if (surround.dl && surround.dl->get() && (*surround.dl)->type == PixelType::Air) {
+            } else if (surround.l && (*surround.l)->type == PixelType::Air && surround.dl && (*surround.dl)->type == PixelType::Air) {
                 auto tmp = (*surround.c);
                 (*surround.c) = (*surround.dl);
                 (*surround.dl) = tmp;

@@ -9,7 +9,7 @@
 
 
 Core::Core(): perlin(6969420) {
-    screen.create(sf::VideoMode(1920, 1080, 32), "SandEngine", sf::Style::Titlebar | sf::Style::Close);
+    screen.create(sf::VideoMode(width, height, 32), "SandEngine", sf::Style::Titlebar | sf::Style::Close);
 //    screen.setVerticalSyncEnabled(true);
     screen.setFramerateLimit(fps);
 }
@@ -17,10 +17,9 @@ Core::Core(): perlin(6969420) {
 Core::~Core() noexcept = default;
 
 void Core::initChunks() {
-    int size = 3;
-    for (int x = 0; x < size; ++x) {
-        for (int y = 0; y < size; ++y) {
-            std::cout << "Map init: " << (float)(x*size+y) / (size*size) * 100.0 << "%\r" << std::flush;
+    for (int x = 0; x < nb_chunk; ++x) {
+        for (int y = 0; y < nb_chunk; ++y) {
+            std::cout << "Map init: " << (float)(x*nb_chunk+y) / (nb_chunk*nb_chunk) * 100.0 << "%\r" << std::flush;
             chunks[x][y] = std::make_shared<Chunk>(x,y);
         }
     }
