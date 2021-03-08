@@ -4,10 +4,10 @@
 
 #pragma once
 
-#define pixel_size 10
+#define pixel_size 5
 #define height 100
 #define width 200
-#define fps 0
+#define fps 144
 #define chunk_size 64
 
 #include <chrono>

@@ -17,25 +17,22 @@ public:
         static Core core;
         return core;
     }
-
     void initChunks();
     bool run();
     std::shared_ptr<Pixel> getTile(int x, int y);
 
 private:
     Core();
-
     ~Core();
-
-    void updateTexture();
+    void updateChunks();
 
 public:
     sf::RenderWindow screen;
+
 private:
     sf::Vector2i position;
 
-
     siv::PerlinNoise perlin;
-    std::map<int, std::map<int, std::shared_ptr<Chunk>>> chunks;
+    std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks;
     std::map<int, std::map<int, std::shared_ptr<Pixel>>> map;
 };

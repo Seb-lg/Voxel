@@ -8,6 +8,7 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
+#include <memory>
 #include "../conf.hpp"
 
 enum class PixelType {
@@ -15,14 +16,15 @@ enum class PixelType {
     Sand = 1,
 };
 
+struct Surrounding;
+
 class Pixel {
 public:
     Pixel(uchar r=0, uchar g=0, uchar b=0, uchar a=255):r(r), g(g), b(b), a(a), type(PixelType::Air), processed(false), sprite(sf::Quads, 4) {
     };
 
     virtual void
-    update(std::shared_ptr<Pixel> *map, int x, int y, sf::RenderWindow &window, int cx, int cy) {
-    };
+    update(Surrounding surrounding, int x, int y, sf::RenderWindow &window, int cx, int cy);
 
     void draw(sf::RenderWindow &window, int x, int y) {
         sf::Transform jej;
@@ -40,6 +42,19 @@ public:
     bool processed;
     sf::VertexArray sprite;
 };
+
+struct Surrounding{
+    std::shared_ptr<Pixel> *ul = nullptr;
+    std::shared_ptr<Pixel> *u = nullptr;
+    std::shared_ptr<Pixel> *ur = nullptr;
+    std::shared_ptr<Pixel> *l = nullptr;
+    std::shared_ptr<Pixel> *c = nullptr;
+    std::shared_ptr<Pixel> *r = nullptr;
+    std::shared_ptr<Pixel> *dl = nullptr;
+    std::shared_ptr<Pixel> *d = nullptr;
+    std::shared_ptr<Pixel> *dr = nullptr;
+};
+
 
 class Sand: public Pixel {
 public:
@@ -60,7 +75,7 @@ public:
         sprite[3].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
     };
 
-    void update(std::shared_ptr<Pixel> *map, int x, int y, sf::RenderWindow &window, int cx, int cy) override {
+    /*void update(std::shared_ptr<Pixel> *map, int x, int y, sf::RenderWindow &window, int cx, int cy) override {
         if (!processed && y < chunk_size - 1) {
             if (map[x+ (chunk_size *(y + 1))]->type == PixelType::Air) {
                 auto tmp = map[x+ (chunk_size *y)];
@@ -85,6 +100,41 @@ public:
         }
         draw(window, cx * chunk_size + x, cy * chunk_size + y);
         processed = true;
+    }*/
+    void update(Surrounding surround, int x, int y, sf::RenderWindow &window, int cx, int cy) override {
+        if (!processed) {
+            if (surround.d && (*surround.d)->type == PixelType::Air) {
+                auto tmp = (*surround.c);
+                (*surround.c) = (*surround.d);
+                (*surround.d) = tmp;
+                draw(window, cx * chunk_size + x, cy * chunk_size + y + 1);
+            } else if (surround.dl && surround.dl->get() && (*surround.dl)->type == PixelType::Air) {
+                auto tmp = (*surround.c);
+                (*surround.c) = (*surround.dl);
+                (*surround.dl) = tmp;
+                draw(window, cx * chunk_size + x - 1, cy * chunk_size + y + 1);
+            }
+                /*else if (x>0 &&
+                        map[x - 1+ (chunk_size *(y + 1))]->type == PixelType::Air &&
+                        map[x - 1+ (chunk_size *y)]->type == PixelType::Air) {
+                auto tmp = map[x+ (chunk_size *y)];
+                map[x+ (chunk_size *y)] = map[x - 1+ (chunk_size *(y + 1))];
+                map[x - 1+ (chunk_size *(y + 1))] = tmp;
+                draw(window, cx * chunk_size + x - 1, cy * chunk_size + y + 1);
+            } else if (x<chunk_size - 1 &&
+                        map[x + 1+ (chunk_size *(y + 1))]->type == PixelType::Air &&
+                        map[x + 1+ (chunk_size *y)]->type == PixelType::Air) {
+                auto tmp = map[x+ (chunk_size *y)];
+                map[x+ (chunk_size *y)] = map[x + 1+ (chunk_size *(y + 1))];
+                map[x + 1+ (chunk_size *(y + 1))] = tmp;
+                draw(window, cx * chunk_size + x + 1, cy * chunk_size + y + 1);
+            }*/
+            else {
+                draw(window, cx * chunk_size + x, cy * chunk_size + y);
+            }
+            processed = true;
+        }
     }
 
 };
+

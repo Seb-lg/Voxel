@@ -17,7 +17,7 @@ Core::Core(): perlin(6969420) {
 Core::~Core() noexcept = default;
 
 void Core::initChunks() {
-    int size = 2;
+    int size = 3;
     for (int x = 0; x < size; ++x) {
         for (int y = 0; y < size; ++y) {
             std::cout << "Map init: " << (float)(x*size+y) / (size*size) * 100.0 << "%\r" << std::flush;
@@ -30,23 +30,33 @@ void Core::initChunks() {
 bool Core::run() {
     auto now = getTime();
     sf::Event event{};
-
     while (screen.pollEvent(event)) {
         if ((event.type == sf::Event::EventType::KeyPressed && event.key.code == 36) || event.type == sf::Event::Closed)
             return false;
     }
 
     screen.clear(sf::Color::Black);
-    updateTexture();
+    updateChunks();
     screen.display();
+
     std::cout << "fps : " << 1/ ((getTime() - now) / 1000.0) << "\r" << std::flush;
     return true;
 }
 
-void Core::updateTexture() {
+void Core::updateChunks() {
+    std::shared_ptr<Chunk> wtf;
     for (auto &column : chunks) {
         for (auto &elem : column.second) {
-            elem.second->update();
+            if (elem.second)
+                elem.second->update(chunks);
+        }
+    }
+    for (auto &column : chunks) {
+        for (auto &elem : column.second) {
+            if (elem.second) {
+                for (auto &pixel : elem.second->pixels)
+                    pixel->processed = false;
+            }
         }
     }
 }
