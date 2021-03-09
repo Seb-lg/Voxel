@@ -7,7 +7,7 @@
 #define pixel_size 5
 #define height 1080
 #define width 1920
-#define fps 144
+#define fps 5
 #define chunk_size 64
 #define nb_chunk 2
 

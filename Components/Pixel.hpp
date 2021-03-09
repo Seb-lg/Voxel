@@ -89,40 +89,21 @@ public:
 //        sprite[1].color = sf::Color(r, g, b);
 //        sprite[2].color = sf::Color(r, g, b);
 //        sprite[3].color = sf::Color(r, g, b);
-        sprite[0].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
-        sprite[1].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
-        sprite[2].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
-        sprite[3].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
+//        sprite[0].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
+//        sprite[1].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
+//        sprite[2].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
+//        sprite[3].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
+        auto rd_color1 = std::rand()%255;
+        auto rd_color2 = std::rand()%255;
+        auto rd_color3 = std::rand()%255;
+        sprite[0].color = sf::Color(rd_color1, rd_color2, rd_color3);
+        sprite[1].color = sf::Color(rd_color1, rd_color2, rd_color3);
+        sprite[2].color = sf::Color(rd_color1, rd_color2, rd_color3);
+        sprite[3].color = sf::Color(rd_color1, rd_color2, rd_color3);
     };
 
-    /*void update(std::shared_ptr<Pixel> *map, int x, int y, sf::RenderWindow &window, int cx, int cy) override {
-        if (!processed && y < chunk_size - 1) {
-            if (map[x+ (chunk_size *(y + 1))]->type == PixelType::Air) {
-                auto tmp = map[x+ (chunk_size *y)];
-                map[x+ (chunk_size *y)] = map[x+ (chunk_size *(y + 1))];
-                map[x+ (chunk_size *(y + 1))] = tmp;
-                draw(window, cx * chunk_size + x, cy * chunk_size + y + 1);
-            } else if (x>0 &&
-                        map[x - 1+ (chunk_size *(y + 1))]->type == PixelType::Air &&
-                        map[x - 1+ (chunk_size *y)]->type == PixelType::Air) {
-                auto tmp = map[x+ (chunk_size *y)];
-                map[x+ (chunk_size *y)] = map[x - 1+ (chunk_size *(y + 1))];
-                map[x - 1+ (chunk_size *(y + 1))] = tmp;
-                draw(window, cx * chunk_size + x - 1, cy * chunk_size + y + 1);
-            } else if (x<chunk_size - 1 &&
-                        map[x + 1+ (chunk_size *(y + 1))]->type == PixelType::Air &&
-                        map[x + 1+ (chunk_size *y)]->type == PixelType::Air) {
-                auto tmp = map[x+ (chunk_size *y)];
-                map[x+ (chunk_size *y)] = map[x + 1+ (chunk_size *(y + 1))];
-                map[x + 1+ (chunk_size *(y + 1))] = tmp;
-                draw(window, cx * chunk_size + x + 1, cy * chunk_size + y + 1);
-            }
-        }
-        draw(window, cx * chunk_size + x, cy * chunk_size + y);
-        processed = true;
-    }*/
     void update(Surrounding surround, int x, int y, sf::RenderWindow &window, int cx, int cy) override {
-        if (!processed) {
+        if (!processed || processed) {
             if (surround.d && (*surround.d)->type == PixelType::Air) {
                 auto tmp = (*surround.c);
                 (*surround.c) = (*surround.d);
@@ -137,24 +118,8 @@ public:
                 auto tmp = (*surround.c);
                 (*surround.c) = (*surround.dr);
                 (*surround.dr) = tmp;
-                draw(window, cx * chunk_size + x - 1, cy * chunk_size + y + 1);
-            }
-                /*else if (x>0 &&
-                        map[x - 1+ (chunk_size *(y + 1))]->type == PixelType::Air &&
-                        map[x - 1+ (chunk_size *y)]->type == PixelType::Air) {
-                auto tmp = map[x+ (chunk_size *y)];
-                map[x+ (chunk_size *y)] = map[x - 1+ (chunk_size *(y + 1))];
-                map[x - 1+ (chunk_size *(y + 1))] = tmp;
-                draw(window, cx * chunk_size + x - 1, cy * chunk_size + y + 1);
-            } else if (x<chunk_size - 1 &&
-                        map[x + 1+ (chunk_size *(y + 1))]->type == PixelType::Air &&
-                        map[x + 1+ (chunk_size *y)]->type == PixelType::Air) {
-                auto tmp = map[x+ (chunk_size *y)];
-                map[x+ (chunk_size *y)] = map[x + 1+ (chunk_size *(y + 1))];
-                map[x + 1+ (chunk_size *(y + 1))] = tmp;
                 draw(window, cx * chunk_size + x + 1, cy * chunk_size + y + 1);
-            }*/
-            else {
+            } else {
                 draw(window, cx * chunk_size + x, cy * chunk_size + y);
             }
             processed = true;
