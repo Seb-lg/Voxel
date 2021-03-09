@@ -23,6 +23,7 @@ enum class TileResponse {
     OOB = -1,
     ALREADY_CREATED = 0,
     CREATED = 1,
+    NOT_EMPTY = 2,
 };
 
 struct Surrounding;

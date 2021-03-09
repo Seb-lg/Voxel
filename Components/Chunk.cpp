@@ -27,12 +27,14 @@ Chunk::Chunk(int cX, int cY): posX(cX), posY(cY), wireframe(sf::LineStrip, 4) {
     wireframe[3].color = sf::Color(0, 255, 0);
 }
 
-TileResponse Chunk::replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Pixel> newTile) {
+TileResponse Chunk::replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Pixel> newTile, bool override) {
     int idx = tilePos.y * chunk_size + tilePos.x;
     if (idx > chunk_size * chunk_size || idx < 0)
         return TileResponse::OOB;
     if (pixels[idx]->type == newTile->type)
         return TileResponse::ALREADY_CREATED;
+    if (!override && pixels[idx]->type != PixelType::Air)
+        return TileResponse::NOT_EMPTY;
     pixels[idx] = newTile;
     return TileResponse::CREATED;
 }

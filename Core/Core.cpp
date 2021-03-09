@@ -43,9 +43,9 @@ bool Core::run() {
             return false;
     }
     if (mouse.isButtonPressed(sf::Mouse::Button::Left))
-        dynamicTileDrawing(std::make_shared<Sand>());
+        dynamicTileDrawing(std::make_shared<Sand>(), false);
     else if (mouse.isButtonPressed(sf::Mouse::Button::Right))
-        dynamicTileDrawing(std::make_shared<Pixel>());
+        dynamicTileDrawing(std::make_shared<Pixel>(), true);
 
     screen.clear(sf::Color::Black);
     updateChunks();
@@ -55,7 +55,7 @@ bool Core::run() {
     return true;
 }
 
-void Core::dynamicTileDrawing(std::shared_ptr<Pixel> newTile) {
+void Core::dynamicTileDrawing(std::shared_ptr<Pixel> newTile, bool override) {
     // Used to replace a tile with another (used when mouse drawing)
     sf::Vector2<int> centerPos = mouse.getPosition(screen) / pixel_size;
     if (centerPos.x < 0 || centerPos.y < 0)
@@ -66,19 +66,19 @@ void Core::dynamicTileDrawing(std::shared_ptr<Pixel> newTile) {
     for (int x = 0 ; x < 10 ; x++)
         pixelsPoses.push_back(centerPos + getRandomPosition(-10, 20));
     for (auto pixelPos : pixelsPoses)
-        replaceTile(newTile->clone(), pixelPos);
+        replaceTile(newTile->clone(), pixelPos, override);
 }
 
 sf::Vector2<int> Core::getRandomPosition(int min, int max) {
     return sf::Vector2i(rand() % max + min, rand() % max + min);
 }
 
-void Core::replaceTile(std::shared_ptr<Pixel> newTile, sf::Vector2<int> pixelPos) {
+void Core::replaceTile(std::shared_ptr<Pixel> newTile, sf::Vector2<int> pixelPos, bool override) {
     // TMP HACK, AS IT ASSUMES CHUNK (0,0) IS AT TOP LEFT
     // WILL BREAK WITH PLAYER MOVEMENT IMPLEMENTATION
     std::shared_ptr<Chunk> chunk = getChunk(pixelPos / chunk_size);
     sf::Vector2<int> offset = sf::Vector2i(pixelPos.x % chunk_size, pixelPos.y % chunk_size);
-    TileResponse flag = chunk->replaceTile(offset, newTile);
+    TileResponse flag = chunk->replaceTile(offset, newTile, override);
     // OutOfBounds (TileResponse::OOB) will be triggered by negative positions
     // as we don't handle those for now (see function docstring)
 }

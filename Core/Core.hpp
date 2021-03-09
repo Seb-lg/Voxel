@@ -20,8 +20,8 @@ public:
     }
     void initChunks();
     bool run();
-    void dynamicTileDrawing(std::shared_ptr<Pixel> newTile);
-    void replaceTile(std::shared_ptr<Pixel> newTile, sf::Vector2<int> pixelPos);
+    void dynamicTileDrawing(std::shared_ptr<Pixel> newTile, bool override);
+    void replaceTile(std::shared_ptr<Pixel> newTile, sf::Vector2<int> pixelPos, bool override);
     std::shared_ptr<Chunk> getChunk(sf::Vector2<int> chunk_idxes);
     std::shared_ptr<Pixel> createTileFromPerlin(int x, int y);
     sf::Vector2<int> getRandomPosition(int min, int max);
