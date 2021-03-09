@@ -15,7 +15,7 @@ static auto getTime = [](){return std::chrono::duration_cast<std::chrono::millis
 #define fps 0
 #define chunk_size 64
 #define nb_chunk 3
-#define rand_seed 6969420
+#define rand_seed rd()
 
 //#define DEBUG
 //Use 100%
