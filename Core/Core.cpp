@@ -9,6 +9,8 @@
 
 
 Core::Core(): perlin(rand_seed) {
+    std::cout << rand_seed << std::endl;
+    std::cout << rand_seed << std::endl;
     screen.create(
         sf::VideoMode(width, height, 32),
         "SandEngine",
@@ -99,17 +101,7 @@ std::shared_ptr<Pixel> Core::getTile(int x, int y) {
     static const double fx = (float)width / frequency;
     static const double fy = (float)height / frequency;
 
-    // If tile already exists, return it
-    auto itX = map.find(x);
-    if (itX != map.end()) {
-        auto itY = itX->second.find(y);
-        if (itY != itX->second.end())
-            return itY->second;
-    }
-    // Otherwise, create
-    auto noise = static_cast<unsigned char>(
-        perlin.accumulatedOctaveNoise2D_0_1(x / fx, y / fy, octaves) * 255.0
-    );
-    // Fill "half the screen" with sand and the other half with Pixel (empty)
-    return map[x][y] = noise > 255.0/2 ? std::make_shared<Pixel>(): std::make_shared<Sand>();
+
+    auto noise = static_cast<unsigned char>(perlin.accumulatedOctaveNoise2D_0_1(x / fx, y / fy, octaves) * 255.0);
+    return noise > 255.0/2 ? std::make_shared<Pixel>(): std::make_shared<Sand>();
 }
