@@ -59,14 +59,22 @@ bool Core::run() {
 
 void Core::dynamicTileDrawing(std::shared_ptr<Pixel> newTile, bool createChunk) {
     sf::Vector2<int> centerPos = mouse.getPosition(screen) / pixel_size;
+
     std::vector<sf::Vector2<int>> pixelsPoses = {
-        centerPos + sf::Vector2i(1, 0),
-        centerPos + sf::Vector2i(0, 1),
-        centerPos + sf::Vector2i(-1, 0),
+        centerPos + sf::Vector2i(-1, -1),
         centerPos + sf::Vector2i(0, -1),
+        centerPos + sf::Vector2i(1, -1),
+
+        centerPos + sf::Vector2i(-1, 0),
+        centerPos,
+        centerPos + sf::Vector2i(1, 0),
+
+        centerPos + sf::Vector2i(-1, 1),
+        centerPos + sf::Vector2i(0, 1),
+        centerPos + sf::Vector2i(1, 1),
     };
     for (auto pixelPos : pixelsPoses) {
-        replaceTile(newTile, createChunk, pixelPos);
+        replaceTile(newTile->clone(), createChunk, pixelPos);
     }
 }
 
@@ -83,12 +91,12 @@ void Core::replaceTile(std::shared_ptr<Pixel> newTile, bool createChunk, sf::Vec
     sf::Vector2<int> offset = sf::Vector2i(pixelPos.x % chunk_size, pixelPos.y % chunk_size);
     TileResponse flag = chunk->replaceTile(offset, newTile);
     if (flag == TileResponse::OOB) {
-        std::cout << "Not in sim" << std::endl;
+        std::cout << "Tile not in sim" << std::endl;
         return;
     }
-    if (flag == TileResponse::ALREADY_CREATED) {
-        printf("(%d/%d) already exists\n", pixelPos.x, pixelPos.y);
-    }
+    // if (flag == TileResponse::ALREADY_CREATED) {
+    //     printf("Tile (%d/%d) already exists\n", pixelPos.x, pixelPos.y);
+    // }
 }
 
 void Core::updateChunks() {

@@ -29,8 +29,10 @@ public:
     Pixel(uchar r=0, uchar g=0, uchar b=0, uchar a=255):r(r), g(g), b(b), a(a), type(PixelType::Air), processed(false), sprite(sf::Quads, 4) {
     };
 
-    virtual void
-    update(Surrounding surrounding, int x, int y, sf::RenderWindow &window, int cx, int cy);
+    virtual void update(Surrounding surrounding, int x, int y, sf::RenderWindow &window, int cx, int cy);
+    virtual std::shared_ptr<Pixel> clone() {
+        return std::make_shared<Pixel>();
+    }
 
     void draw(sf::RenderWindow &window, int x, int y) {
         sf::Transform jej;
@@ -107,6 +109,9 @@ public:
         sprite[2].color = sf::Color(rd_color1, rd_color2, rd_color3);
         sprite[3].color = sf::Color(rd_color1, rd_color2, rd_color3);
     };
+    std::shared_ptr<Pixel> clone() override {
+        return std::make_shared<Sand>();
+    }
 
     void update(Surrounding surround, int x, int y, sf::RenderWindow &window, int cx, int cy) override {
         if (!processed) {
