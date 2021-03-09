@@ -25,9 +25,11 @@ private:
     Core();
     ~Core();
     void updateChunks();
+    int isInSim(int x, int y);
 
 public:
     sf::RenderWindow screen;
+    sf::Mouse mouse;
 
 private:
     sf::Vector2i position;

@@ -41,6 +41,23 @@ bool Core::run() {
             || event.type == sf::Event::Closed)
             return false;
     }
+    if (mouse.isButtonPressed(sf::Mouse::Button::Left)) {
+        sf::Vector2<int> mouse_pos = mouse.getPosition(screen);
+        sf::Vector2<int> pixel_pos = mouse_pos / pixel_size;
+        if (isInSim(pixel_pos.x, pixel_pos.y)) {
+            std::cout << "===============" << '\n';
+            std::cout << nb_chunk * chunk_size << '\n';
+            printf("x=%d, y=%d\n", pixel_pos.x, pixel_pos.y);
+
+
+
+
+            if (getTile(pixel_pos.x, pixel_pos.y).type() == PixelType::Sand) {
+                }
+        } else {
+            std::cout << "not in sim" << '\n';
+        }
+    }
 
     screen.clear(sf::Color::Black);
     updateChunks();
@@ -48,6 +65,13 @@ bool Core::run() {
 
     std::cout << "fps : " << 1 / ((getTime() - now) / 1000.0) << "\r" << std::flush;
     return true;
+}
+
+int Core::isInSim(int x, int y) {
+    static const int simSize = nb_chunk * chunk_size;
+    if (x >= 0 && y >= 0 && x < simSize && y < simSize)
+        return true;
+    return false;
 }
 
 void Core::updateChunks() {
@@ -75,13 +99,17 @@ std::shared_ptr<Pixel> Core::getTile(int x, int y) {
     static const double fx = (float)width / frequency;
     static const double fy = (float)height / frequency;
 
+    // If tile already exists, return it
     auto itX = map.find(x);
     if (itX != map.end()) {
         auto itY = itX->second.find(y);
         if (itY != itX->second.end())
             return itY->second;
     }
-
-    auto noise = static_cast<unsigned char>(perlin.accumulatedOctaveNoise2D_0_1(x / fx, y / fy, octaves) * 255.0);
+    // Otherwise, create
+    auto noise = static_cast<unsigned char>(
+        perlin.accumulatedOctaveNoise2D_0_1(x / fx, y / fy, octaves) * 255.0
+    );
+    // Fill "half the screen" with sand and the other half with Pixel (empty)
     return map[x][y] = noise > 255.0/2 ? std::make_shared<Pixel>(): std::make_shared<Sand>();
 }
