@@ -43,11 +43,10 @@ bool Core::run() {
             || event.type == sf::Event::Closed)
             return false;
     }
-    if (mouse.isButtonPressed(sf::Mouse::Button::Left)) {
+    if (mouse.isButtonPressed(sf::Mouse::Button::Left))
         dynamicTileDrawing(std::make_shared<Sand>());
-    } else if (mouse.isButtonPressed(sf::Mouse::Button::Right)) {
+    else if (mouse.isButtonPressed(sf::Mouse::Button::Right))
         dynamicTileDrawing(std::make_shared<Pixel>());
-    }
 
     screen.clear(sf::Color::Black);
     updateChunks();
@@ -59,28 +58,15 @@ bool Core::run() {
 
 void Core::dynamicTileDrawing(std::shared_ptr<Pixel> newTile) {
     sf::Vector2<int> centerPos = mouse.getPosition(screen) / pixel_size;
-
-    std::vector<sf::Vector2<int>> pixelsPoses = {
-        centerPos,
-        // centerPos + sf::Vector2i(-1, -1),
-        // centerPos + sf::Vector2i(0, -1),
-        // centerPos + sf::Vector2i(1, -1),
-        //
-        // centerPos + sf::Vector2i(-1, 0),
-        // centerPos,
-        // centerPos + sf::Vector2i(1, 0),
-        //
-        // centerPos + sf::Vector2i(-1, 1),
-        // centerPos + sf::Vector2i(0, 1),
-        // centerPos + sf::Vector2i(1, 1),
-    };
+    if (centerPos.x < 0 || centerPos.y < 0)
+        return;
+    std::vector<sf::Vector2<int>> pixelsPoses = { centerPos };
     for (int x = 0 ; x < 20 ; x++)
         pixelsPoses.push_back(centerPos + getRandomPosition(-5, 10));
     for (int x = 0 ; x < 10 ; x++)
         pixelsPoses.push_back(centerPos + getRandomPosition(-10, 20));
-    for (auto pixelPos : pixelsPoses) {
+    for (auto pixelPos : pixelsPoses)
         replaceTile(newTile->clone(), pixelPos);
-    }
 }
 
 sf::Vector2<int> Core::getRandomPosition(int min, int max) {
@@ -166,4 +152,3 @@ std::shared_ptr<Pixel> Core::createTileFromPerlin(int x, int y) {
     auto noise = static_cast<unsigned char>(perlin.accumulatedOctaveNoise2D_0_1(x / frequency, y / frequency, octaves) * 255.0);
     return noise > 255.0/2 ? std::make_shared<Pixel>(): std::make_shared<Sand>();
 }
-
