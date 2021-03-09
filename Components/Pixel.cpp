@@ -67,8 +67,8 @@ Concrete::Concrete(): Pixel(255, 255, 0) {
     sprite[1].position = sf::Vector2f(pixel_size, 0);
     sprite[2].position = sf::Vector2f(pixel_size, pixel_size);
     sprite[3].position = sf::Vector2f(0, pixel_size);
-    int var = std::rand() % 30 - 15;
-    auto pixel_color = sf::Color(200 + var, 200 + var, 200 + var);
+    int var = std::rand() % 10 - 5;
+    auto pixel_color = sf::Color(100 + var, 100 + var, 100 + var);
     sprite[0].color = pixel_color;
     sprite[1].color = pixel_color;
     sprite[2].color = pixel_color;
