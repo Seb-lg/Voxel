@@ -23,16 +23,12 @@ Sand::Sand(): Pixel(255, 255, 0) {
     sprite[1].position = sf::Vector2f(pixel_size, 0);
     sprite[2].position = sf::Vector2f(pixel_size, pixel_size);
     sprite[3].position = sf::Vector2f(0, pixel_size);
-    int max = 10;
-    int min = 10;
-    int var = std::rand() % (max + min);
-    auto rd_color1 = 194 + var;
-    auto rd_color2 = 178 + var;
-    auto rd_color3 = 128 + var;
-    sprite[0].color = sf::Color(rd_color1, rd_color2, rd_color3);
-    sprite[1].color = sf::Color(rd_color1, rd_color2, rd_color3);
-    sprite[2].color = sf::Color(rd_color1, rd_color2, rd_color3);
-    sprite[3].color = sf::Color(rd_color1, rd_color2, rd_color3);
+    int var = std::rand() % 30 - 15;
+    auto pixel_color = sf::Color(194 + var, 178 + var, 128 + var);
+    sprite[0].color = pixel_color;
+    sprite[1].color = pixel_color;
+    sprite[2].color = pixel_color;
+    sprite[3].color = pixel_color;
 };
 
 void Sand::update(Surrounding surround, int x, int y, sf::RenderWindow &window, int cx, int cy) {
