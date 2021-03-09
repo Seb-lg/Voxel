@@ -4,12 +4,13 @@
 
 #pragma once
 
-#define pixel_size 5
-#define height 1080
-#define width 1920
-#define fps 5
+#define pixel_size 2
+#define height 800
+#define width 800
+#define fps 60
 #define chunk_size 64
-#define nb_chunk 2
+#define nb_chunk 3
+#define rand_seed 0
 
 #include <chrono>
 
