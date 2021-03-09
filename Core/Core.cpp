@@ -149,9 +149,13 @@ std::shared_ptr<Chunk> Core::getChunk(sf::Vector2<int> chunk_idxes) {
 std::shared_ptr<Pixel> Core::createTileFromPerlin(int x, int y) {
     // Called by the Chunk class constructor, will determine if the pixel exists
     // or not, based on the perlin noise
-    static const double frequency = 200 / 8;
-    static const int octaves = 10;
+    static const double frequency = 50;
+    static const int octaves = 20;
 
-    auto noise = static_cast<unsigned char>(perlin.accumulatedOctaveNoise2D_0_1(x / frequency, y / frequency, octaves) * 255.0);
-    return noise > 255.0/3 ? std::make_shared<Pixel>(): std::make_shared<Concrete>();
+    auto noise = perlin.accumulatedOctaveNoise2D_0_1(x / frequency, y / frequency, octaves);
+    if (noise < 0.4)
+        return std::make_shared<Concrete>();
+    if (noise < 0.45)
+        return std::make_shared<Sand>();
+    return std::make_shared<Pixel>();
 }
