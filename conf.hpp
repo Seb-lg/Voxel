@@ -9,11 +9,11 @@
 static auto rd = [](){std::srand(std::time(nullptr));return std::rand();};
 static auto getTime = [](){return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();};
 
-#define pixel_size 2
-#define height 720
-#define width 1080
-#define fps 60
+#define pixel_size 4
+#define height 1000
+#define width 1000
+#define fps 2
 #define chunk_size 64
 #define nb_chunk 3
-#define rand_seed rd()
+#define rand_seed 587801955
 

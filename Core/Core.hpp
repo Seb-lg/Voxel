@@ -34,5 +34,4 @@ private:
 
     siv::PerlinNoise perlin;
     std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks;
-    std::map<int, std::map<int, std::shared_ptr<Pixel>>> map;
 };

@@ -25,6 +25,10 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
     auto ptr = pixels.data() + chunk_size * chunk_size - 1;
     for (int y = chunk_size - 1; y >= 0; --y) {
         for (int x = chunk_size - 1; x >= 0; --x) {
+            if (ptr->get()->type == PixelType::Air) {
+                --ptr;
+                continue;
+            }
             Surrounding surround(ptr);
 
             /** Checking Y axis first */
@@ -63,8 +67,10 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                     if (chunks[posX + 1][posY]) {
                         auto right = chunks[posX + 1][posY]->pixels.data();
                         surround.r = right;
+                        surround.dr = right + chunk_size;
                     } else {
                         surround.r = nullptr;
+                        surround.dr = nullptr;
                     }
                     // right up
                     if (chunks[posX + 1][posY - 1]) {
@@ -106,8 +112,10 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                     // left
                     if (chunks[posX - 1][posY]) {
                         auto left = chunks[posX-1][posY]->pixels.data();
-                        surround.l = left + chunk_size * chunk_size - 1;
+                        surround.ul = left + (y - 1) * chunk_size - 1;
+                        surround.l = left + y * chunk_size - 1;
                     } else {
+                        surround.ul = nullptr;
                         surround.l = nullptr;
                     }
                     // down Left
@@ -132,7 +140,7 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                     // right
                     if (chunks[posX + 1][posY]) {
                         auto right = chunks[posX + 1][posY]->pixels.data();
-                        surround.r = right;
+                        surround.r = right + (chunk_size - 1) * chunk_size;
                     } else {
                         surround.r = nullptr;
                     }
@@ -175,9 +183,9 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                 if (x == 0) {
                     if (chunks[posX - 1][posY]) {
                         auto left = chunks[posX - 1][posY]->pixels.data();
-                        surround.ul = left + chunk_size * (y - 1) - 1;
-                        surround.l = left + chunk_size * (y) - 1;
-                        surround.dl = left + chunk_size * (y + 1) - 1;
+                        surround.ul = left + (y - 1) * chunk_size - 1;
+                        surround.l = left + y * chunk_size - 1;
+                        surround.dl = left + (y + 1) * chunk_size - 1;
                     } else {
                         surround.ul = nullptr;
                         surround.l = nullptr;
