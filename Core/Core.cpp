@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <thread>
+#include <list>
 #include "Core.hpp"
 #include "../conf.hpp"
 
@@ -69,7 +70,8 @@ bool Core::run() {
     return true;
 }
 
-void Core::updateChunks() {
+/*void Core::updateChunks() {
+
     for (auto &column : chunks) {
         for (auto &elem : column.second) {
             if (elem.second)
@@ -81,6 +83,49 @@ void Core::updateChunks() {
             if (elem.second) {
                 for (auto &pixel : elem.second->pixels)
                     pixel->processed = false;
+            }
+        }
+    }
+}*/
+
+void Core::updateChunks() {
+    std::vector<std::list<std::shared_ptr<Chunk>>> threadChunkList(4);
+
+    for (auto &column : chunks) {
+        for (auto &elem : column.second) {
+            if (elem.second) {
+                auto tmp = elem.second;
+                if (tmp->posY % 2 == 0 && tmp->posX % 2 == 0)
+                    threadChunkList[0].push_back(elem.second);
+                else if (tmp->posY % 2 == 0 && (tmp->posX - 1) % 2 == 0)
+                    threadChunkList[1].push_back(elem.second);
+                else if (tmp->posY % 2 && tmp->posX % 2 == 0)
+                    threadChunkList[2].push_back(elem.second);
+                else
+                    threadChunkList[3].push_back(elem.second);
+            }
+        }
+    }
+
+    for (auto &chunkList: threadChunkList) {
+        std::list<std::thread> threads;
+        for (auto &elem : chunkList)
+            threads.emplace_back([&elem, this](){elem->update(chunks);});
+        for (auto &thread : threads)
+            thread.join();
+    }
+    for (auto &column : chunks) {
+        for (auto &elem : column.second) {
+            if (elem.second) {
+                if (elem.second->posX < 3 && elem.second->posY < 3)
+                    for (auto &pixel : elem.second->pixels) {
+                        pixel->draw(screen);
+                        pixel->processed = false;
+                    }
+                else
+                    for (auto &pixel : elem.second->pixels) {
+                        pixel->processed = false;
+                    }
             }
         }
     }
@@ -97,7 +142,6 @@ TileResponse Core::addTile(sf::Vector2<int> pixelPos, std::shared_ptr<Pixel> new
     return chunk->replaceTile(offset, newTile);
 }
 
-
 std::shared_ptr<Chunk> Core::getChunk(sf::Vector2<int> chunk_idxes, bool createChunk) {
     // CREATE A NEW CHUNK IF NEEDED!!!
     auto itX = chunks.find(chunk_idxes.x);
@@ -113,11 +157,9 @@ std::shared_ptr<Chunk> Core::getChunk(sf::Vector2<int> chunk_idxes, bool createC
 std::shared_ptr<Pixel> Core::createTileFromPerlin(int x, int y) {
     // Called by the Chunk class constructor, will determine if the pixel exists
     // or not, based on the perlin noise
-    static const double frequency = 8;
+    static const double frequency = 1440 / 8;
     static const int octaves = 10;
-    static const double fx = (float)width / frequency;
-    static const double fy = (float)height / frequency;
 
-    auto noise = static_cast<unsigned char>(perlin.accumulatedOctaveNoise2D_0_1(x / fx, y / fy, octaves) * 255.0);
+    auto noise = static_cast<unsigned char>(perlin.accumulatedOctaveNoise2D_0_1(x / frequency, y / frequency, octaves) * 255.0);
     return noise > 255.0/2 ? std::make_shared<Pixel>(): std::make_shared<Sand>();
 }

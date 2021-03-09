@@ -10,6 +10,7 @@
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <memory>
 #include <random>
+#include <iostream>
 #include "../conf.hpp"
 
 enum class PixelType {
@@ -33,9 +34,9 @@ public:
     virtual void
     update(Surrounding surrounding, int x, int y, sf::RenderWindow &window, int cx, int cy);
 
-    void draw(sf::RenderWindow &window, int x, int y) {
+    void draw(sf::RenderWindow &window) {
         sf::Transform jej;
-        jej.translate(x * pixel_size, y * pixel_size);
+        jej.translate(drawX * pixel_size, drawY * pixel_size);
         window.draw(sprite, jej);
     }
 
@@ -48,6 +49,8 @@ public:
     PixelType type;
     bool processed;
     sf::VertexArray sprite;
+    int drawX;
+    int drawY;
 };
 
 struct Surrounding{
@@ -113,19 +116,23 @@ public:
                 auto tmp = (*surround.c);
                 (*surround.c) = (*surround.d);
                 (*surround.d) = tmp;
-                draw(window, cx * chunk_size + x, cy * chunk_size + y + 1);
+                drawX = cx * chunk_size + x;
+                drawY = cy * chunk_size + y + 1;
             } else if (surround.l && (*surround.l)->type == PixelType::Air && surround.dl && (*surround.dl)->type == PixelType::Air) {
                 auto tmp = (*surround.c);
                 (*surround.c) = (*surround.dl);
                 (*surround.dl) = tmp;
-                draw(window, cx * chunk_size + x - 1, cy * chunk_size + y + 1);
+                drawX = cx * chunk_size + x - 1;
+                drawY = cy * chunk_size + y + 1;
             } else if (surround.r && (*surround.r)->type == PixelType::Air && surround.dr && (*surround.dr)->type == PixelType::Air) {
                 auto tmp = (*surround.c);
                 (*surround.c) = (*surround.dr);
                 (*surround.dr) = tmp;
-                draw(window, cx * chunk_size + x + 1, cy * chunk_size + y + 1);
+                drawX = cx * chunk_size + x + 1;
+                drawY = cy * chunk_size + y + 1;
             } else {
-                draw(window, cx * chunk_size + x, cy * chunk_size + y);
+                drawX = cx * chunk_size + x;
+                drawY = cy * chunk_size + y;
             }
             processed = true;
         }

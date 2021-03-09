@@ -18,9 +18,9 @@ public:
     bool initialised;
 
     std::vector<std::shared_ptr<Pixel>> pixels;
-private:
     int posX;
     int posY;
+private:
 
     sf::VertexArray wireframe;
 };
