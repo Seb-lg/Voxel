@@ -46,10 +46,11 @@ bool Core::run() {
     if (mouse.isButtonPressed(sf::Mouse::Button::Left)) {
         sf::Vector2<int> mouse_pos = mouse.getPosition(screen);
         sf::Vector2<int> pixel_pos = mouse_pos / pixel_size;
-        if (addTile(pixel_pos, std::make_shared<Sand>(), true) == TileResponse::OOB)
-            std::cout << "not in sim" << '\n';
-        else
-            printf("x=%d, y=%d\n", pixel_pos.x, pixel_pos.y);
+        TileResponse flag = addTile(pixel_pos, std::make_shared<Sand>(), true);
+        if (flag == TileResponse::OOB)
+            std::cout << "not in sim" << std::endl;
+        else if (flag == TileResponse::ALREADY_CREATED)
+            printf("Already exists: x=%d, y=%d\n", pixel_pos.x, pixel_pos.y);
     }
 
     screen.clear(sf::Color::Black);
@@ -82,18 +83,10 @@ TileResponse Core::addTile(sf::Vector2<int> pixelPos, std::shared_ptr<Pixel> new
     // WILL BREAK WITH PLAYER MOVEMENT IMPLEMENTATION
     std::shared_ptr<Chunk> chunk = getChunk(pixelPos / chunk_size, createChunk);
     if (chunk == nullptr)
-        // TMP FIX
+        // TMP FIX, the chunk should be created in getChunk()
         return TileResponse::OOB;
     sf::Vector2<int> offset = sf::Vector2i(pixelPos.x % chunk_size, pixelPos.y % chunk_size);
     return chunk->replaceTile(offset, newTile);
-    // std::shared_ptr<Pixel> tile = chunk.getTile(pixel_pos % chunk_size)
-    // if (tile == nullptr) {
-    //     return TileResponse::OOB;
-    // } else if (tile->type == type) {
-    //     return TileResponse::ALREADY_CREATED;
-    // } else if (tile->type == PixelType::Air) {
-    //     return TileResponse::CREATED;
-    // }
 }
 
 

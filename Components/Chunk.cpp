@@ -22,6 +22,8 @@ TileResponse Chunk::replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Pixel>
     int idx = tilePos.y * chunk_size + tilePos.x;
     if (idx > chunk_size * chunk_size)
         return TileResponse::OOB;
+    if (pixels[idx]->type == newTile->type)
+        return TileResponse::ALREADY_CREATED;
     pixels[idx] = newTile;
     return TileResponse::CREATED;
 }
