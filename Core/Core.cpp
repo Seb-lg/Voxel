@@ -150,5 +150,5 @@ std::shared_ptr<Pixel> Core::createTileFromPerlin(int x, int y) {
     static const int octaves = 10;
 
     auto noise = static_cast<unsigned char>(perlin.accumulatedOctaveNoise2D_0_1(x / frequency, y / frequency, octaves) * 255.0);
-    return noise > 255.0/2 ? std::make_shared<Pixel>(): std::make_shared<Sand>();
+    return noise > 255.0/2 ? std::make_shared<Pixel>(): std::make_shared<Concrete>();
 }

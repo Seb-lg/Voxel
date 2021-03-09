@@ -58,3 +58,22 @@ void Sand::update(Surrounding surround, int x, int y, sf::RenderWindow &window, 
         processed = true;
     }
 }
+
+Concrete::Concrete(): Pixel(255, 255, 0) {
+    type = PixelType::Concrete;
+    sprite[0].position = sf::Vector2f(0, 0);
+    sprite[1].position = sf::Vector2f(pixel_size, 0);
+    sprite[2].position = sf::Vector2f(pixel_size, pixel_size);
+    sprite[3].position = sf::Vector2f(0, pixel_size);
+    int var = std::rand() % 30 - 15;
+    auto pixel_color = sf::Color(200 + var, 200 + var, 200 + var);
+    sprite[0].color = pixel_color;
+    sprite[1].color = pixel_color;
+    sprite[2].color = pixel_color;
+    sprite[3].color = pixel_color;
+};
+
+void Concrete::update(Surrounding surround, int x, int y, sf::RenderWindow &window, int cx, int cy) {
+    drawX = x;
+    drawY = y;
+}
