@@ -23,8 +23,8 @@ Core::~Core() noexcept = default;
 
 void Core::initChunks() {
     // Create each chunks, which handle their own pixels creation (based on perlin noise)
-    for (int x = 0; x < nb_chunk; ++x) {
-        for (int y = 0; y < nb_chunk; ++y) {
+    for (int x = 0; x < (int)(width / (chunk_size * pixel_size)) + 1; ++x) {
+        for (int y = 0; y < (int)(height / (chunk_size * pixel_size)) + 1; ++y) {
             float percentage = (float)(x*nb_chunk+y) / (nb_chunk*nb_chunk) * 100.0;
             std::cout << "Map init: " << percentage << "%\r" << std::flush;
             chunks[x][y] = std::make_shared<Chunk>(x, y);
