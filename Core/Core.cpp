@@ -50,12 +50,8 @@ bool Core::run() {
             std::cout << "===============" << '\n';
             std::cout << nb_chunk * chunk_size << '\n';
             printf("x=%d, y=%d\n", pixel_pos.x, pixel_pos.y);
-
-
-
-
-            if (getTile(pixel_pos.x, pixel_pos.y).type() == PixelType::Sand) {
-                }
+            // if (getTile(pixel_pos.x, pixel_pos.y).type() == PixelType::Sand) {
+            //     }
         } else {
             std::cout << "not in sim" << '\n';
         }
