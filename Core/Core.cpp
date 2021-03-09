@@ -44,9 +44,9 @@ bool Core::run() {
             return false;
     }
     if (mouse.isButtonPressed(sf::Mouse::Button::Left)) {
-        replaceTile(std::make_shared<Sand>(), true);
+        dynamicTileDrawing(std::make_shared<Sand>(), true);
     } else if (mouse.isButtonPressed(sf::Mouse::Button::Right)) {
-        replaceTile(std::make_shared<Pixel>(), true);
+        dynamicTileDrawing(std::make_shared<Pixel>(), true);
     }
 
     screen.clear(sf::Color::Black);
@@ -57,9 +57,20 @@ bool Core::run() {
     return true;
 }
 
-void Core::replaceTile(std::shared_ptr<Pixel> newTile, bool createChunk) {
-    sf::Vector2<int> mousePos = mouse.getPosition(screen);
-    sf::Vector2<int> pixelPos = mousePos / pixel_size;
+void Core::dynamicTileDrawing(std::shared_ptr<Pixel> newTile, bool createChunk) {
+    sf::Vector2<int> centerPos = mouse.getPosition(screen) / pixel_size;
+    std::vector<sf::Vector2<int>> pixelsPoses = {
+        centerPos + sf::Vector2i(1, 0),
+        centerPos + sf::Vector2i(0, 1),
+        centerPos + sf::Vector2i(-1, 0),
+        centerPos + sf::Vector2i(0, -1),
+    };
+    for (auto pixelPos : pixelsPoses) {
+        replaceTile(newTile, createChunk, pixelPos);
+    }
+}
+
+void Core::replaceTile(std::shared_ptr<Pixel> newTile, bool createChunk, sf::Vector2<int> pixelPos) {
 
     // TMP HACK, AS IT ASSUMES CHUNK (0,0) IS AT TOP LEFT
     // WILL BREAK WITH PLAYER MOVEMENT IMPLEMENTATION
@@ -76,7 +87,7 @@ void Core::replaceTile(std::shared_ptr<Pixel> newTile, bool createChunk) {
         return;
     }
     if (flag == TileResponse::ALREADY_CREATED) {
-        printf("Already exists: x=%d, y=%d\n", pixelPos.x, pixelPos.y);
+        printf("(%d/%d) already exists\n", pixelPos.x, pixelPos.y);
     }
 }
 

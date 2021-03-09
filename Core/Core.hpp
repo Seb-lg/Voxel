@@ -20,7 +20,8 @@ public:
     }
     void initChunks();
     bool run();
-    void replaceTile(std::shared_ptr<Pixel> newTile, bool createChunk);
+    void dynamicTileDrawing(std::shared_ptr<Pixel> newTile, bool createChunk);
+    void replaceTile(std::shared_ptr<Pixel> newTile, bool createChunk, sf::Vector2<int> pixelPos);
     std::shared_ptr<Chunk> getChunk(sf::Vector2<int> chunk_idxes, bool createChunk);
     std::shared_ptr<Pixel> createTileFromPerlin(int x, int y);
 
