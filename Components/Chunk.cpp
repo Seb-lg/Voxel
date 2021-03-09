@@ -6,7 +6,7 @@
 #include "Chunk.hpp"
 #include "../Core/Core.hpp"
 
-Chunk::Chunk(int cX, int cY): posX(cX), posY(cY) {
+Chunk::Chunk(int cX, int cY): posX(cX), posY(cY), wireframe(sf::LineStrip, 4) {
     pixels.resize(chunk_size*chunk_size);
     auto ptr = pixels.data();
     auto &core = Core::get();
@@ -16,11 +16,24 @@ Chunk::Chunk(int cX, int cY): posX(cX), posY(cY) {
             ++ptr;
         }
     }
+    wireframe[0].position = sf::Vector2f(0, 0);
+    wireframe[1].position = sf::Vector2f(chunk_size * pixel_size, 0);
+    wireframe[2].position = sf::Vector2f(chunk_size * pixel_size, chunk_size * pixel_size);
+    wireframe[3].position = sf::Vector2f(0, chunk_size * pixel_size);
+
+    wireframe[0].color = sf::Color(255, 0, 0);
+    wireframe[1].color = sf::Color(255, 0, 0);
+    wireframe[2].color = sf::Color(0, 255, 0);
+    wireframe[3].color = sf::Color(0, 255, 0);
 }
 
 void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks) {
     auto &scrn = Core::get().screen;
-
+#ifdef DEBUG
+    sf::Transform pos;
+    pos.translate(posX * chunk_size * pixel_size, posY * chunk_size * pixel_size);
+    scrn.draw(wireframe, pos);
+#endif
     /** update bottom row */
     auto ptr = pixels.data() + chunk_size * chunk_size - 1;
     for (int y = chunk_size - 1; y >= 0; --y) {
@@ -41,8 +54,10 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                     if (chunks[posX - 1][posY]) {
                         auto left = chunks[posX - 1][posY]->pixels.data();
                         surround.l = left + chunk_size - 1;
+                        surround.dl = left + 2 * chunk_size - 1;
                     } else {
                         surround.l = nullptr;
+                        surround.dl = nullptr;
                     }
                     // up Left
                     if (chunks[posX - 1][posY - 1]) {
@@ -121,7 +136,7 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                     // down Left
                     if (chunks[posX - 1][posY + 1]) {
                         auto down = chunks[posX - 1][posY + 1]->pixels.data();
-                        surround.dl = down + chunk_size;
+                        surround.dl = down + chunk_size - 1;
                     } else {
                         surround.dl = nullptr;
                     }
@@ -183,9 +198,9 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                 if (x == 0) {
                     if (chunks[posX - 1][posY]) {
                         auto left = chunks[posX - 1][posY]->pixels.data();
-                        surround.ul = left + (y - 1) * chunk_size - 1;
-                        surround.l = left + y * chunk_size - 1;
-                        surround.dl = left + (y + 1) * chunk_size - 1;
+                        surround.ul = left + (y - 0) * chunk_size - 1;
+                        surround.l = left + (y+1) * chunk_size - 1;
+                        surround.dl = left + (y + 2) * chunk_size - 1;
                     } else {
                         surround.ul = nullptr;
                         surround.l = nullptr;

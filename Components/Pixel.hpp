@@ -9,6 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <memory>
+#include <random>
 #include "../conf.hpp"
 
 enum class PixelType {
@@ -54,15 +55,6 @@ struct Surrounding{
         dl = ptr - 1 + chunk_size;
         d = ptr + chunk_size;
         dr = ptr + 1 + chunk_size;
-//        ul = nullptr;
-//        u = nullptr;
-//        ur = nullptr;
-//        l = nullptr;
-//        c = nullptr;
-//        r = nullptr;
-//        dl = nullptr;
-//        d = nullptr;
-//        dr = nullptr;
     }
     std::shared_ptr<Pixel> *ul = nullptr;
     std::shared_ptr<Pixel> *u = nullptr;
@@ -75,31 +67,38 @@ struct Surrounding{
     std::shared_ptr<Pixel> *dr = nullptr;
 };
 
+static int randomBetweenNb() {
+    static std::random_device rd{};
+    static std::mt19937 gen{rd()};
 
+    std::normal_distribution<> jej{40.0, 2.0};
+    return std::round(jej(gen)) - 20;
+
+}
 class Sand: public Pixel {
 public:
-    Sand(): Pixel(255, 255, 0) {
+    Sand(): Pixel(225+randomBetweenNb(), 169+randomBetweenNb(), 95+randomBetweenNb()) {
         type = PixelType::Sand;
         sprite[0].position = sf::Vector2f(0, 0);
         sprite[1].position = sf::Vector2f(pixel_size, 0);
         sprite[2].position = sf::Vector2f(pixel_size, pixel_size);
         sprite[3].position = sf::Vector2f(0, pixel_size);
 
-//        sprite[0].color = sf::Color(r, g, b);
-//        sprite[1].color = sf::Color(r, g, b);
-//        sprite[2].color = sf::Color(r, g, b);
-//        sprite[3].color = sf::Color(r, g, b);
+        sprite[0].color = sf::Color(r, g, b);
+        sprite[1].color = sf::Color(r, g, b);
+        sprite[2].color = sf::Color(r, g, b);
+        sprite[3].color = sf::Color(r, g, b);
 //        sprite[0].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
 //        sprite[1].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
 //        sprite[2].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
 //        sprite[3].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
-        auto rd_color1 = std::rand()%255;
-        auto rd_color2 = std::rand()%255;
-        auto rd_color3 = std::rand()%255;
-        sprite[0].color = sf::Color(rd_color1, rd_color2, rd_color3);
-        sprite[1].color = sf::Color(rd_color1, rd_color2, rd_color3);
-        sprite[2].color = sf::Color(rd_color1, rd_color2, rd_color3);
-        sprite[3].color = sf::Color(rd_color1, rd_color2, rd_color3);
+//        auto rd_color1 = std::rand()%255;
+//        auto rd_color2 = std::rand()%255;
+//        auto rd_color3 = std::rand()%255;
+//        sprite[0].color = sf::Color(rd_color1, rd_color2, rd_color3);
+//        sprite[1].color = sf::Color(rd_color1, rd_color2, rd_color3);
+//        sprite[2].color = sf::Color(rd_color1, rd_color2, rd_color3);
+//        sprite[3].color = sf::Color(rd_color1, rd_color2, rd_color3);
     };
 
     void update(Surrounding surround, int x, int y, sf::RenderWindow &window, int cx, int cy) override {

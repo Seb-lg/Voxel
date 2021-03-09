@@ -9,8 +9,7 @@
 
 
 Core::Core(): perlin(rand_seed) {
-    std::cout << rand_seed << std::endl;
-    std::cout << rand_seed << std::endl;
+    std::cout << "Seed: " << rand_seed << std::endl;
     screen.create(
         sf::VideoMode(width, height, 32),
         "SandEngine",

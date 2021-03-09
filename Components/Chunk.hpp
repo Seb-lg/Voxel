@@ -20,6 +20,8 @@ public:
 private:
     int posX;
     int posY;
+
+    sf::VertexArray wireframe;
 };
 
 
