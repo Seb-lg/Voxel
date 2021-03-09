@@ -3,9 +3,18 @@ project(Voxel)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(Voxel main.cpp
+add_executable(Voxel
+        main.cpp
         Core/Core.cpp
-        Core/Core.hpp conf.hpp Core/Perlin/PerlinNoise.hpp Components/Pixel.hpp Components/Chunk.cpp Components/Chunk.hpp Components/Pixel.cpp)
+        Core/Core.hpp
+        Core/Perlin/PerlinNoise.hpp
+        conf.hpp
+        Components/DynamicPixels.cpp
+        Components/StaticPixels.cpp
+        Components/Pixel.hpp
+        Components/Chunk.cpp
+        Components/Chunk.hpp
+)
 
 find_package(Threads)
 target_link_libraries(Voxel ${CMAKE_THREAD_LIBS_INIT})
