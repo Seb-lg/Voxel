@@ -24,6 +24,7 @@ public:
     void replaceTile(std::shared_ptr<Pixel> newTile, sf::Vector2<int> pixelPos);
     std::shared_ptr<Chunk> getChunk(sf::Vector2<int> chunk_idxes);
     std::shared_ptr<Pixel> createTileFromPerlin(int x, int y);
+    sf::Vector2<int> getRandomPosition(int min, int max);
 
 
 private:

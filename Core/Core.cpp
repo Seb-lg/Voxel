@@ -61,21 +61,30 @@ void Core::dynamicTileDrawing(std::shared_ptr<Pixel> newTile) {
     sf::Vector2<int> centerPos = mouse.getPosition(screen) / pixel_size;
 
     std::vector<sf::Vector2<int>> pixelsPoses = {
-        centerPos + sf::Vector2i(-1, -1),
-        centerPos + sf::Vector2i(0, -1),
-        centerPos + sf::Vector2i(1, -1),
-
-        centerPos + sf::Vector2i(-1, 0),
         centerPos,
-        centerPos + sf::Vector2i(1, 0),
-
-        centerPos + sf::Vector2i(-1, 1),
-        centerPos + sf::Vector2i(0, 1),
-        centerPos + sf::Vector2i(1, 1),
+        // centerPos + sf::Vector2i(-1, -1),
+        // centerPos + sf::Vector2i(0, -1),
+        // centerPos + sf::Vector2i(1, -1),
+        //
+        // centerPos + sf::Vector2i(-1, 0),
+        // centerPos,
+        // centerPos + sf::Vector2i(1, 0),
+        //
+        // centerPos + sf::Vector2i(-1, 1),
+        // centerPos + sf::Vector2i(0, 1),
+        // centerPos + sf::Vector2i(1, 1),
     };
+    for (int x = 0 ; x < 20 ; x++)
+        pixelsPoses.push_back(centerPos + getRandomPosition(-5, 10));
+    for (int x = 0 ; x < 10 ; x++)
+        pixelsPoses.push_back(centerPos + getRandomPosition(-10, 20));
     for (auto pixelPos : pixelsPoses) {
         replaceTile(newTile->clone(), pixelPos);
     }
+}
+
+sf::Vector2<int> Core::getRandomPosition(int min, int max) {
+    return sf::Vector2i(rand() % max + min, rand() % max + min);
 }
 
 void Core::replaceTile(std::shared_ptr<Pixel> newTile, sf::Vector2<int> pixelPos) {
