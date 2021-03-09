@@ -20,7 +20,6 @@ public:
     std::vector<std::shared_ptr<Pixel>> pixels;
     int posX;
     int posY;
-private:
-
     sf::VertexArray wireframe;
+
 };

@@ -109,23 +109,26 @@ void Core::updateChunks() {
 
     for (auto &chunkList: threadChunkList) {
         std::list<std::thread> threads;
-        for (auto &elem : chunkList)
+        for (auto &elem : chunkList) {
+//            std::cout << elem->posX << " " << elem->posY << std::endl;
             threads.emplace_back([&elem, this](){elem->update(chunks);});
+        }
+//        std::cout << std::endl;
         for (auto &thread : threads)
             thread.join();
     }
     for (auto &column : chunks) {
         for (auto &elem : column.second) {
             if (elem.second) {
-                if (true)
-                    for (auto &pixel : elem.second->pixels) {
-                        pixel->draw(screen);
-                        pixel->processed = false;
-                    }
-                else
-                    for (auto &pixel : elem.second->pixels) {
-                        pixel->processed = false;
-                    }
+#ifdef DEBUG
+                sf::Transform pos;
+                pos.translate(elem.second->posX * chunk_size * pixel_size, elem.second->posY * chunk_size * pixel_size);
+                screen.draw(elem.second->wireframe, pos);
+#endif
+                for (auto &pixel : elem.second->pixels) {
+                    pixel->draw(screen);
+                    pixel->processed = false;
+                }
             }
         }
     }
@@ -146,9 +149,9 @@ std::shared_ptr<Chunk> Core::getChunk(sf::Vector2<int> chunk_idxes) {
 std::shared_ptr<Pixel> Core::createTileFromPerlin(int x, int y) {
     // Called by the Chunk class constructor, will determine if the pixel exists
     // or not, based on the perlin noise
-    static const double frequency = 1440 / 8;
+    static const double frequency = 200 / 8;
     static const int octaves = 10;
 
     auto noise = static_cast<unsigned char>(perlin.accumulatedOctaveNoise2D_0_1(x / frequency, y / frequency, octaves) * 255.0);
-    return noise > 255.0/2 ? std::make_shared<Pixel>(): std::make_shared<Concrete>();
+    return noise > 255.0/3 ? std::make_shared<Pixel>(): std::make_shared<Concrete>();
 }

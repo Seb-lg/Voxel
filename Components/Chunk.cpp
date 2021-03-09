@@ -39,11 +39,6 @@ TileResponse Chunk::replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Pixel>
 
 void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks) {
     auto &scrn = Core::get().screen;
-#ifdef DEBUG
-    sf::Transform pos;
-    pos.translate(posX * chunk_size * pixel_size, posY * chunk_size * pixel_size);
-    scrn.draw(wireframe, pos);
-#endif
     /** update bottom row */
     auto ptr = pixels.data() + chunk_size * chunk_size - 1;
     for (int y = chunk_size - 1; y >= 0; --y) {

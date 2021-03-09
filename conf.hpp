@@ -13,14 +13,12 @@ static auto getTime = [](){return std::chrono::duration_cast<std::chrono::millis
 #define height 1000
 #define width 1000
 #define fps 0
-#define chunk_size 64
-#define nb_chunk 3
-#define rand_seed rd()
+#define chunk_size 16
+#define nb_chunk 15
+#define DEBUG
 
-//#define DEBUG
-//Use 100%
-//#define CPU_COUNT (std::thread::hardware_concurrency() * 2)
-//Use 50%
-//#define CPU_COUNT std::thread::hardware_concurrency()
-//Use 25%
-//#define CPU_COUNT std::thread::hardware_concurrency() / 2
+#ifdef DEBUG
+#define rand_seed 6969420
+#else
+#define rd()
+#endif

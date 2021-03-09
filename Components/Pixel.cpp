@@ -39,13 +39,15 @@ void Sand::update(Surrounding surround, int x, int y, sf::RenderWindow &window, 
             (*surround.d) = tmp;
             drawX = cx * chunk_size + x;
             drawY = cy * chunk_size + y + 1;
-        } else if (surround.l && (*surround.l)->type == PixelType::Air && surround.dl && (*surround.dl)->type == PixelType::Air) {
+//        } else if (surround.l && (*surround.l)->type == PixelType::Air && surround.dl && (*surround.dl)->type == PixelType::Air) {
+        } else if (surround.dl && (*surround.dl)->type == PixelType::Air) {
             auto tmp = (*surround.c);
             (*surround.c) = (*surround.dl);
             (*surround.dl) = tmp;
             drawX = cx * chunk_size + x - 1;
             drawY = cy * chunk_size + y + 1;
-        } else if (surround.r && (*surround.r)->type == PixelType::Air && surround.dr && (*surround.dr)->type == PixelType::Air) {
+//        } else if (surround.r && (*surround.r)->type == PixelType::Air && surround.dr && (*surround.dr)->type == PixelType::Air) {
+        } else if (surround.dr && (*surround.dr)->type == PixelType::Air) {
             auto tmp = (*surround.c);
             (*surround.c) = (*surround.dr);
             (*surround.dr) = tmp;
@@ -74,6 +76,6 @@ Concrete::Concrete(): Pixel(255, 255, 0) {
 };
 
 void Concrete::update(Surrounding surround, int x, int y, sf::RenderWindow &window, int cx, int cy) {
-    drawX = x;
-    drawY = y;
+    drawX = cx * chunk_size + x;
+    drawY = cy * chunk_size + y;
 }
