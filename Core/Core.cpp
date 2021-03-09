@@ -51,6 +51,15 @@ bool Core::run() {
         else if (flag == TileResponse::ALREADY_CREATED)
             printf("Already exists: x=%d, y=%d\n", pixel_pos.x, pixel_pos.y);
     }
+    if (mouse.isButtonPressed(sf::Mouse::Button::Right)) {
+        sf::Vector2<int> mouse_pos = mouse.getPosition(screen);
+        sf::Vector2<int> pixel_pos = mouse_pos / pixel_size;
+        TileResponse flag = addTile(pixel_pos, std::make_shared<Pixel>(), true);
+        if (flag == TileResponse::OOB)
+            std::cout << "not in sim" << std::endl;
+        else if (flag == TileResponse::ALREADY_CREATED)
+            printf("Already exists: x=%d, y=%d\n", pixel_pos.x, pixel_pos.y);
+    }
 
     screen.clear(sf::Color::Black);
     updateChunks();
