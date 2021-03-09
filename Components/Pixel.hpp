@@ -26,19 +26,10 @@ struct Surrounding;
 
 class Pixel {
 public:
-    Pixel(uchar r=0, uchar g=0, uchar b=0, uchar a=255):r(r), g(g), b(b), a(a), type(PixelType::Air), processed(false), sprite(sf::Quads, 4) {
-    };
-
+    Pixel(uchar r=0, uchar g=0, uchar b=0, uchar a=255);
     virtual void update(Surrounding surrounding, int x, int y, sf::RenderWindow &window, int cx, int cy);
-    virtual std::shared_ptr<Pixel> clone() {
-        return std::make_shared<Pixel>();
-    }
-
-    void draw(sf::RenderWindow &window, int x, int y) {
-        sf::Transform jej;
-        jej.translate(x * pixel_size, y * pixel_size);
-        window.draw(sprite, jej);
-    }
+    virtual std::shared_ptr<Pixel> clone() { return std::make_shared<Pixel>(); }
+    void draw(sf::RenderWindow &window, int x, int y);
 
 public:
     uchar r;
@@ -49,6 +40,19 @@ public:
     PixelType type;
     bool processed;
     sf::VertexArray sprite;
+};
+
+
+class Sand: public Pixel {
+public:
+    Sand();
+    std::shared_ptr<Pixel> clone() override { return std::make_shared<Sand>(); }
+    void update(
+        Surrounding surround,
+        int x, int y,
+        sf::RenderWindow &window,
+        int cx, int cy
+    ) override;
 };
 
 struct Surrounding{
@@ -62,15 +66,6 @@ struct Surrounding{
         dl = ptr - 1 + chunk_size;
         d = ptr + chunk_size;
         dr = ptr + 1 + chunk_size;
-//        ul = nullptr;
-//        u = nullptr;
-//        ur = nullptr;
-//        l = nullptr;
-//        c = nullptr;
-//        r = nullptr;
-//        dl = nullptr;
-//        d = nullptr;
-//        dr = nullptr;
     }
     std::shared_ptr<Pixel> *ul = nullptr;
     std::shared_ptr<Pixel> *u = nullptr;
@@ -81,60 +76,4 @@ struct Surrounding{
     std::shared_ptr<Pixel> *dl = nullptr;
     std::shared_ptr<Pixel> *d = nullptr;
     std::shared_ptr<Pixel> *dr = nullptr;
-};
-
-
-class Sand: public Pixel {
-public:
-    Sand(): Pixel(255, 255, 0) {
-        type = PixelType::Sand;
-        sprite[0].position = sf::Vector2f(0, 0);
-        sprite[1].position = sf::Vector2f(pixel_size, 0);
-        sprite[2].position = sf::Vector2f(pixel_size, pixel_size);
-        sprite[3].position = sf::Vector2f(0, pixel_size);
-
-//        sprite[0].color = sf::Color(r, g, b);
-//        sprite[1].color = sf::Color(r, g, b);
-//        sprite[2].color = sf::Color(r, g, b);
-//        sprite[3].color = sf::Color(r, g, b);
-//        sprite[0].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
-//        sprite[1].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
-//        sprite[2].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
-//        sprite[3].color = sf::Color(std::rand()%255, std::rand()%255, std::rand()%255);
-        auto rd_color1 = std::rand()%255;
-        auto rd_color2 = std::rand()%255;
-        auto rd_color3 = std::rand()%255;
-        sprite[0].color = sf::Color(rd_color1, rd_color2, rd_color3);
-        sprite[1].color = sf::Color(rd_color1, rd_color2, rd_color3);
-        sprite[2].color = sf::Color(rd_color1, rd_color2, rd_color3);
-        sprite[3].color = sf::Color(rd_color1, rd_color2, rd_color3);
-    };
-    std::shared_ptr<Pixel> clone() override {
-        return std::make_shared<Sand>();
-    }
-
-    void update(Surrounding surround, int x, int y, sf::RenderWindow &window, int cx, int cy) override {
-        if (!processed) {
-            if (surround.d && (*surround.d)->type == PixelType::Air) {
-                auto tmp = (*surround.c);
-                (*surround.c) = (*surround.d);
-                (*surround.d) = tmp;
-                draw(window, cx * chunk_size + x, cy * chunk_size + y + 1);
-            } else if (surround.l && (*surround.l)->type == PixelType::Air && surround.dl && (*surround.dl)->type == PixelType::Air) {
-                auto tmp = (*surround.c);
-                (*surround.c) = (*surround.dl);
-                (*surround.dl) = tmp;
-                draw(window, cx * chunk_size + x - 1, cy * chunk_size + y + 1);
-            } else if (surround.r && (*surround.r)->type == PixelType::Air && surround.dr && (*surround.dr)->type == PixelType::Air) {
-                auto tmp = (*surround.c);
-                (*surround.c) = (*surround.dr);
-                (*surround.dr) = tmp;
-                draw(window, cx * chunk_size + x + 1, cy * chunk_size + y + 1);
-            } else {
-                draw(window, cx * chunk_size + x, cy * chunk_size + y);
-            }
-            processed = true;
-        }
-    }
-
 };
