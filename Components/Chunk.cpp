@@ -12,10 +12,18 @@ Chunk::Chunk(int cX, int cY): posX(cX), posY(cY) {
     auto &core = Core::get();
     for (int y = 0; y < chunk_size; ++y) {
         for (int x = 0; x < chunk_size; ++x) {
-            *ptr = core.getTile(cX*chunk_size+x, cY*chunk_size+y);
+            *ptr = core.createTileFromPerlin(cX*chunk_size+x, cY*chunk_size+y);
             ++ptr;
         }
     }
+}
+
+TileResponse Chunk::replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Pixel> newTile) {
+    int idx = tilePos.y * chunk_size + tilePos.x;
+    if (idx > chunk_size * chunk_size)
+        return TileResponse::OOB;
+    pixels[idx] = newTile;
+    return TileResponse::CREATED;
 }
 
 void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks) {

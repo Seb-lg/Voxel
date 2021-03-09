@@ -11,6 +11,7 @@
 #include "../Components/Pixel.hpp"
 #include "../Components/Chunk.hpp"
 
+
 class Core {
 public:
     static Core &get() {
@@ -19,7 +20,10 @@ public:
     }
     void initChunks();
     bool run();
-    std::shared_ptr<Pixel> getTile(int x, int y);
+    TileResponse addTile(sf::Vector2<int> pixelPos, std::shared_ptr<Pixel> newTile, bool createChunk);
+    std::shared_ptr<Chunk> getChunk(sf::Vector2<int> chunk_idxes, bool createChunk);
+    std::shared_ptr<Pixel> createTileFromPerlin(int x, int y);
+
 
 private:
     Core();
