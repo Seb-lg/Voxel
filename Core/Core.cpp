@@ -96,12 +96,13 @@ void Core::replaceTile(std::shared_ptr<Pixel> newTile, sf::Vector2<int> pixelPos
     // OutOfBounds can only be reached for negative positions, as we don't handle those for now
     // See function docstring
     if (flag == TileResponse::OOB) {
-        std::cout << "Tile not in sim" << std::endl;
+//        std::cout << "Tile not in sim" << std::endl;
         return;
     }
 }
 
 void Core::updateChunks() {
+    //TODO: thread line by line -> maybe hard af and render threading useless
     std::vector<std::list<std::shared_ptr<Chunk>>> threadChunkList(4);
 
     for (auto &column : chunks) {
@@ -130,7 +131,7 @@ void Core::updateChunks() {
     for (auto &column : chunks) {
         for (auto &elem : column.second) {
             if (elem.second) {
-                if (elem.second->posX < 3 && elem.second->posY < 3)
+                if (true)
                     for (auto &pixel : elem.second->pixels) {
                         pixel->draw(screen);
                         pixel->processed = false;
