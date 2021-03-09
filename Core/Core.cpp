@@ -8,8 +8,12 @@
 #include "../conf.hpp"
 
 
-Core::Core(): perlin(6969420) {
-    screen.create(sf::VideoMode(width, height, 32), "SandEngine", sf::Style::Titlebar | sf::Style::Close);
+Core::Core(): perlin(rand_seed) {
+    screen.create(
+        sf::VideoMode(width, height, 32),
+        "SandEngine",
+        sf::Style::Titlebar | sf::Style::Close
+    );
 //    screen.setVerticalSyncEnabled(true);
     screen.setFramerateLimit(fps);
 }
@@ -17,10 +21,12 @@ Core::Core(): perlin(6969420) {
 Core::~Core() noexcept = default;
 
 void Core::initChunks() {
+    // Create each chunks, which handle their own pixels creation
     for (int x = 0; x < nb_chunk; ++x) {
         for (int y = 0; y < nb_chunk; ++y) {
-            std::cout << "Map init: " << (float)(x*nb_chunk+y) / (nb_chunk*nb_chunk) * 100.0 << "%\r" << std::flush;
-            chunks[x][y] = std::make_shared<Chunk>(x,y);
+            float percentage = (float)(x*nb_chunk+y) / (nb_chunk*nb_chunk) * 100.0;
+            std::cout << "Map init: " << percentage << "%\r" << std::flush;
+            chunks[x][y] = std::make_shared<Chunk>(x, y);
         }
     }
     std::cout << "Map init: 100%" << std::endl;
@@ -29,8 +35,10 @@ void Core::initChunks() {
 bool Core::run() {
     auto now = getTime();
     sf::Event event{};
+    // Check for quit event
     while (screen.pollEvent(event)) {
-        if ((event.type == sf::Event::EventType::KeyPressed && event.key.code == 36) || event.type == sf::Event::Closed)
+        if ((event.type == sf::Event::EventType::KeyPressed && event.key.code == 36)
+            || event.type == sf::Event::Closed)
             return false;
     }
 
@@ -38,12 +46,11 @@ bool Core::run() {
     updateChunks();
     screen.display();
 
-    std::cout << "fps : " << 1/ ((getTime() - now) / 1000.0) << "\r" << std::flush;
+    std::cout << "fps : " << 1 / ((getTime() - now) / 1000.0) << "\r" << std::flush;
     return true;
 }
 
 void Core::updateChunks() {
-    std::shared_ptr<Chunk> wtf;
     for (auto &column : chunks) {
         for (auto &elem : column.second) {
             if (elem.second)
@@ -61,10 +68,12 @@ void Core::updateChunks() {
 }
 
 std::shared_ptr<Pixel> Core::getTile(int x, int y) {
+    // Called by the Chunk class constructor, will determine if the pixel exists
+    // or not, based on the perlin noise
     static const double frequency = 8;
     static const int octaves = 10;
-    static const double fx = (float)width  / frequency;
-    static const double fy = (float)height  / frequency;
+    static const double fx = (float)width / frequency;
+    static const double fy = (float)height / frequency;
 
     auto itX = map.find(x);
     if (itX != map.end()) {
