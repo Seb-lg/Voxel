@@ -17,6 +17,7 @@ enum class PixelType {
     Air = 0,
     Sand = 1,
     Concrete = 2,
+    Water = 2,
 };
 
 enum class TileResponse {
@@ -48,6 +49,14 @@ public:
     int drawY;
 };
 
+
+class Water: public Pixel {
+public:
+    Water();
+    std::shared_ptr<Pixel> clone() override { return std::make_shared<Water>(); }
+    void update(Surrounding surround, int x, int y,
+        sf::RenderWindow &window, int cx, int cy) override;
+};
 
 class Sand: public Pixel {
 public:
