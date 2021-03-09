@@ -45,15 +45,11 @@ bool Core::run() {
     if (mouse.isButtonPressed(sf::Mouse::Button::Left)) {
         sf::Vector2<int> mouse_pos = mouse.getPosition(screen);
         sf::Vector2<int> pixel_pos = mouse_pos / pixel_size;
-        if (isInSim(pixel_pos.x, pixel_pos.y)) {
-            std::cout << "===============" << '\n';
-            std::cout << nb_chunk * chunk_size << '\n';
-            printf("x=%d, y=%d\n", pixel_pos.x, pixel_pos.y);
-            // if (getTile(pixel_pos.x, pixel_pos.y).type() == PixelType::Sand) {
-            //     }
-        } else {
-            std::cout << "not in sim" << '\n';
-        }
+        TileResponse flag = addTile(pixel_pos, std::make_shared<Sand>(), true);
+        if (flag == TileResponse::OOB)
+            std::cout << "not in sim" << std::endl;
+        else if (flag == TileResponse::ALREADY_CREATED)
+            printf("Already exists: x=%d, y=%d\n", pixel_pos.x, pixel_pos.y);
     }
 
     screen.clear(sf::Color::Black);
@@ -62,13 +58,6 @@ bool Core::run() {
 
     std::cout << "fps : " << 1 / ((getTime() - now) / 1000.0) << "\r" << std::flush;
     return true;
-}
-
-int Core::isInSim(int x, int y) {
-    static const int simSize = nb_chunk * chunk_size;
-    if (x >= 0 && y >= 0 && x < simSize && y < simSize)
-        return true;
-    return false;
 }
 
 void Core::updateChunks() {
@@ -88,14 +77,37 @@ void Core::updateChunks() {
     }
 }
 
-std::shared_ptr<Pixel> Core::getTile(int x, int y) {
+TileResponse Core::addTile(sf::Vector2<int> pixelPos, std::shared_ptr<Pixel> newTile, bool createChunk) {
+    // TMP HACK, AS IT ASSUMES CHUNK (0,0) IS AT TOP LEFT
+    // WILL BREAK WITH PLAYER MOVEMENT IMPLEMENTATION
+    std::shared_ptr<Chunk> chunk = getChunk(pixelPos / chunk_size, createChunk);
+    if (chunk == nullptr)
+        // TMP FIX, the chunk should be created in getChunk()
+        return TileResponse::OOB;
+    sf::Vector2<int> offset = sf::Vector2i(pixelPos.x % chunk_size, pixelPos.y % chunk_size);
+    return chunk->replaceTile(offset, newTile);
+}
+
+
+std::shared_ptr<Chunk> Core::getChunk(sf::Vector2<int> chunk_idxes, bool createChunk) {
+    // CREATE A NEW CHUNK IF NEEDED!!!
+    auto itX = chunks.find(chunk_idxes.x);
+    if (itX != chunks.end()) {
+        auto itY = itX->second.find(chunk_idxes.y);
+        if (itY != itX->second.end())
+            return itY->second;
+    }
+    // Not found
+    return nullptr;
+}
+
+std::shared_ptr<Pixel> Core::createTileFromPerlin(int x, int y) {
     // Called by the Chunk class constructor, will determine if the pixel exists
     // or not, based on the perlin noise
     static const double frequency = 8;
     static const int octaves = 10;
     static const double fx = (float)width / frequency;
     static const double fy = (float)height / frequency;
-
 
     auto noise = static_cast<unsigned char>(perlin.accumulatedOctaveNoise2D_0_1(x / fx, y / fy, octaves) * 255.0);
     return noise > 255.0/2 ? std::make_shared<Pixel>(): std::make_shared<Sand>();

@@ -17,6 +17,12 @@ enum class PixelType {
     Sand = 1,
 };
 
+enum class TileResponse {
+    OOB = -1,
+    ALREADY_CREATED = 0,
+    CREATED = 1,
+};
+
 struct Surrounding;
 
 class Pixel {
@@ -126,4 +132,3 @@ public:
     }
 
 };
-

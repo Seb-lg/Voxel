@@ -12,7 +12,7 @@ Chunk::Chunk(int cX, int cY): posX(cX), posY(cY), wireframe(sf::LineStrip, 4) {
     auto &core = Core::get();
     for (int y = 0; y < chunk_size; ++y) {
         for (int x = 0; x < chunk_size; ++x) {
-            *ptr = core.getTile(cX*chunk_size+x, cY*chunk_size+y);
+            *ptr = core.createTileFromPerlin(cX*chunk_size+x, cY*chunk_size+y);
             ++ptr;
         }
     }
@@ -25,6 +25,16 @@ Chunk::Chunk(int cX, int cY): posX(cX), posY(cY), wireframe(sf::LineStrip, 4) {
     wireframe[1].color = sf::Color(255, 0, 0);
     wireframe[2].color = sf::Color(0, 255, 0);
     wireframe[3].color = sf::Color(0, 255, 0);
+}
+
+TileResponse Chunk::replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Pixel> newTile) {
+    int idx = tilePos.y * chunk_size + tilePos.x;
+    if (idx > chunk_size * chunk_size)
+        return TileResponse::OOB;
+    if (pixels[idx]->type == newTile->type)
+        return TileResponse::ALREADY_CREATED;
+    pixels[idx] = newTile;
+    return TileResponse::CREATED;
 }
 
 void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks) {
