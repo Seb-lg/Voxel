@@ -16,14 +16,13 @@ Core::Core(): perlin(rand_seed) {
         "SandEngine",
         sf::Style::Titlebar | sf::Style::Close
     );
-//    screen.setVerticalSyncEnabled(true);
     screen.setFramerateLimit(fps);
 }
 
 Core::~Core() noexcept = default;
 
 void Core::initChunks() {
-    // Create each chunks, which handle their own pixels creation
+    // Create each chunks, which handle their own pixels creation (based on perlin noise)
     for (int x = 0; x < nb_chunk; ++x) {
         for (int y = 0; y < nb_chunk; ++y) {
             float percentage = (float)(x*nb_chunk+y) / (nb_chunk*nb_chunk) * 100.0;
@@ -57,6 +56,7 @@ bool Core::run() {
 }
 
 void Core::dynamicTileDrawing(std::shared_ptr<Pixel> newTile) {
+    // Used to replace a tile with another (used when mouse drawing)
     sf::Vector2<int> centerPos = mouse.getPosition(screen) / pixel_size;
     if (centerPos.x < 0 || centerPos.y < 0)
         return;
@@ -79,12 +79,8 @@ void Core::replaceTile(std::shared_ptr<Pixel> newTile, sf::Vector2<int> pixelPos
     std::shared_ptr<Chunk> chunk = getChunk(pixelPos / chunk_size);
     sf::Vector2<int> offset = sf::Vector2i(pixelPos.x % chunk_size, pixelPos.y % chunk_size);
     TileResponse flag = chunk->replaceTile(offset, newTile);
-    // OutOfBounds can only be reached for negative positions, as we don't handle those for now
-    // See function docstring
-    if (flag == TileResponse::OOB) {
-//        std::cout << "Tile not in sim" << std::endl;
-        return;
-    }
+    // OutOfBounds (TileResponse::OOB) will be triggered by negative positions
+    // as we don't handle those for now (see function docstring)
 }
 
 void Core::updateChunks() {
@@ -135,6 +131,7 @@ void Core::updateChunks() {
 }
 
 std::shared_ptr<Chunk> Core::getChunk(sf::Vector2<int> chunk_idxes) {
+    // Return the chunk at the specified indexes, create it if needed
     auto itX = chunks.find(chunk_idxes.x);
     if (itX != chunks.end()) {
         auto itY = itX->second.find(chunk_idxes.y);
@@ -147,8 +144,8 @@ std::shared_ptr<Chunk> Core::getChunk(sf::Vector2<int> chunk_idxes) {
 }
 
 std::shared_ptr<Pixel> Core::createTileFromPerlin(int x, int y) {
-    // Called by the Chunk class constructor, will determine if the pixel exists
-    // or not, based on the perlin noise
+    // Called by the Chunk class constructor, will determine which pixel type
+    // is created, based on the perlin noise
     static const double frequency = 50;
     static const int octaves = 20;
 
