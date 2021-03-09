@@ -103,7 +103,7 @@ public:
     };
 
     void update(Surrounding surround, int x, int y, sf::RenderWindow &window, int cx, int cy) override {
-        if (!processed || processed) {
+        if (!processed) {
             if (surround.d && (*surround.d)->type == PixelType::Air) {
                 auto tmp = (*surround.c);
                 (*surround.c) = (*surround.d);

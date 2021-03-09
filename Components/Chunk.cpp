@@ -30,11 +30,6 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
             /** Checking Y axis first */
             /** First row */
             if (y == 0) {
-//                surround.l = nullptr;
-//                surround.ul = nullptr;
-//                surround.u = nullptr;
-//                surround.ur = nullptr;
-//                surround.r = nullptr;
                 /** Checking X axis */
                 /** First column */
                 if (x == 0) {
@@ -183,9 +178,6 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                         surround.ul = left + chunk_size * (y - 1) - 1;
                         surround.l = left + chunk_size * (y) - 1;
                         surround.dl = left + chunk_size * (y + 1) - 1;
-//                        surround.ul = nullptr;
-//                        surround.l = nullptr;
-//                        surround.dl = nullptr;
                     } else {
                         surround.ul = nullptr;
                         surround.l = nullptr;
