@@ -23,9 +23,12 @@ Sand::Sand(): Pixel(255, 255, 0) {
     sprite[1].position = sf::Vector2f(pixel_size, 0);
     sprite[2].position = sf::Vector2f(pixel_size, pixel_size);
     sprite[3].position = sf::Vector2f(0, pixel_size);
-    auto rd_color1 = std::rand()%255;
-    auto rd_color2 = std::rand()%255;
-    auto rd_color3 = std::rand()%255;
+    int max = 10;
+    int min = 10;
+    int var = std::rand() % (max + min);
+    auto rd_color1 = 194 + var;
+    auto rd_color2 = 178 + var;
+    auto rd_color3 = 128 + var;
     sprite[0].color = sf::Color(rd_color1, rd_color2, rd_color3);
     sprite[1].color = sf::Color(rd_color1, rd_color2, rd_color3);
     sprite[2].color = sf::Color(rd_color1, rd_color2, rd_color3);
