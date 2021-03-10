@@ -11,6 +11,7 @@
 #include <memory>
 #include <random>
 #include <iostream>
+#include <bits/stdc++.h>
 #include "../conf.hpp"
 
 enum class PixelType {
@@ -31,10 +32,14 @@ struct Surrounding;
 
 class Pixel {
 public:
-    Pixel(uchar r=0, uchar g=0, uchar b=0, uchar a=255);
+    Pixel(int density=0, uint life=0);
     virtual void update(Surrounding surrounding, int x, int y, sf::RenderWindow &window, int cx, int cy);
     virtual std::shared_ptr<Pixel> clone() { return std::make_shared<Pixel>(); }
     void draw(sf::RenderWindow &window);
+    void swapTiles(
+        std::shared_ptr<Pixel> *fst, std::shared_ptr<Pixel> *snd,
+        sf::Vector2<int> pos, sf::Vector2<int> chunk_pos
+    );
 
 public:
     uchar r;
@@ -47,6 +52,8 @@ public:
     sf::VertexArray sprite;
     int drawX;
     int drawY;
+    uint life;
+    int density;
 };
 
 

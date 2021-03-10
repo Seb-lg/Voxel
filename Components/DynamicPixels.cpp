@@ -8,7 +8,7 @@
 #include "Pixel.hpp"
 
 
-Water::Water(): Pixel(255, 255, 0) {
+Water::Water(): Pixel(10) {
     type = PixelType::Water;
     sprite[0].position = sf::Vector2f(0, 0);
     sprite[1].position = sf::Vector2f(pixel_size, 0);
@@ -26,44 +26,23 @@ void Water::update(Surrounding surround, int x, int y, sf::RenderWindow &window,
     if (processed)
         return;
     if (surround.d && (*surround.d)->type == PixelType::Air) {
-        auto tmp = (*surround.c);
-        (*surround.c) = (*surround.d);
-        (*surround.d) = tmp;
-        drawX = cx * chunk_size + x;
-        drawY = cy * chunk_size + y + 1;
+        swapTiles(surround.c, surround.d, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
     } else if (surround.dl && (*surround.dl)->type == PixelType::Air) {
-        auto tmp = (*surround.c);
-        (*surround.c) = (*surround.dl);
-        (*surround.dl) = tmp;
-        drawX = cx * chunk_size + x - 1;
-        drawY = cy * chunk_size + y + 1;
+        swapTiles(surround.c, surround.dl, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
     } else if (surround.dr && (*surround.dr)->type == PixelType::Air) {
-        auto tmp = (*surround.c);
-        (*surround.c) = (*surround.dr);
-        (*surround.dr) = tmp;
-        drawX = cx * chunk_size + x + 1;
-        drawY = cy * chunk_size + y + 1;
-    // Check left and right now, as it's water
+        swapTiles(surround.c, surround.dr, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
     } else if (surround.r && (*surround.r)->type == PixelType::Air) {
-        auto tmp = (*surround.c);
-        (*surround.c) = (*surround.r);
-        (*surround.r) = tmp;
-        drawX = cx * chunk_size + x + 1;
-        drawY = cy * chunk_size + y + 1;
+        swapTiles(surround.c, surround.r, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
     } else if (surround.l && (*surround.l)->type == PixelType::Air) {
-        auto tmp = (*surround.c);
-        (*surround.c) = (*surround.l);
-        (*surround.l) = tmp;
-        drawX = cx * chunk_size + x + 1;
-        drawY = cy * chunk_size + y + 1;
-    } else {
+        swapTiles(surround.c, surround.l, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
+    } else {  // Do nothing, just set the draw at the same position
         drawX = cx * chunk_size + x;
         drawY = cy * chunk_size + y;
     }
     processed = true;
 }
 
-Sand::Sand(): Pixel(255, 255, 0) {
+Sand::Sand(): Pixel(20) {
     type = PixelType::Sand;
     sprite[0].position = sf::Vector2f(0, 0);
     sprite[1].position = sf::Vector2f(pixel_size, 0);
@@ -81,24 +60,12 @@ void Sand::update(Surrounding surround, int x, int y, sf::RenderWindow &window, 
     if (processed)
         return;
     if (surround.d && (*surround.d)->type == PixelType::Air) {
-        auto tmp = (*surround.c);
-        (*surround.c) = (*surround.d);
-        (*surround.d) = tmp;
-        drawX = cx * chunk_size + x;
-        drawY = cy * chunk_size + y + 1;
+        swapTiles(surround.c, surround.d, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
     } else if (surround.dl && (*surround.dl)->type == PixelType::Air) {
-        auto tmp = (*surround.c);
-        (*surround.c) = (*surround.dl);
-        (*surround.dl) = tmp;
-        drawX = cx * chunk_size + x - 1;
-        drawY = cy * chunk_size + y + 1;
+        swapTiles(surround.c, surround.dl, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
     } else if (surround.dr && (*surround.dr)->type == PixelType::Air) {
-        auto tmp = (*surround.c);
-        (*surround.c) = (*surround.dr);
-        (*surround.dr) = tmp;
-        drawX = cx * chunk_size + x + 1;
-        drawY = cy * chunk_size + y + 1;
-    } else {
+        swapTiles(surround.c, surround.dr, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
+    } else {  // Do nothing, just set the draw at the same position
         drawX = cx * chunk_size + x;
         drawY = cy * chunk_size + y;
     }
