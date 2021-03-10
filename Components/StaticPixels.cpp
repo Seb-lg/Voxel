@@ -12,10 +12,10 @@ Pixel::Pixel(int density, uint life):
 void Pixel::update(Surrounding surrounding, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos)
 {}
 
-void Pixel::draw(sf::RenderWindow &window) {
-    sf::Transform jej;
-    jej.translate(drawX * pixel_size, drawY * pixel_size);
-    window.draw(sprite, jej);
+void Pixel::draw(sf::RenderTexture &rawGameTexture) {
+    sf::Transform pos;
+    pos.translate(drawX * pixel_size, drawY * pixel_size);
+    rawGameTexture.draw(sprite, pos);
 }
 
 void Pixel::swapTiles(

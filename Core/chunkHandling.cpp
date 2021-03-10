@@ -85,7 +85,7 @@ void Core::updateChunks() {
                 screen.draw(elem.second->wireframe, pos);
 #endif
                 for (auto &pixel : elem.second->pixels) {
-                    pixel->draw(screen);
+                    pixel->draw(rawGameTexture);
                     pixel->processed = false;
                 }
             }

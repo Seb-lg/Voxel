@@ -10,6 +10,7 @@ add_executable(Voxel
         Core/Core.cpp
         Core/inputs.cpp
         Core/chunkHandling.cpp
+        Core/shaders.cpp
 
         Perlin/PerlinNoise.hpp
 

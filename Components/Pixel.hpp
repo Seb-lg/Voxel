@@ -34,7 +34,7 @@ public:
     Pixel(int density=0, uint life=0);
     virtual void update(Surrounding surrounding, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos);
     virtual std::shared_ptr<Pixel> clone() { return std::make_shared<Pixel>(); }
-    void draw(sf::RenderWindow &window);
+    void draw(sf::RenderTexture &rawGameTexture);
     void swapTiles(
         std::shared_ptr<Pixel> *fst, std::shared_ptr<Pixel> *snd,
         sf::Vector2<int> pos, sf::Vector2<int> chunk_pos

@@ -18,6 +18,7 @@ Core::Core()
         sf::Style::Titlebar | sf::Style::Close
     );
     screen.setFramerateLimit(fps);
+    loadShaders();
     materialsMapping[sf::Keyboard::Num1] = std::make_shared<Sand>();
     materialsMapping[sf::Keyboard::Num2] = std::make_shared<Concrete>();
     materialsMapping[sf::Keyboard::Num3] = std::make_shared<Water>();
@@ -39,8 +40,16 @@ bool Core::run() {
     }
 
     handleInputs();
-    screen.clear(sf::Color::Black);
+
+    // Draw on the 1st Texture
+    rawGameTexture.clear();
     updateChunks();
+    rawGameTexture.display();
+    // Apply all the shaders
+    sf::Sprite finalSprite = applyShaders(rawGameTexture);
+    // Now do the final draw on the window
+    screen.clear(sf::Color::Black);
+    screen.draw(finalSprite);
     screen.display();
 
     std::cout << "fps : " << 1 / ((getTime() - now) / 1000.0) << "\r" << std::flush;

@@ -32,9 +32,14 @@ private:
     std::shared_ptr<Chunk> getChunk(sf::Vector2<int> chunk_idxes);
     // utils
     sf::Vector2<int> getRandomPosition(int min, int max);
+    // Shaders
+    void loadShaders();
+    sf::Sprite applyShaders(sf::RenderTexture &rawGameTexture);
+
 
 public:
     sf::RenderWindow screen;
+    sf::RenderTexture rawGameTexture;
 
 private:
     sf::Vector2i position;
@@ -44,6 +49,24 @@ private:
 
     std::shared_ptr<Pixel> activeMaterial;
     std::map<sf::Keyboard::Key, std::shared_ptr<Pixel>> materialsMapping;
+    // Shader stuff
+    sf::ContextSettings context_settings;
+    const int BLUR_RADIUS_VALUES[4] = { 250, 180, 125, 55 };
+    float blur_weight;
+
+    sf::RenderStates shader_states;
+    //no blendmode! we make our own - assemble.frag
+
+    sf::Shader luminescence_shader;
+    sf::RenderTexture luminescence_render;
+
+    sf::Shader blur_shader;
+    std::array<sf::RenderTexture, 4> blur_renders;
+
+    sf::Shader assemble_shader;
+    sf::RenderTexture assemble_render;
+
+    sf::Shader multiply_shader;
 };
 
 template <typename T>
