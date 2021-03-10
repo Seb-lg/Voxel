@@ -27,7 +27,6 @@ Core::Core()
 
 Core::~Core() noexcept = default;
 
-static int oui = 0;
 bool Core::run() {
     auto now = getTime();
     sf::Event event{};
@@ -44,11 +43,13 @@ bool Core::run() {
     screen.display();
 
     std::cout << "fps : " << 1 / ((getTime() - now) / 1000.0) << "\r" << std::flush;
+
+    /*static int oui = width/2;
     auto pos = sf::Vector2f(oui, height/2);
     auto size = sf::Vector2f(width, height);
     oui++;
     sf::View jej(pos, size);
-    this->screen.setView(jej);
+    this->screen.setView(jej);*/
     return true;
 }
 
