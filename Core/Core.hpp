@@ -1,7 +1,6 @@
 //
 // Created by seub on 03/03/2021.
 //
-
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <map>
@@ -17,20 +16,22 @@ public:
         static Core core;
         return core;
     }
-    void initChunks();
     bool run();
-    void dynamicTileDrawing(std::shared_ptr<Pixel> newTile, bool override);
-    void replaceTile(std::shared_ptr<Pixel> newTile, sf::Vector2<int> pixelPos, bool override);
-    std::shared_ptr<Chunk> getChunk(sf::Vector2<int> chunk_idxes);
-    sf::Vector2<int> getRandomPosition(int min, int max);
-
-    void handleInputs();
-
 
 private:
     Core();
     ~Core();
+
+    void handleInputs();
+    void dynamicTileDrawing(std::shared_ptr<Pixel> newTile, bool override);
+    void replaceTile(std::shared_ptr<Pixel> newTile, sf::Vector2<int> pixelPos, bool override);
+    //// Chunk handling functions
+    // chunkHandling.cpp
+    void initChunks();
     void updateChunks();
+    std::shared_ptr<Chunk> getChunk(sf::Vector2<int> chunk_idxes);
+    // utils
+    sf::Vector2<int> getRandomPosition(int min, int max);
 
 public:
     sf::RenderWindow screen;

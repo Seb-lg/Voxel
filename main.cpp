@@ -6,7 +6,6 @@
 int main() {
     std::cout << "Cpu count: " << std::thread::hardware_concurrency() << std::endl;
     auto &core = Core::get();
-    core.initChunks();
     while (core.run());
     return 0;
 }

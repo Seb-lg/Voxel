@@ -1,7 +1,6 @@
 //
 // Created by seub on 03/03/2021.
 //
-
 #include <iostream>
 #include <thread>
 #include <list>
@@ -22,6 +21,8 @@ Core::Core()
     materialsMapping[sf::Keyboard::Num1] = std::make_shared<Sand>();
     materialsMapping[sf::Keyboard::Num2] = std::make_shared<Concrete>();
     materialsMapping[sf::Keyboard::Num3] = std::make_shared<Water>();
+
+    initChunks();
 }
 
 Core::~Core() noexcept = default;

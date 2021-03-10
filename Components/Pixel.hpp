@@ -1,7 +1,6 @@
 //
 // Created by seub on 04/03/2021.
 //
-
 #pragma once
 #define uchar unsigned char
 
