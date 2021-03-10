@@ -5,11 +5,16 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(Voxel
         main.cpp
+
+        Core/Core.hpp
         Core/Core.cpp
         Core/inputs.cpp
-        Core/Core.hpp
+        Core/chunkHandling.cpp
+
         Perlin/PerlinNoise.hpp
+
         conf.hpp
+
         Components/DynamicPixels.cpp
         Components/StaticPixels.cpp
         Components/Pixel.hpp
