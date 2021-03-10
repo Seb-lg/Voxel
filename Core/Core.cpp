@@ -9,7 +9,9 @@
 #include "../conf.hpp"
 
 
-Core::Core(): perlin(rand_seed) {
+Core::Core()
+    : perlin(rand_seed), activeMaterialIdx(0)
+{
     std::cout << "Seed: " << rand_seed << std::endl;
     screen.create(
         sf::VideoMode(width, height, 32),
@@ -17,20 +19,34 @@ Core::Core(): perlin(rand_seed) {
         sf::Style::Titlebar | sf::Style::Close
     );
     screen.setFramerateLimit(fps);
+    materialList.push_back(std::make_shared<Sand>());
+    materialList.push_back(std::make_shared<Concrete>());
+    materialList.push_back(std::make_shared<Water>());
 }
 
 Core::~Core() noexcept = default;
 
 void Core::initChunks() {
     // Create each chunks, which handle their own pixels creation (based on perlin noise)
-    for (int x = 0; x < (int)(width / (chunk_size * pixel_size)) + 1; ++x) {
-        for (int y = 0; y < (int)(height / (chunk_size * pixel_size)) + 1; ++y) {
-            float percentage = (float)(x*nb_chunk+y) / (nb_chunk*nb_chunk) * 100.0;
-            std::cout << "Map init: " << percentage << "%\r" << std::flush;
+    auto tmp = chunk_size * pixel_size;
+    auto chunk_width_nbr = width / tmp;
+    auto chunk_height_nbr = height / tmp;
+    if (width % tmp > 0)
+        chunk_width_nbr++;
+    if (height % tmp > 0)
+        chunk_height_nbr++;
+    for (int x = 0; x < chunk_width_nbr; ++x) {
+        for (int y = 0; y < chunk_height_nbr; ++y) {
+            float percentage = (float)(x*chunk_width_nbr+y) / (chunk_width_nbr*chunk_height_nbr) * 100.0;
+            std::cout << "Map init: " << percentage << "\r" << std::flush;
             chunks[x][y] = std::make_shared<Chunk>(x, y);
         }
     }
-    std::cout << "Map init: 100%" << std::endl;
+    printf(
+        "Map init: 100%\n%d (%d/%d) Chunks loaded\n",
+        chunk_width_nbr * chunk_height_nbr,
+        chunk_width_nbr, chunk_height_nbr
+    );
 }
 
 bool Core::run() {
@@ -42,9 +58,14 @@ bool Core::run() {
             || event.type == sf::Event::Closed)
             return false;
     }
-    if (mouse.isButtonPressed(sf::Mouse::Button::Left))
-        dynamicTileDrawing(std::make_shared<Sand>(), false);
-    else if (mouse.isButtonPressed(sf::Mouse::Button::Right))
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        activeMaterialIdx++;
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+        activeMaterialIdx--;
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+        dynamicTileDrawing(materialList[activeMaterialIdx % materialList.size()], false);
+    else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
         dynamicTileDrawing(std::make_shared<Pixel>(), true);
 
     screen.clear(sf::Color::Black);
@@ -57,7 +78,7 @@ bool Core::run() {
 
 void Core::dynamicTileDrawing(std::shared_ptr<Pixel> newTile, bool override) {
     // Used to replace a tile with another (used when mouse drawing)
-    sf::Vector2<int> centerPos = mouse.getPosition(screen) / pixel_size;
+    sf::Vector2<int> centerPos = sf::Mouse::getPosition(screen) / pixel_size;
     if (centerPos.x < 0 || centerPos.y < 0)
         return;
     std::vector<sf::Vector2<int>> pixelsPoses = { centerPos };
@@ -80,6 +101,7 @@ void Core::replaceTile(std::shared_ptr<Pixel> newTile, sf::Vector2<int> pixelPos
     sf::Vector2<int> offset = sf::Vector2i(pixelPos.x % chunk_size, pixelPos.y % chunk_size);
     TileResponse flag = chunk->replaceTile(offset, newTile, override);
     // OutOfBounds (TileResponse::OOB) will be triggered by negative positions
+    // of mouse cursor (Above and left of the window)
     // as we don't handle those for now (see function docstring)
 }
 
@@ -150,12 +172,12 @@ std::shared_ptr<Pixel> Core::createTileFromPerlin(int x, int y) {
     static const int octaves = 20;
 
     auto noise = perlin.accumulatedOctaveNoise2D_0_1(x / frequency, y / frequency, octaves);
-    // if (noise < 0.4)
-    //     return std::make_shared<Concrete>();
-    // if (noise < 0.45)
-    //     return std::make_shared<Sand>();
-    // if (noise < 0.55)
     if (noise < 0.3)
+        return std::make_shared<Concrete>();
+    if (noise < 0.4)
+        return std::make_shared<Sand>();
+    if (noise < 0.5)
+    // if (noise < 0.3)
         return std::make_shared<Water>();
     return std::make_shared<Pixel>();
 }
