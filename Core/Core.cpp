@@ -49,6 +49,7 @@ void Core::initChunks() {
     );
 }
 
+static int screenNb = 0;
 bool Core::run() {
     auto now = getTime();
     sf::Event event{};
@@ -63,6 +64,15 @@ bool Core::run() {
         activeMaterialIdx++;
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         activeMaterialIdx--;
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::F12)){
+        sf::Vector2u windowSize = screen.getSize();
+        sf::Texture texture;
+        texture.create(windowSize.x, windowSize.y);
+        texture.update(screen);
+        sf::Image screenshot = texture.copyToImage();
+        screenshot.saveToFile(std::string("screenshot") + std::to_string(screenNb) +".png");
+        screenNb++;
+    }
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
         dynamicTileDrawing(materialList[activeMaterialIdx % materialList.size()], false);
     else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
@@ -179,8 +189,8 @@ std::shared_ptr<Pixel> Core::createTileFromPerlin(int x, int y) {
         return std::make_shared<Concrete>();
     if (noise < 0.4)
         return std::make_shared<Sand>();
-    if (noise < 0.5)
-    // if (noise < 0.3)
-        return std::make_shared<Water>();
+//    if (noise < 0.5)
+//    // if (noise < 0.3)
+//        return std::make_shared<Water>();
     return std::make_shared<Pixel>();
 }
