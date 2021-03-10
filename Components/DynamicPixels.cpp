@@ -25,15 +25,16 @@ Water::Water(): Pixel(10) {
 void Water::update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) {
     if (processed)
         return;
-    if (surround.d && (*surround.d)->type == PixelType::Air) {
+    auto density = (*surround.c)->density;
+    if (surround.d && density > (*surround.d)->density) {
         swapTiles(surround.c, surround.d, pos + sf::Vector2i(0, 1), chunk_pos);
-    } else if (surround.dl && (*surround.dl)->type == PixelType::Air && (*surround.l)->type == PixelType::Air) {
+    } else if (surround.dl && density > (*surround.dl)->density) {
         swapTiles(surround.c, surround.dl, pos + sf::Vector2i(-1, 1), chunk_pos);
-    } else if (surround.dr && (*surround.dr)->type == PixelType::Air && (*surround.r)->type == PixelType::Air) {
+    } else if (surround.dr && density > (*surround.dr)->density) {
         swapTiles(surround.c, surround.dr, pos + sf::Vector2i(1, 1), chunk_pos);
-    } else if (surround.r && (*surround.r)->type == PixelType::Air) {
+    } else if (surround.r && density > (*surround.r)->density) {
         swapTiles(surround.c, surround.r, pos + sf::Vector2i(1, 0), chunk_pos);
-    } else if (surround.l && (*surround.l)->type == PixelType::Air) {
+    } else if (surround.l && density > (*surround.l)->density) {
         swapTiles(surround.c, surround.l, pos + sf::Vector2i(-1, 0), chunk_pos);
     } else {  // Do nothing, just set the draw at the same position
         drawX = chunk_pos.x * chunk_size + pos.x;
@@ -59,11 +60,12 @@ Sand::Sand(): Pixel(20) {
 void Sand::update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) {
     if (processed)
         return;
-    if (surround.d && (*surround.d)->type == PixelType::Air) {
+    auto density = (*surround.c)->density;
+    if (surround.d && density > (*surround.d)->density) {
         swapTiles(surround.c, surround.d, pos + sf::Vector2i(0, 1), chunk_pos);
-    } else if (surround.dl && (*surround.dl)->type == PixelType::Air && (*surround.l)->type == PixelType::Air) {
+    } else if (surround.dl && density > (*surround.dl)->density) {
         swapTiles(surround.c, surround.dl, pos + sf::Vector2i(-1, 1), chunk_pos);
-    } else if (surround.dr && (*surround.dr)->type == PixelType::Air && (*surround.r)->type == PixelType::Air) {
+    } else if (surround.dr && density > (*surround.dr)->density) {
         swapTiles(surround.c, surround.dr, pos + sf::Vector2i(1, 1), chunk_pos);
     } else {  // Do nothing, just set the draw at the same position
         drawX = chunk_pos.x * chunk_size + pos.x;
