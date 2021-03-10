@@ -39,7 +39,7 @@ void Core::initChunks() {
         for (int y = 0; y < chunk_height_nbr; ++y) {
             float percentage = (float)(x*chunk_width_nbr+y) / (chunk_width_nbr*chunk_height_nbr) * 100.0;
             std::cout << "Map init: " << percentage << "\r" << std::flush;
-            chunks[x][y] = std::make_shared<Chunk>(x, y);
+            chunks[x][y] = std::make_shared<Chunk>(sf::Vector2i(x, y), perlin);
         }
     }
     std::cout << "Map init: 100%" << std::endl << chunk_width_nbr * chunk_height_nbr << " ("<<chunk_width_nbr<<"/"<<chunk_width_nbr<<") Chunks loaded" << std::endl;
@@ -105,7 +105,7 @@ void Core::updateChunks() {
     for (auto &column : chunks) {
         for (auto &elem : column.second) {
             if (elem.second) {
-                sortedChunkList[elem.second->posY].emplace_back(elem.second);
+                sortedChunkList[elem.second->pos.y].emplace_back(elem.second);
             }
         }
     }
@@ -113,7 +113,7 @@ void Core::updateChunks() {
     std::list<std::thread> threads;
     for( auto const &list : sortedChunkList) {
         for (auto &elem : list.second) {
-            if (elem->posX % 2) {
+            if (elem->pos.x % 2) {
                 threads.emplace_back([&](){elem->update(chunks);});
             }
         }
@@ -122,7 +122,7 @@ void Core::updateChunks() {
         }
         threads.clear();
         for (auto &elem : list.second) {
-            if (!(elem->posX % 2)) {
+            if (!(elem->pos.x % 2)) {
                 threads.emplace_back([&](){elem->update(chunks);});
             }
         }
@@ -137,7 +137,7 @@ void Core::updateChunks() {
             if (elem.second) {
 #ifdef DEBUG
                 sf::Transform pos;
-                pos.translate(elem.second->posX * chunk_size * pixel_size, elem.second->posY * chunk_size * pixel_size);
+                pos.translate(elem.second->pos.x * chunk_size * pixel_size, elem.second->pos.y * chunk_size * pixel_size);
                 screen.draw(elem.second->wireframe, pos);
 #endif
                 for (auto &pixel : elem.second->pixels) {
@@ -157,24 +157,10 @@ std::shared_ptr<Chunk> Core::getChunk(sf::Vector2<int> chunk_idxes) {
         if (itY != itX->second.end())
             return itY->second;
     }
-    std::shared_ptr<Chunk> newChunk = std::make_shared<Chunk>(chunk_idxes.x, chunk_idxes.y);
+    std::shared_ptr<Chunk> newChunk = std::make_shared<Chunk>(
+        sf::Vector2i(chunk_idxes.x, chunk_idxes.y),
+        perlin
+    );
     chunks[chunk_idxes.x][chunk_idxes.y] = newChunk;
     return newChunk;
-}
-
-std::shared_ptr<Pixel> Core::createTileFromPerlin(int x, int y) {
-    // Called by the Chunk class constructor, will determine which pixel type
-    // is created, based on the perlin noise
-    static const double frequency = 50;
-    static const int octaves = 20;
-
-    auto noise = perlin.accumulatedOctaveNoise2D_0_1(x / frequency, y / frequency, octaves);
-    if (noise < 0.3)
-        return std::make_shared<Concrete>();
-    if (noise < 0.4)
-        return std::make_shared<Sand>();
-//    if (noise < 0.5)
-//    // if (noise < 0.3)
-//        return std::make_shared<Water>();
-    return std::make_shared<Pixel>();
 }

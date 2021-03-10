@@ -8,7 +8,7 @@ add_executable(Voxel
         Core/Core.cpp
         Core/inputs.cpp
         Core/Core.hpp
-        Core/Perlin/PerlinNoise.hpp
+        Perlin/PerlinNoise.hpp
         conf.hpp
         Components/DynamicPixels.cpp
         Components/StaticPixels.cpp
