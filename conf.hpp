@@ -19,5 +19,5 @@ static auto getTime = [](){return std::chrono::duration_cast<std::chrono::millis
 #ifdef DEBUG
 #define rand_seed 6969420
 #else
-#define rd()
+#define rand_seed rd()
 #endif

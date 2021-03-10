@@ -48,7 +48,7 @@ public:
     uchar a;
 
     PixelType type;
-    bool processed;
+    int processed;
     sf::VertexArray sprite;
     int drawX;
     int drawY;

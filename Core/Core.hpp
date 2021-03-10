@@ -45,3 +45,6 @@ private:
     int activeMaterialIdx;
     std::vector<std::shared_ptr<Pixel>> materialList;
 };
+
+template <typename T>
+using s = std::shared_ptr<T>;

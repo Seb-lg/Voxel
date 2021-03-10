@@ -21,10 +21,14 @@ Chunk::Chunk(int cX, int cY): posX(cX), posY(cY), wireframe(sf::LineStrip, 4) {
     wireframe[2].position = sf::Vector2f(chunk_size * pixel_size, chunk_size * pixel_size);
     wireframe[3].position = sf::Vector2f(0, chunk_size * pixel_size);
 
-    wireframe[0].color = sf::Color(255, 0, 0);
-    wireframe[1].color = sf::Color(255, 0, 0);
-    wireframe[2].color = sf::Color(0, 255, 0);
-    wireframe[3].color = sf::Color(0, 255, 0);
+//    wireframe[0].color = sf::Color(255, 0, 0);
+//    wireframe[1].color = sf::Color(255, 0, 0);
+//    wireframe[2].color = sf::Color(0, 255, 0);
+//    wireframe[3].color = sf::Color(0, 255, 0);
+    wireframe[0].color = sf::Color(199, 199, 199);
+    wireframe[1].color = sf::Color(199, 199, 199);
+    wireframe[2].color = sf::Color(199, 199, 199);
+    wireframe[3].color = sf::Color(199, 199, 199);
 }
 
 TileResponse Chunk::replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Pixel> newTile, bool override) {
