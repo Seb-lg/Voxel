@@ -107,62 +107,37 @@ void Core::replaceTile(std::shared_ptr<Pixel> newTile, sf::Vector2<int> pixelPos
 
 void Core::updateChunks() {
     //TODO: thread line by line -> maybe hard af and render threading useless
-    std::list<std::shared_ptr<Chunk>> sortedChunks;
+    std::map<int, std::list<s<Chunk>>, std::greater<int>> sortedChunkList;
     for (auto &column : chunks) {
         for (auto &elem : column.second) {
-            if (elem.second)
-                sortedChunks.emplace_back(elem.second);
+            if (elem.second) {
+                sortedChunkList[elem.second->posY].emplace_back(elem.second);
+            }
         }
     }
-    sortedChunks.sort([](s<Chunk> const &a, s<Chunk> const &b){
-        if (a->posY > b->posY)
-            return true;
-        return a->posX < b->posX;
-    });
 
-    int current_row = sortedChunks.begin()->get()->posY;
     std::list<std::thread> threads;
-    for( auto const &elem : sortedChunks) {
-        if(elem->posY != current_row) {
-            current_row = elem->posY;
-            for (auto &thread : threads)
-                thread.join();
-            threads.clear();
+    for( auto const &list : sortedChunkList) {
+        for (auto &elem : list.second) {
+            if (elem->posX % 2) {
+                threads.emplace_back([&](){elem->update(chunks);});
+            }
         }
-        threads.emplace_back([&](){elem->update(chunks);});
+        for (auto &thread : threads) {
+            thread.join();
+        }
+        threads.clear();
+        for (auto &elem : list.second) {
+            if (!(elem->posX % 2)) {
+                threads.emplace_back([&](){elem->update(chunks);});
+            }
+        }
+        for (auto &thread : threads) {
+            thread.join();
+        }
+        threads.clear();
     }
-    for (auto &thread : threads)
-        thread.join();
-    threads.clear();
 
-//    std::vector<std::list<std::shared_ptr<Chunk>>> threadChunkList(4);
-//
-//    for (auto &column : chunks) {
-//        for (auto &elem : column.second) {
-//            if (elem.second) {
-//                auto tmp = elem.second;
-//                if (tmp->posY % 2 == 0 && tmp->posX % 2 == 0)
-//                    threadChunkList[0].push_back(elem.second);
-//                else if (tmp->posY % 2 == 0 && (tmp->posX - 1) % 2 == 0)
-//                    threadChunkList[1].push_back(elem.second);
-//                else if (tmp->posY % 2 && tmp->posX % 2 == 0)
-//                    threadChunkList[2].push_back(elem.second);
-//                else
-//                    threadChunkList[3].push_back(elem.second);
-//            }
-//        }
-//    }
-//
-//    for (auto &chunkList: threadChunkList) {
-//        std::list<std::thread> threads;
-//        for (auto &elem : chunkList) {
-////            std::cout << elem->posX << " " << elem->posY << std::endl;
-//            threads.emplace_back([&elem, this](){elem->update(chunks);});
-//        }
-////        std::cout << std::endl;
-//        for (auto &thread : threads)
-//            thread.join();
-//    }
     for (auto &column : chunks) {
         for (auto &elem : column.second) {
             if (elem.second) {
@@ -173,8 +148,7 @@ void Core::updateChunks() {
 #endif
                 for (auto &pixel : elem.second->pixels) {
                     pixel->draw(screen);
-                    if (pixel->processed == 1)
-                        pixel->processed = false;
+                    pixel->processed = false;
                 }
             }
         }
