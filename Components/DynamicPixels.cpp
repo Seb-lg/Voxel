@@ -23,46 +23,44 @@ Water::Water(): Pixel(255, 255, 0) {
 };
 
 void Water::update(Surrounding surround, int x, int y, sf::RenderWindow &window, int cx, int cy) {
-    if (processed == 0) {
-        if (surround.d && (*surround.d)->type == PixelType::Air) {
-            auto tmp = (*surround.c);
-            (*surround.c) = (*surround.d);
-            (*surround.d) = tmp;
-            drawX = cx * chunk_size + x;
-            drawY = cy * chunk_size + y + 1;
-        } else if (surround.l && (*surround.l)->type == PixelType::Air && surround.dl && (*surround.dl)->type == PixelType::Air) {
-//        } else if (surround.dl && (*surround.dl)->type == PixelType::Air) {
-            auto tmp = (*surround.c);
-            (*surround.c) = (*surround.dl);
-            (*surround.dl) = tmp;
-            drawX = cx * chunk_size + x - 1;
-            drawY = cy * chunk_size + y + 1;
-        } else if (surround.r && (*surround.r)->type == PixelType::Air && surround.dr && (*surround.dr)->type == PixelType::Air) {
-//        } else if (surround.dr && (*surround.dr)->type == PixelType::Air) {
-            auto tmp = (*surround.c);
-            (*surround.c) = (*surround.dr);
-            (*surround.dr) = tmp;
-            drawX = cx * chunk_size + x + 1;
-            drawY = cy * chunk_size + y + 1;
-        // Check left and right now, as it's water
-        } else if (surround.l && (*surround.l)->type == PixelType::Air) {
-            auto tmp = (*surround.c);
-            (*surround.c) = (*surround.l);
-            (*surround.l) = tmp;
-            drawX = cx * chunk_size + x - 1;
-            drawY = cy * chunk_size + y;
-        } else if (surround.r && (*surround.r)->type == PixelType::Air) {
-            auto tmp = (*surround.c);
-            (*surround.c) = (*surround.r);
-            (*surround.r) = tmp;
-            drawX = cx * chunk_size + x + 1;
-            drawY = cy * chunk_size + y;
-        } else {
-            drawX = cx * chunk_size + x;
-            drawY = cy * chunk_size + y;
-        }
-        processed = true;
+    if (!processed)
+        return;
+    if (surround.d && (*surround.d)->type == PixelType::Air) {
+        auto tmp = (*surround.c);
+        (*surround.c) = (*surround.d);
+        (*surround.d) = tmp;
+        drawX = cx * chunk_size + x;
+        drawY = cy * chunk_size + y + 1;
+    } else if (surround.dl && (*surround.dl)->type == PixelType::Air) {
+        auto tmp = (*surround.c);
+        (*surround.c) = (*surround.dl);
+        (*surround.dl) = tmp;
+        drawX = cx * chunk_size + x - 1;
+        drawY = cy * chunk_size + y + 1;
+    } else if (surround.dr && (*surround.dr)->type == PixelType::Air) {
+        auto tmp = (*surround.c);
+        (*surround.c) = (*surround.dr);
+        (*surround.dr) = tmp;
+        drawX = cx * chunk_size + x + 1;
+        drawY = cy * chunk_size + y + 1;
+    // Check left and right now, as it's water
+    } else if (surround.r && (*surround.r)->type == PixelType::Air) {
+        auto tmp = (*surround.c);
+        (*surround.c) = (*surround.r);
+        (*surround.r) = tmp;
+        drawX = cx * chunk_size + x + 1;
+        drawY = cy * chunk_size + y + 1;
+    } else if (surround.l && (*surround.l)->type == PixelType::Air) {
+        auto tmp = (*surround.c);
+        (*surround.c) = (*surround.l);
+        (*surround.l) = tmp;
+        drawX = cx * chunk_size + x + 1;
+        drawY = cy * chunk_size + y + 1;
+    } else {
+        drawX = cx * chunk_size + x;
+        drawY = cy * chunk_size + y;
     }
+    processed = true;
 }
 
 Sand::Sand(): Pixel(255, 255, 0) {
@@ -80,54 +78,29 @@ Sand::Sand(): Pixel(255, 255, 0) {
 };
 
 void Sand::update(Surrounding surround, int x, int y, sf::RenderWindow &window, int cx, int cy) {
-    if (!processed) {
-        if (surround.d && ((*surround.d)->type == PixelType::Air || (*surround.d)->type == PixelType::Water)) {
-            auto tmp = (*surround.c);
-            (*surround.c) = (*surround.d);
-            (*surround.d) = tmp;
-            drawX = cx * chunk_size + x;
-            drawY = cy * chunk_size + y + 1;
-        } else if (surround.dl && ((*surround.dl)->type == PixelType::Air || (*surround.dl)->type == PixelType::Water)) {
-            auto tmp = (*surround.c);
-            (*surround.c) = (*surround.dl);
-            (*surround.dl) = tmp;
-            drawX = cx * chunk_size + x - 1;
-            drawY = cy * chunk_size + y + 1;
-        } else if (surround.dr && ((*surround.dr)->type == PixelType::Air || (*surround.dr)->type == PixelType::Water)) {
-            auto tmp = (*surround.c);
-            (*surround.c) = (*surround.dr);
-            (*surround.dr) = tmp;
-            drawX = cx * chunk_size + x + 1;
-            drawY = cy * chunk_size + y + 1;
-        } else {
-            drawX = cx * chunk_size + x;
-            drawY = cy * chunk_size + y;
-        }
-        processed = true;
+    if (!processed)
+        return;
+    if (surround.d && (*surround.d)->type == PixelType::Air) {
+        auto tmp = (*surround.c);
+        (*surround.c) = (*surround.d);
+        (*surround.d) = tmp;
+        drawX = cx * chunk_size + x;
+        drawY = cy * chunk_size + y + 1;
+    } else if (surround.dl && (*surround.dl)->type == PixelType::Air) {
+        auto tmp = (*surround.c);
+        (*surround.c) = (*surround.dl);
+        (*surround.dl) = tmp;
+        drawX = cx * chunk_size + x - 1;
+        drawY = cy * chunk_size + y + 1;
+    } else if (surround.dr && (*surround.dr)->type == PixelType::Air) {
+        auto tmp = (*surround.c);
+        (*surround.c) = (*surround.dr);
+        (*surround.dr) = tmp;
+        drawX = cx * chunk_size + x + 1;
+        drawY = cy * chunk_size + y + 1;
     } else {
-        if (surround.d && (*surround.d)->type == PixelType::Air) {
-            auto tmp = (*surround.c);
-            (*surround.c) = (*surround.d);
-            (*surround.d) = tmp;
-            drawX = cx * chunk_size + x;
-            drawY = cy * chunk_size + y + 1;
-//        } else if (surround.l && (*surround.l)->type == PixelType::Air && surround.dl && (*surround.dl)->type == PixelType::Air) {
-        } else if (surround.dl && (*surround.dl)->type == PixelType::Air) {
-            auto tmp = (*surround.c);
-            (*surround.c) = (*surround.dl);
-            (*surround.dl) = tmp;
-            drawX = cx * chunk_size + x - 1;
-            drawY = cy * chunk_size + y + 1;
-//        } else if (surround.r && (*surround.r)->type == PixelType::Air && surround.dr && (*surround.dr)->type == PixelType::Air) {
-        } else if (surround.dr && (*surround.dr)->type == PixelType::Air) {
-            auto tmp = (*surround.c);
-            (*surround.c) = (*surround.dr);
-            (*surround.dr) = tmp;
-            drawX = cx * chunk_size + x + 1;
-            drawY = cy * chunk_size + y + 1;
-        } else {
-            drawX = cx * chunk_size + x;
-            drawY = cy * chunk_size + y;
-        }
+        drawX = cx * chunk_size + x;
+        drawY = cy * chunk_size + y;
     }
+    processed = true;
 }
