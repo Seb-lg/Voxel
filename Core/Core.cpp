@@ -42,14 +42,11 @@ void Core::initChunks() {
             chunks[x][y] = std::make_shared<Chunk>(x, y);
         }
     }
-    printf(
-        "Map init: 100%\n%d (%d/%d) Chunks loaded\n",
-        chunk_width_nbr * chunk_height_nbr,
-        chunk_width_nbr, chunk_height_nbr
-    );
+    std::cout << "Map init: 100%" << std::endl << chunk_width_nbr * chunk_height_nbr << " ("<<chunk_width_nbr<<"/"<<chunk_width_nbr<<") Chunks loaded" << std::endl;
 }
 
 static int screenNb = 0;
+static int oui = 0;
 bool Core::run() {
     auto now = getTime();
     sf::Event event{};
@@ -83,6 +80,11 @@ bool Core::run() {
     screen.display();
 
     std::cout << "fps : " << 1 / ((getTime() - now) / 1000.0) << "\r" << std::flush;
+    auto pos = sf::Vector2f(oui, height/2);
+    auto size = sf::Vector2f(width, height);
+    oui++;
+    sf::View jej(pos, size);
+    this->screen.setView(jej);
     return true;
 }
 
