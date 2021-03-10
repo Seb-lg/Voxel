@@ -26,15 +26,15 @@ void Water::update(Surrounding surround, int x, int y, sf::RenderWindow &window,
     if (processed)
         return;
     if (surround.d && (*surround.d)->type == PixelType::Air) {
-        swapTiles(surround.c, surround.d, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
+        swapTiles(surround.c, surround.d, sf::Vector2i(x, y + 1), sf::Vector2i(cx, cy));
     } else if (surround.dl && (*surround.dl)->type == PixelType::Air) {
-        swapTiles(surround.c, surround.dl, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
+        swapTiles(surround.c, surround.dl, sf::Vector2i(x - 1, y + 1), sf::Vector2i(cx, cy));
     } else if (surround.dr && (*surround.dr)->type == PixelType::Air) {
-        swapTiles(surround.c, surround.dr, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
+        swapTiles(surround.c, surround.dr, sf::Vector2i(x + 1, y + 1), sf::Vector2i(cx, cy));
     } else if (surround.r && (*surround.r)->type == PixelType::Air) {
-        swapTiles(surround.c, surround.r, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
+        swapTiles(surround.c, surround.r, sf::Vector2i(x + 1, y), sf::Vector2i(cx, cy));
     } else if (surround.l && (*surround.l)->type == PixelType::Air) {
-        swapTiles(surround.c, surround.l, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
+        swapTiles(surround.c, surround.l, sf::Vector2i(x - 1, y), sf::Vector2i(cx, cy));
     } else {  // Do nothing, just set the draw at the same position
         drawX = cx * chunk_size + x;
         drawY = cy * chunk_size + y;
@@ -60,11 +60,11 @@ void Sand::update(Surrounding surround, int x, int y, sf::RenderWindow &window, 
     if (processed)
         return;
     if (surround.d && (*surround.d)->type == PixelType::Air) {
-        swapTiles(surround.c, surround.d, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
+        swapTiles(surround.c, surround.d, sf::Vector2i(x, y + 1), sf::Vector2i(cx, cy));
     } else if (surround.dl && (*surround.dl)->type == PixelType::Air) {
-        swapTiles(surround.c, surround.dl, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
+        swapTiles(surround.c, surround.dl, sf::Vector2i(x - 1, y + 1), sf::Vector2i(cx, cy));
     } else if (surround.dr && (*surround.dr)->type == PixelType::Air) {
-        swapTiles(surround.c, surround.dr, sf::Vector2i(x, y), sf::Vector2i(cx, cy));
+        swapTiles(surround.c, surround.dr, sf::Vector2i(x + 1, y + 1), sf::Vector2i(cx, cy));
     } else {  // Do nothing, just set the draw at the same position
         drawX = cx * chunk_size + x;
         drawY = cy * chunk_size + y;

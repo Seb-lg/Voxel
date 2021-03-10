@@ -25,7 +25,7 @@ void Pixel::swapTiles(
     (*fst) = (*snd);
     (*snd) = tmp;
     drawX = chunk_pos.x * chunk_size + pos.x;
-    drawY = chunk_pos.y * chunk_size + pos.y + 1;
+    drawY = chunk_pos.y * chunk_size + pos.y;
 }
 
 
