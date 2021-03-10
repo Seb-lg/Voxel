@@ -66,7 +66,7 @@ sf::Sprite Core::applyShaders(sf::RenderTexture &rawGameTexture) {
 void Core::loadShaders() {
     luminescence_shader.loadFromFile("./Shaders/luminescence.frag", sf::Shader::Fragment);
     luminescence_shader.setUniform("texture", sf::Shader::CurrentTexture);
-    luminescence_shader.setUniform("threshold", 0.24f);
+    luminescence_shader.setUniform("threshold", 0.4f);
 
     blur_shader.loadFromFile("./Shaders/boxblur.frag", sf::Shader::Fragment);
     blur_shader.setUniform("texture", sf::Shader::CurrentTexture);

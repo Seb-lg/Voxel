@@ -15,7 +15,7 @@ Water::Water(): Pixel(10) {
     sprite[2].position = sf::Vector2f(pixel_size, pixel_size);
     sprite[3].position = sf::Vector2f(0, pixel_size);
     int var = std::rand() % 2 - 1;
-    auto pixel_color = sf::Color(128 + var, 197 + var, 222 + var);
+    auto pixel_color = sf::Color(108 + var, 177 + var, 202 + var);
     sprite[0].color = pixel_color;
     sprite[1].color = pixel_color;
     sprite[2].color = pixel_color;
