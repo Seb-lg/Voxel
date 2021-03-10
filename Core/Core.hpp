@@ -35,11 +35,16 @@ private:
 
 public:
     sf::RenderWindow screen;
-    sf::Mouse mouse;
 
 private:
     sf::Vector2i position;
 
     siv::PerlinNoise perlin;
     std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks;
+
+    int activeMaterialIdx;
+    std::vector<std::shared_ptr<Pixel>> materialList;
 };
+
+template <typename T>
+using s = std::shared_ptr<T>;
