@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(Voxel
         main.cpp
         Core/Core.cpp
+        Core/inputs.cpp
         Core/Core.hpp
         Core/Perlin/PerlinNoise.hpp
         conf.hpp

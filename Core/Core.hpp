@@ -26,6 +26,8 @@ public:
     std::shared_ptr<Pixel> createTileFromPerlin(int x, int y);
     sf::Vector2<int> getRandomPosition(int min, int max);
 
+    void handleInputs();
+
 
 private:
     Core();
