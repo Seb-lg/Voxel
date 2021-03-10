@@ -44,8 +44,8 @@ private:
     siv::PerlinNoise perlin;
     std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks;
 
-    int activeMaterialIdx;
-    std::vector<std::shared_ptr<Pixel>> materialList;
+    std::shared_ptr<Pixel> activeMaterial;
+    std::map<sf::Keyboard::Key, std::shared_ptr<Pixel>> materialsMapping;
 };
 
 template <typename T>

@@ -10,7 +10,7 @@
 
 
 Core::Core()
-    : perlin(rand_seed), activeMaterialIdx(0)
+    : perlin(rand_seed), activeMaterial(std::make_shared<Sand>())
 {
     std::cout << "Seed: " << rand_seed << std::endl;
     screen.create(
@@ -19,9 +19,9 @@ Core::Core()
         sf::Style::Titlebar | sf::Style::Close
     );
     screen.setFramerateLimit(fps);
-    materialList.push_back(std::make_shared<Sand>());
-    materialList.push_back(std::make_shared<Concrete>());
-    materialList.push_back(std::make_shared<Water>());
+    materialsMapping[sf::Keyboard::Num1] = std::make_shared<Sand>();
+    materialsMapping[sf::Keyboard::Num2] = std::make_shared<Concrete>();
+    materialsMapping[sf::Keyboard::Num3] = std::make_shared<Water>();
 }
 
 Core::~Core() noexcept = default;
