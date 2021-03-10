@@ -23,7 +23,7 @@ Water::Water(): Pixel(255, 255, 0) {
 };
 
 void Water::update(Surrounding surround, int x, int y, sf::RenderWindow &window, int cx, int cy) {
-    if (!processed)
+    if (processed)
         return;
     if (surround.d && (*surround.d)->type == PixelType::Air) {
         auto tmp = (*surround.c);
@@ -78,7 +78,7 @@ Sand::Sand(): Pixel(255, 255, 0) {
 };
 
 void Sand::update(Surrounding surround, int x, int y, sf::RenderWindow &window, int cx, int cy) {
-    if (!processed)
+    if (processed)
         return;
     if (surround.d && (*surround.d)->type == PixelType::Air) {
         auto tmp = (*surround.c);
