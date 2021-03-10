@@ -33,7 +33,7 @@ struct Surrounding;
 class Pixel {
 public:
     Pixel(int density=0, uint life=0);
-    virtual void update(Surrounding surrounding, int x, int y, sf::RenderWindow &window, int cx, int cy);
+    virtual void update(Surrounding surrounding, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos);
     virtual std::shared_ptr<Pixel> clone() { return std::make_shared<Pixel>(); }
     void draw(sf::RenderWindow &window);
     void swapTiles(
@@ -61,24 +61,21 @@ class Water: public Pixel {
 public:
     Water();
     std::shared_ptr<Pixel> clone() override { return std::make_shared<Water>(); }
-    void update(Surrounding surround, int x, int y,
-        sf::RenderWindow &window, int cx, int cy) override;
+    void update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) override;
 };
 
 class Sand: public Pixel {
 public:
     Sand();
     std::shared_ptr<Pixel> clone() override { return std::make_shared<Sand>(); }
-    void update(Surrounding surround, int x, int y,
-        sf::RenderWindow &window, int cx, int cy) override;
+    void update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) override;
 };
 
 class Concrete: public Pixel {
 public:
     Concrete();
     std::shared_ptr<Pixel> clone() override { return std::make_shared<Concrete>(); }
-    void update(Surrounding surround, int x, int y,
-        sf::RenderWindow &window, int cx, int cy) override;
+    void update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) override;
 };
 
 struct Surrounding{

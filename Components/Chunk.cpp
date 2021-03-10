@@ -235,7 +235,7 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
             }
 
             surround.c = ptr;
-            (*ptr)->update(surround, x, y, scrn, posX, posY);
+            (*ptr)->update(surround, sf::Vector2i(x, y), sf::Vector2i(posX, posY));
             --ptr;
         }
     }

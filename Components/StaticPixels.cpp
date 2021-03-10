@@ -9,7 +9,8 @@ Pixel::Pixel(int density, uint life):
     sprite(sf::Quads, 4), density(density), life(life)
 {};
 
-void Pixel::update(Surrounding surrounding, int x, int y, sf::RenderWindow &window, int cx, int cy) {}
+void Pixel::update(Surrounding surrounding, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos)
+{}
 
 void Pixel::draw(sf::RenderWindow &window) {
     sf::Transform jej;
@@ -43,8 +44,8 @@ Concrete::Concrete(): Pixel(INT_MAX) {
     sprite[3].color = pixel_color;
 };
 
-void Concrete::update(Surrounding surround, int x, int y, sf::RenderWindow &window, int cx, int cy) {
+void Concrete::update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) {
     // Do nothing, just set the draw at the same position
-    drawX = cx * chunk_size + x;
-    drawY = cy * chunk_size + y;
+    drawX = chunk_pos.x * chunk_size + pos.x;
+    drawY = chunk_pos.y * chunk_size + pos.y;
 }
