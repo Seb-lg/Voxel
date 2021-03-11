@@ -31,7 +31,11 @@ struct Surrounding;
 
 class Pixel {
 public:
-    Pixel(sf::Vector2i globalIdx, PixelType type=PixelType::Air, int density=0, uint life=0);
+    Pixel(
+        sf::Vector2i globalIdx, PixelType type=PixelType::Air,
+        sf::Color color=sf::Color(255, 105, 180), int var=1,
+        int density=0, uint life=0
+    );
 
     virtual void update(Surrounding surrounding, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos);
     void draw(sf::RenderTexture &rawGameTexture);

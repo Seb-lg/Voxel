@@ -8,15 +8,9 @@
 #include "Pixel.hpp"
 
 
-Water::Water(sf::Vector2i globalIdx): Pixel(globalIdx, PixelType::Water, 10) {
-    type = PixelType::Water;
-    int var = std::rand() % 2 - 1;
-    auto pixel_color = sf::Color(108 + var, 177 + var, 202 + var);
-    sprite[0].color = pixel_color;
-    sprite[1].color = pixel_color;
-    sprite[2].color = pixel_color;
-    sprite[3].color = pixel_color;
-};
+Water::Water(sf::Vector2i globalIdx):
+    Pixel(globalIdx, PixelType::Water, sf::Color(194, 178, 128), 30, 10)
+{};
 
 void Water::update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) {
     if (processed)
@@ -36,15 +30,9 @@ void Water::update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> 
     processed = true;
 }
 
-Sand::Sand(sf::Vector2i globalIdx): Pixel(globalIdx, PixelType::Sand, 20) {
-    type = PixelType::Sand;
-    int var = std::rand() % 30 - 15;
-    auto pixel_color = sf::Color(194 + var, 178 + var, 128 + var);
-    sprite[0].color = pixel_color;
-    sprite[1].color = pixel_color;
-    sprite[2].color = pixel_color;
-    sprite[3].color = pixel_color;
-};
+Sand::Sand(sf::Vector2i globalIdx):
+    Pixel(globalIdx, PixelType::Sand, sf::Color(194, 178, 128), 30, 20)
+{};
 
 void Sand::update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) {
     if (processed)
