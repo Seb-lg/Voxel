@@ -41,13 +41,17 @@ std::shared_ptr<Pixel> Chunk::createTileFromPerlin(sf::Vector2i pos, siv::Perlin
     static const double frequency = 50;
     static const int octaves = 20;
 
-    auto noise = perlin.accumulatedOctaveNoise2D_0_1(pos.x / frequency, pos.y / frequency, octaves);
+    auto noise = perlin.accumulatedOctaveNoise2D_0_1(
+        pos.x / frequency,
+        pos.y / frequency,
+        octaves
+    );
     if (noise < 0.3)
         return std::make_shared<Concrete>(pos);
     if (noise < 0.4)
-        return std::make_shared<Sand>(pos);
-   if (noise < 0.5)
-       return std::make_shared<Water>(pos);
+        return std::make_shared<Water>(pos);
+   // if (noise < 0.5)
+   //     return std::make_shared<Water>(pos);
     return std::make_shared<Pixel>(pos);
 }
 

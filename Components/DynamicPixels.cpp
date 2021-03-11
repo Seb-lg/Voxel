@@ -9,7 +9,7 @@
 
 
 Water::Water(sf::Vector2i globalIdx):
-    Pixel(globalIdx, PixelType::Water, sf::Color(108, 177, 202), 30, 10)
+    Pixel(globalIdx, PixelType::Water, sf::Color(108, 177, 202), 1, 10, 0)
 {};
 
 void Water::update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) {
@@ -31,7 +31,8 @@ void Water::update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> 
 }
 
 Sand::Sand(sf::Vector2i globalIdx):
-    Pixel(globalIdx, PixelType::Sand, sf::Color(194, 178, 128), 30, 20)
+    // TODO: Add random density
+    Pixel(globalIdx, PixelType::Sand, sf::Color(194, 178, 128), 30, 100, 0)
 {};
 
 void Sand::update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) {

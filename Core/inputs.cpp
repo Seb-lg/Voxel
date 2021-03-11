@@ -22,8 +22,8 @@ void Core::handleInputs() {
     }
     // Material switching
     for (auto element: materialsMapping) {
-        if (sf::Keyboard::isKeyPressed(element.first)) {
-            std::cout << element.first << std::endl;
+        if (sf::Keyboard::isKeyPressed(element.first) && element.second != activeMaterial) {
+            std::cout << pixelTypeToString(element.second) << " selected" << std::endl;
             activeMaterial = element.second;
         }
     }
