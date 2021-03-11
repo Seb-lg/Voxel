@@ -30,24 +30,37 @@ void Pixel::update(Surrounding surrounding, sf::Vector2<int> pos, sf::Vector2<in
 {}
 
 void Pixel::draw(sf::RenderTexture &rawGameTexture) {
-    // if (type != PixelType::Air)
-    rawGameTexture.draw(sprite);
+    if (type != PixelType::Air)
+        rawGameTexture.draw(sprite);
 }
 
 void Pixel::swapTiles(
         std::shared_ptr<Pixel> *fst, std::shared_ptr<Pixel> *snd,
         sf::Vector2<int> pos, sf::Vector2<int> chunk_pos
 ) {
+    // We're not using the Pixel position (idx) to draw anymore,
+    // as this was creating a loooot of computations and reassignations:
+    // chunkIdx + Idx -> screenPosition
+    // VertexArray = screenPosition (for each vertex)
+    // SO! Now we just compute those at THE CREATION of the Pixel object
+    // and we swap the VertexArrays in this function:
+
     auto tmp = (*fst);
     (*fst) = (*snd);
     (*snd) = tmp;
-    auto tmpX = (chunk_pos.x * chunk_size + pos.x) * pixel_size;
-    auto tmpY = (chunk_pos.y * chunk_size + pos.y) * pixel_size;
-    // Apply position in VertexArray
-    sprite[0].position = sf::Vector2f(tmpX, tmpY);
-    sprite[1].position = sf::Vector2f(tmpX + pixel_size, tmpY);
-    sprite[2].position = sf::Vector2f(tmpX + pixel_size, tmpY + pixel_size);
-    sprite[3].position = sf::Vector2f(tmpX, tmpY + pixel_size);
+
+    auto tmp_pos0 = sprite[0].position;
+    auto tmp_pos1 = sprite[1].position;
+    auto tmp_pos2 = sprite[2].position;
+    auto tmp_pos3 = sprite[3].position;
+    sprite[0].position = (*fst)->sprite[0].position;
+    sprite[1].position = (*fst)->sprite[1].position;
+    sprite[2].position = (*fst)->sprite[2].position;
+    sprite[3].position = (*fst)->sprite[3].position;
+    (*fst)->sprite[0].position = tmp_pos0;
+    (*fst)->sprite[1].position = tmp_pos1;
+    (*fst)->sprite[2].position = tmp_pos2;
+    (*fst)->sprite[3].position = tmp_pos3;
 }
 
 Concrete::Concrete(sf::Vector2i globalIdx):
