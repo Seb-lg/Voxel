@@ -17,8 +17,20 @@ enum class PixelType {
     Air = 0,
     Sand = 1,
     Concrete = 2,
-    Water = 2,
+    Water = 3,
 };
+
+inline const char* pixelTypeToString(PixelType v)
+{
+    switch (v)
+    {
+        case PixelType::Air:   return "Air";
+        case PixelType::Sand:   return "Sand";
+        case PixelType::Concrete: return "Concrete";
+        case PixelType::Water: return "Water";
+        default:      return "[Unknown PixelType]";
+    }
+}
 
 enum class TileResponse {
     OOB = -1,

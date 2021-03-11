@@ -9,7 +9,7 @@
 
 
 Water::Water(sf::Vector2i globalIdx):
-    Pixel(globalIdx, PixelType::Water, sf::Color(194, 178, 128), 30, 10)
+    Pixel(globalIdx, PixelType::Water, sf::Color(108, 177, 202), 30, 10)
 {};
 
 void Water::update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) {

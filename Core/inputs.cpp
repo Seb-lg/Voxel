@@ -9,8 +9,8 @@
 
 
 void Core::handleInputs() {
+    // Screenshot
     static int screenNb = 0;
-
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::F12)){
         sf::Vector2u windowSize = screen.getSize();
         sf::Texture texture;
@@ -20,12 +20,31 @@ void Core::handleInputs() {
         screenshot.saveToFile(std::string("screenshot") + std::to_string(screenNb) +".png");
         screenNb++;
     }
+    // Material switching
     for (auto element: materialsMapping) {
-        if (sf::Keyboard::isKeyPressed(element.first))
+        if (sf::Keyboard::isKeyPressed(element.first)) {
+            std::cout << element.first << std::endl;
             activeMaterial = element.second;
+        }
     }
+    // Material drawing
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
         dynamicTileDrawing(activeMaterial, false);
     else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
         dynamicTileDrawing(PixelType::Air, true);
+
+    // Debug text
+    sf::Vector2<int> mousePos = sf::Mouse::getPosition(screen);
+    debugText.setPosition(mousePos.x, mousePos.y);
+    sf::Vector2<int> centerPos = mousePos / pixel_size;
+    if (centerPos.x < 0 || centerPos.y < 0)
+        return;
+    // maybe create a getTile() function with this?
+    std::shared_ptr<Chunk> chunk = getChunk(centerPos / chunk_size);
+    sf::Vector2<int> offset = sf::Vector2i(centerPos.x % chunk_size, centerPos.y % chunk_size);
+    std::shared_ptr<Pixel> pixel = chunk->pixels[offset.y * chunk_size + offset.x];
+    std::ostringstream oss;
+    oss << "(" << centerPos.x << "/" << centerPos.y << ") = " << pixelTypeToString(pixel->type);
+    std::string var = oss.str();
+    debugText.setString(var);
 }

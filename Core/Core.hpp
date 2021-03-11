@@ -6,6 +6,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <sstream>
 #include "../Components/Pixel.hpp"
 #include "../Components/Chunk.hpp"
 
@@ -47,27 +48,27 @@ private:
     siv::PerlinNoise perlin;
     std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks;
 
+    // Font stuff
+    sf::Font font;
+    sf::Text debugText;
+
+    // Drawing material handling
     PixelType activeMaterial;
     std::map<sf::Keyboard::Key, PixelType> materialsMapping;
+
     // Shader stuff
     sf::ContextSettings context_settings;
     const int BLUR_RADIUS_VALUES[4] = { 250, 180, 125, 55 };
     float blur_weight;
-
     sf::RenderStates shader_states;
     //no blendmode! we make our own - assemble.frag
-
     sf::Shader luminescence_shader;
     sf::RenderTexture luminescence_render;
-
     sf::Shader blur_shader;
     std::array<sf::RenderTexture, 4> blur_renders;
-
     sf::Shader assemble_shader;
     sf::RenderTexture assemble_render;
-
     sf::Shader multiply_shader;
-
     // Pixelate shader
     sf::Shader pixelate_shader;
 

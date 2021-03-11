@@ -18,6 +18,12 @@ Core::Core()
         sf::Style::Titlebar | sf::Style::Close
     );
     screen.setFramerateLimit(fps);
+    if (!font.loadFromFile("./Assets/CozetteVector.ttf"))
+        std::cout << "loading font error" << std::endl;
+    debugText.setFont(font); // font is a sf::Font
+    debugText.setCharacterSize(24); // in pixels, not points!
+    debugText.setFillColor(sf::Color::White);
+
     loadShaders();
     materialsMapping[sf::Keyboard::Num1] = PixelType::Sand;
     materialsMapping[sf::Keyboard::Num2] = PixelType::Concrete;
@@ -55,6 +61,7 @@ bool Core::run() {
     screen.clear(sf::Color::Black);
     // screen.draw(finalSprite, &pixelate_shader);
     screen.draw(finalSprite);
+    screen.draw(debugText);
     screen.display();
 
     std::cout << "fps : " << 1 / ((getTime() - now) / 1000.0) << "\r" << std::flush;
