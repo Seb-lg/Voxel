@@ -23,8 +23,8 @@ private:
     ~Core();
 
     void handleInputs();
-    void dynamicTileDrawing(std::shared_ptr<Pixel> newTile, bool override);
-    void replaceTile(std::shared_ptr<Pixel> newTile, sf::Vector2<int> pixelPos, bool override);
+    void dynamicTileDrawing(PixelType newTileType, bool override);
+    void replaceTile(PixelType newTileType, sf::Vector2<int> pixelPos, bool override);
     //// Chunk handling functions
     // chunkHandling.cpp
     void initChunks();
@@ -47,8 +47,8 @@ private:
     siv::PerlinNoise perlin;
     std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks;
 
-    std::shared_ptr<Pixel> activeMaterial;
-    std::map<sf::Keyboard::Key, std::shared_ptr<Pixel>> materialsMapping;
+    PixelType activeMaterial;
+    std::map<sf::Keyboard::Key, PixelType> materialsMapping;
     // Shader stuff
     sf::ContextSettings context_settings;
     const int BLUR_RADIUS_VALUES[4] = { 250, 180, 125, 55 };

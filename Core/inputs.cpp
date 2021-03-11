@@ -27,5 +27,5 @@ void Core::handleInputs() {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
         dynamicTileDrawing(activeMaterial, false);
     else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
-        dynamicTileDrawing(std::make_shared<Pixel>(), true);
+        dynamicTileDrawing(PixelType::Air, true);
 }

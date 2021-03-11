@@ -4,18 +4,24 @@
 
 #include "Pixel.hpp"
 
-Pixel::Pixel(int density, uint life):
-    type(PixelType::Air), processed(false),
+Pixel::Pixel(sf::Vector2i globalIdx, PixelType type, int density, uint life):
+    type(type), processed(false),
     sprite(sf::Quads, 4), density(density), life(life)
-{};
+{
+    // Apply position in VertexArray
+    auto drawIdx = globalIdx * pixel_size;
+    sprite[0].position = sf::Vector2f(drawIdx.x, drawIdx.y);
+    sprite[1].position = sf::Vector2f(drawIdx.x + pixel_size, drawIdx.y);
+    sprite[2].position = sf::Vector2f(drawIdx.x + pixel_size, drawIdx.y + pixel_size);
+    sprite[3].position = sf::Vector2f(drawIdx.x, drawIdx.y + pixel_size);
+};
 
 void Pixel::update(Surrounding surrounding, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos)
 {}
 
 void Pixel::draw(sf::RenderTexture &rawGameTexture) {
-    sf::Transform pos;
-    pos.translate(drawX * pixel_size, drawY * pixel_size);
-    rawGameTexture.draw(sprite, pos);
+    if (type != PixelType::Air)
+        rawGameTexture.draw(sprite);
 }
 
 void Pixel::swapTiles(
@@ -25,17 +31,16 @@ void Pixel::swapTiles(
     auto tmp = (*fst);
     (*fst) = (*snd);
     (*snd) = tmp;
-    drawX = chunk_pos.x * chunk_size + pos.x;
-    drawY = chunk_pos.y * chunk_size + pos.y;
+    auto tmpX = (chunk_pos.x * chunk_size + pos.x) * pixel_size;
+    auto tmpY = (chunk_pos.y * chunk_size + pos.y) * pixel_size;
+    // Apply position in VertexArray
+    sprite[0].position = sf::Vector2f(tmpX, tmpY);
+    sprite[1].position = sf::Vector2f(tmpX + pixel_size, tmpY);
+    sprite[2].position = sf::Vector2f(tmpX + pixel_size, tmpY + pixel_size);
+    sprite[3].position = sf::Vector2f(tmpX, tmpY + pixel_size);
 }
 
-
-Concrete::Concrete(): Pixel(INT_MAX) {
-    type = PixelType::Concrete;
-    sprite[0].position = sf::Vector2f(0, 0);
-    sprite[1].position = sf::Vector2f(pixel_size, 0);
-    sprite[2].position = sf::Vector2f(pixel_size, pixel_size);
-    sprite[3].position = sf::Vector2f(0, pixel_size);
+Concrete::Concrete(sf::Vector2i globalIdx): Pixel(globalIdx, PixelType::Concrete, INT_MAX) {
     int var = std::rand() % 10 - 5;
     auto pixel_color = sf::Color(100 + var, 100 + var, 100 + var);
     sprite[0].color = pixel_color;
@@ -45,7 +50,11 @@ Concrete::Concrete(): Pixel(INT_MAX) {
 };
 
 void Concrete::update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) {
-    // Do nothing, just set the draw at the same position
-    drawX = chunk_pos.x * chunk_size + pos.x;
-    drawY = chunk_pos.y * chunk_size + pos.y;
+    auto tmpX = (chunk_pos.x * chunk_size + pos.x) * pixel_size;
+    auto tmpY = (chunk_pos.y * chunk_size + pos.y) * pixel_size;
+    // Apply position in VertexArray
+    sprite[0].position = sf::Vector2f(tmpX, tmpY);
+    sprite[1].position = sf::Vector2f(tmpX + pixel_size, tmpY);
+    sprite[2].position = sf::Vector2f(tmpX + pixel_size, tmpY + pixel_size);
+    sprite[3].position = sf::Vector2f(tmpX, tmpY + pixel_size);
 }

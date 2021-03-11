@@ -31,9 +31,9 @@ struct Surrounding;
 
 class Pixel {
 public:
-    Pixel(int density=0, uint life=0);
+    Pixel(sf::Vector2i globalIdx, PixelType type=PixelType::Air, int density=0, uint life=0);
+
     virtual void update(Surrounding surrounding, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos);
-    virtual std::shared_ptr<Pixel> clone() { return std::make_shared<Pixel>(); }
     void draw(sf::RenderTexture &rawGameTexture);
     void swapTiles(
         std::shared_ptr<Pixel> *fst, std::shared_ptr<Pixel> *snd,
@@ -46,11 +46,16 @@ public:
     uchar b;
     uchar a;
 
+    // Not great, but we need a way to know if the tile position has been set once
+    // Otherwise we would need to call an update for nothing evertime,
+    // for pixels which did not move.
+    // Another possibility would have been to require a position in the constructor
+    // But it's not practical in the code ATM (drawing)
+    // bool positionAlreadySet
+
     PixelType type;
     int processed;
     sf::VertexArray sprite;
-    int drawX;
-    int drawY;
     uint life;
     int density;
 };
@@ -58,22 +63,19 @@ public:
 
 class Water: public Pixel {
 public:
-    Water();
-    std::shared_ptr<Pixel> clone() override { return std::make_shared<Water>(); }
+    Water(sf::Vector2i globalIdx);
     void update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) override;
 };
 
 class Sand: public Pixel {
 public:
-    Sand();
-    std::shared_ptr<Pixel> clone() override { return std::make_shared<Sand>(); }
+    Sand(sf::Vector2i globalIdx);
     void update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) override;
 };
 
 class Concrete: public Pixel {
 public:
-    Concrete();
-    std::shared_ptr<Pixel> clone() override { return std::make_shared<Concrete>(); }
+    Concrete(sf::Vector2i globalIdx);
     void update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) override;
 };
 

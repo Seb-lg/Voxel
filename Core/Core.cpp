@@ -9,7 +9,7 @@
 
 
 Core::Core()
-    : perlin(rand_seed), activeMaterial(std::make_shared<Sand>())
+    : perlin(rand_seed), activeMaterial(PixelType::Sand)
 {
     std::cout << "Seed: " << rand_seed << std::endl;
     screen.create(
@@ -19,9 +19,9 @@ Core::Core()
     );
     screen.setFramerateLimit(fps);
     loadShaders();
-    materialsMapping[sf::Keyboard::Num1] = std::make_shared<Sand>();
-    materialsMapping[sf::Keyboard::Num2] = std::make_shared<Concrete>();
-    materialsMapping[sf::Keyboard::Num3] = std::make_shared<Water>();
+    materialsMapping[sf::Keyboard::Num1] = PixelType::Sand;
+    materialsMapping[sf::Keyboard::Num2] = PixelType::Concrete;
+    materialsMapping[sf::Keyboard::Num3] = PixelType::Water;
 
     initChunks();
 }
@@ -46,14 +46,15 @@ bool Core::run() {
     rawGameTexture.display();
     sf::Sprite finalSprite;
     // Apply all the shaders
-    if (true) {
+    if (false) {
         finalSprite = applyShaders(rawGameTexture);
     } else {
         finalSprite = sf::Sprite(rawGameTexture.getTexture());
     }
     // Now do the final draw on the window
     screen.clear(sf::Color::Black);
-    screen.draw(finalSprite, &pixelate_shader);
+    // screen.draw(finalSprite, &pixelate_shader);
+    screen.draw(finalSprite);
     screen.display();
 
     std::cout << "fps : " << 1 / ((getTime() - now) / 1000.0) << "\r" << std::flush;
@@ -67,7 +68,7 @@ bool Core::run() {
     return true;
 }
 
-void Core::dynamicTileDrawing(std::shared_ptr<Pixel> newTile, bool override) {
+void Core::dynamicTileDrawing(PixelType newTileType, bool override) {
     // Used to replace a tile with another (used when mouse drawing)
     sf::Vector2<int> centerPos = sf::Mouse::getPosition(screen) / pixel_size;
     if (centerPos.x < 0 || centerPos.y < 0)
@@ -78,20 +79,28 @@ void Core::dynamicTileDrawing(std::shared_ptr<Pixel> newTile, bool override) {
     for (int x = 0 ; x < 10 ; x++)
         pixelsPoses.push_back(centerPos + getRandomPosition(-10, 20));
     for (auto pixelPos : pixelsPoses)
-        replaceTile(newTile->clone(), pixelPos, override);
+            replaceTile(newTileType, pixelPos, override);
 }
 
-sf::Vector2<int> Core::getRandomPosition(int min, int max) {
-    return sf::Vector2i(rand() % max + min, rand() % max + min);
-}
-
-void Core::replaceTile(std::shared_ptr<Pixel> newTile, sf::Vector2<int> pixelPos, bool override) {
+void Core::replaceTile(PixelType newTileType, sf::Vector2<int> pixelPos, bool override) {
     // TMP HACK, AS IT ASSUMES CHUNK (0,0) IS AT TOP LEFT
     // WILL BREAK WITH PLAYER MOVEMENT IMPLEMENTATION
     std::shared_ptr<Chunk> chunk = getChunk(pixelPos / chunk_size);
     sf::Vector2<int> offset = sf::Vector2i(pixelPos.x % chunk_size, pixelPos.y % chunk_size);
-    TileResponse flag = chunk->replaceTile(offset, newTile, override);
+    TileResponse flag;
+    if (newTileType == PixelType::Air)
+        flag = chunk->replaceTile(offset, std::make_shared<Pixel>(pixelPos), override);
+    if (newTileType == PixelType::Sand)
+        flag = chunk->replaceTile(offset, std::make_shared<Sand>(pixelPos), override);
+    if (newTileType == PixelType::Water)
+        flag = chunk->replaceTile(offset, std::make_shared<Water>(pixelPos), override);
+    if (newTileType == PixelType::Concrete)
+        flag = chunk->replaceTile(offset, std::make_shared<Concrete>(pixelPos), override);
     // OutOfBounds (TileResponse::OOB) will be triggered by negative positions
     // of mouse cursor (Above and left of the window)
     // as we don't handle those for now (see function docstring)
+}
+
+sf::Vector2<int> Core::getRandomPosition(int min, int max) {
+    return sf::Vector2i(rand() % max + min, rand() % max + min);
 }
