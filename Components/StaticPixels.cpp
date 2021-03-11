@@ -6,11 +6,13 @@
 
 Pixel::Pixel(
     sf::Vector2i globalIdx, PixelType type,
-    sf::Color color, int var, int density, uint life
+    sf::Color color, int var, sf::Vector2i densityParams, uint life
 ):
     type(type), processed(false),
-    sprite(sf::Quads, 4), density(density), life(life)
+    sprite(sf::Quads, 4), life(life)
 {
+    density = densityParams.x + (std::rand() % densityParams.y - int(densityParams.y / 2));
+
     // Set vertices color
     var = std::rand() % var - int(var / 2);
     auto pixel_color = sf::Color(color.r + var, color.g + var, color.b + var);
@@ -68,5 +70,9 @@ void Pixel::swapTiles(
 }
 
 Concrete::Concrete(sf::Vector2i globalIdx):
-    Pixel(globalIdx, PixelType::Concrete, sf::Color(100, 100, 100), 10, INT_MAX)
+    Pixel(
+        globalIdx, PixelType::Concrete,
+        sf::Color(100, 100, 100), 10,
+        sf::Vector2i(5000, 20)
+    )
 {};
