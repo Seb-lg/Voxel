@@ -48,13 +48,3 @@ Concrete::Concrete(sf::Vector2i globalIdx): Pixel(globalIdx, PixelType::Concrete
     sprite[2].color = pixel_color;
     sprite[3].color = pixel_color;
 };
-
-void Concrete::update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) {
-    auto tmpX = (chunk_pos.x * chunk_size + pos.x) * pixel_size;
-    auto tmpY = (chunk_pos.y * chunk_size + pos.y) * pixel_size;
-    // Apply position in VertexArray
-    sprite[0].position = sf::Vector2f(tmpX, tmpY);
-    sprite[1].position = sf::Vector2f(tmpX + pixel_size, tmpY);
-    sprite[2].position = sf::Vector2f(tmpX + pixel_size, tmpY + pixel_size);
-    sprite[3].position = sf::Vector2f(tmpX, tmpY + pixel_size);
-}

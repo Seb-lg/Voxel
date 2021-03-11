@@ -60,6 +60,11 @@ public:
     int density;
 };
 
+class Concrete: public Pixel {
+public:
+    Concrete(sf::Vector2i globalIdx);
+};
+
 
 class Water: public Pixel {
 public:
@@ -73,11 +78,6 @@ public:
     void update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) override;
 };
 
-class Concrete: public Pixel {
-public:
-    Concrete(sf::Vector2i globalIdx);
-    void update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) override;
-};
 
 struct Surrounding{
     Surrounding(std::shared_ptr<Pixel>* ptr) {
