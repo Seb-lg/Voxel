@@ -30,8 +30,8 @@ void Pixel::update(Surrounding surrounding, sf::Vector2<int> pos, sf::Vector2<in
 {}
 
 void Pixel::draw(sf::RenderTexture &rawGameTexture) {
-    if (type != PixelType::Air)
-        rawGameTexture.draw(sprite);
+    // if (type != PixelType::Air)
+    rawGameTexture.draw(sprite);
 }
 
 void Pixel::swapTiles(
