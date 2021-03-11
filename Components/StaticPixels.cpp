@@ -49,6 +49,10 @@ void Pixel::swapTiles(
     (*fst) = (*snd);
     (*snd) = tmp;
 
+    // Why this does not work? x)
+    // sf::VertexArray tmpVertexArray = sprite;
+    // sprite = (*fst)->sprite;
+    // (*fst)->sprite = tmpVertexArray;
     auto tmp_pos0 = sprite[0].position;
     auto tmp_pos1 = sprite[1].position;
     auto tmp_pos2 = sprite[2].position;

@@ -49,9 +49,9 @@ std::shared_ptr<Pixel> Chunk::createTileFromPerlin(sf::Vector2i pos, siv::Perlin
     if (noise < 0.3)
         return std::make_shared<Concrete>(pos);
     if (noise < 0.4)
-        return std::make_shared<Water>(pos);
-   // if (noise < 0.5)
-   //     return std::make_shared<Water>(pos);
+        return std::make_shared<Sand>(pos);
+   if (noise > 0.8)
+       return std::make_shared<Water>(pos);
     return std::make_shared<Pixel>(pos);
 }
 
