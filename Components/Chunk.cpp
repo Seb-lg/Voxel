@@ -1,10 +1,10 @@
 //
 // Created by seub on 05/03/2021.
 //
-
 #include <iostream>
 #include "Chunk.hpp"
 #include "../Core/Core.hpp"
+
 
 Chunk::Chunk(sf::Vector2i chunkPos, siv::PerlinNoise perlin):
     pos(chunkPos), wireframe(sf::LineStrip, 4)
@@ -34,7 +34,6 @@ Chunk::Chunk(sf::Vector2i chunkPos, siv::PerlinNoise perlin):
     wireframe[3].color = sf::Color(199, 199, 199);
 }
 
-
 std::shared_ptr<Pixel> Chunk::createTileFromPerlin(sf::Vector2i pos, siv::PerlinNoise perlin) {
     // Called by the Chunk class constructor, will determine which pixel type
     // is created, based on the perlin noise
@@ -50,8 +49,8 @@ std::shared_ptr<Pixel> Chunk::createTileFromPerlin(sf::Vector2i pos, siv::Perlin
         return std::make_shared<Concrete>(pos);
     if (noise < 0.4)
         return std::make_shared<Sand>(pos);
-   if (noise > 0.8)
-       return std::make_shared<Water>(pos);
+    if (noise > 0.8)
+        return std::make_shared<Water>(pos);
     return std::make_shared<Pixel>(pos);
 }
 
