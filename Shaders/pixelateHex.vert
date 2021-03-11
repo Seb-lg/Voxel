@@ -3,7 +3,7 @@
 uniform sampler2D tex;
 uniform int resolution;
 
-#define H 0.001
+#define H 0.004
 #define S ((3./2.) * H/sqrt(3.))
 
 vec2 hexCoord(ivec2 hexIndex) {

@@ -46,7 +46,7 @@ bool Core::run() {
     rawGameTexture.display();
     sf::Sprite finalSprite;
     // Apply all the shaders
-    if (false) {
+    if (true) {
         finalSprite = applyShaders(rawGameTexture);
     } else {
         finalSprite = sf::Sprite(rawGameTexture.getTexture());
