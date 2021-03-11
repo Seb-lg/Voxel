@@ -62,13 +62,6 @@ public:
     uchar b;
     uchar a;
 
-    // Not great, but we need a way to know if the tile position has been set once
-    // Otherwise we would need to call an update for nothing evertime,
-    // for pixels which did not move.
-    // Another possibility would have been to require a position in the constructor
-    // But it's not practical in the code ATM (drawing)
-    // bool positionAlreadySet
-
     PixelType type;
     int processed;
     sf::VertexArray sprite;
