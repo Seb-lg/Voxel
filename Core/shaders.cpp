@@ -89,4 +89,9 @@ void Core::loadShaders() {
         blur_renders[i].create(width, height, context_settings);
     }
     blur_weight = blur_renders.empty() ? 0.0 : 1.0 / blur_renders.size();
+
+    // From https://coding-experiments.blogspot.com/2010/06/pixelation.html
+    pixelate_shader.loadFromFile("./Shaders/pixelateHex.vert", sf::Shader::Fragment);
+    pixelate_shader.setUniform("tex", sf::Shader::CurrentTexture);
+    // pixelate_shader.setUniform("resolution", 2048);
 }

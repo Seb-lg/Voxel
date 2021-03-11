@@ -67,6 +67,10 @@ private:
     sf::RenderTexture assemble_render;
 
     sf::Shader multiply_shader;
+
+    // Pixelate shader
+    sf::Shader pixelate_shader;
+
 };
 
 template <typename T>

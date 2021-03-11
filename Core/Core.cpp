@@ -44,11 +44,16 @@ bool Core::run() {
     rawGameTexture.clear();
     updateChunks();
     rawGameTexture.display();
+    sf::Sprite finalSprite;
     // Apply all the shaders
-    sf::Sprite finalSprite = applyShaders(rawGameTexture);
+    if (false) {
+        finalSprite = applyShaders(rawGameTexture);
+    } else {
+        finalSprite = sf::Sprite(rawGameTexture.getTexture());
+    }
     // Now do the final draw on the window
     screen.clear(sf::Color::Black);
-    screen.draw(finalSprite);
+    screen.draw(finalSprite, &pixelate_shader);
     screen.display();
 
     std::cout << "fps : " << 1 / ((getTime() - now) / 1000.0) << "\r" << std::flush;
