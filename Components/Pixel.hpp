@@ -24,11 +24,11 @@ inline const char* pixelTypeToString(PixelType v)
 {
     switch (v)
     {
-        case PixelType::Air:   return "Air";
-        case PixelType::Sand:   return "Sand";
-        case PixelType::Concrete: return "Concrete";
-        case PixelType::Water: return "Water";
-        default:      return "[Unknown PixelType]";
+        case PixelType::Air:        return "Air";
+        case PixelType::Sand:       return "Sand";
+        case PixelType::Concrete:   return "Concrete";
+        case PixelType::Water:      return "Water";
+        default:                    return "[Unknown PixelType]";
     }
 }
 
