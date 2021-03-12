@@ -52,14 +52,16 @@ bool Core::run() {
     rawGameTexture.display();
     sf::Sprite finalSprite;
     // Apply all the shaders
-    if (useVertexShaders)
+    if (useFragmentShaders)
         finalSprite = applyShaders(rawGameTexture);
     else
         finalSprite = sf::Sprite(rawGameTexture.getTexture());
     // Now do the final draw on the window
     screen.clear(sf::Color::Black);
-    screen.draw(finalSprite, &pixelate_shader);
-    // screen.draw(finalSprite);
+    if (useVertexShaders)
+      screen.draw(finalSprite, &pixelate_shader);
+    else
+      screen.draw(finalSprite);
     if (drawTileDebug)
         screen.draw(debugText);
     screen.display();
