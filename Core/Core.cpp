@@ -9,7 +9,8 @@
 
 
 Core::Core()
-    : activeMaterial(PixelType::Sand)
+    : lastSimTime(0), lastFrameDrawTime(0), lastSpsDrawTime(0),
+    activeMaterial(PixelType::Sand)
 {
     std::cout << "Seed: " << RANDOM_SEED << std::endl;
     screen.create(
@@ -17,7 +18,6 @@ Core::Core()
         "SandEngine",
         sf::Style::Titlebar | sf::Style::Close
     );
-    screen.setFramerateLimit(FPS);
     if (!font.loadFromFile("./Assets/CozetteVector.ttf"))
         std::cout << "loading font error" << std::endl;
     debugText.setFont(font); // font is a sf::Font
@@ -33,7 +33,7 @@ Core::Core()
 }
 
 bool Core::run() {
-    auto now = getTime();
+    auto startTime = getTime();
     sf::Event event{};
     // Check for quit event
     while (screen.pollEvent(event)) {
@@ -41,18 +41,28 @@ bool Core::run() {
             || event.type == sf::Event::Closed)
             return false;
     }
-    // Perform computations
-    handleInputs();
-    updateChunks();
-    draw();
-    std::cout << "FPS : " << (int)(1 / ((getTime() - now) / 1000.0)) << "\r" << std::flush;
-
-    /*static int oui = WIDTH/2;
-    auto pos = sf::Vector2f(oui, HEIGHT/2);
-    auto size = sf::Vector2f(WIDTH, HEIGHT);
-    oui++;
-    sf::View jej(pos, size);
-    this->screen.setView(jej);*/
+    auto now = getTime();
+    if (now - lastSimTime > (NS_PER_SEC / SPS)) {
+        std::cout << "Steps/s : " << NS_PER_SEC / (now - lastSimTime) << "\r" << std::flush;
+        handleInputs();
+        updateChunks();
+        lastSimTime = now;
+    }
+    now = getTime();
+    if (now - lastFrameDrawTime > (NS_PER_SEC / FPS)) {
+        draw();
+        // std::cout << "FPS : " << NS_PER_SEC / (now - lastFrameDrawTime) << "\r" << std::flush;
+        lastFrameDrawTime = now;
+    }
+    // Simulation frequency limiter
+    auto msToNextSimStep = (NS_PER_SEC / SPS) - (getTime() - startTime);
+    if (msToNextSimStep > 0) {
+       std::cout << "Sleeping for " << msToNextSimStep << " ms" << std::endl;
+        std::this_thread::sleep_for(std::chrono::nanoseconds(msToNextSimStep));
+    }
+    else {
+        std::cout << "Lagging behind by " << -msToNextSimStep << " ms" << std::endl;
+    }
     return true;
 }
 
@@ -68,7 +78,6 @@ void Core::draw() {
     }
     // Update the texture with the draws
     rawGameTexture.display();
-
     // Create a sprite with the rawGameTexture
     // (in order to able to apply the shaders)
     sf::Sprite finalSprite;
@@ -76,7 +85,6 @@ void Core::draw() {
         finalSprite = applyShaders(rawGameTexture);
     else
         finalSprite = sf::Sprite(rawGameTexture.getTexture());
-
     // Now do the final draw on the window, with the vertex shaders if needed
     screen.clear(sf::Color::Black);
     if (USE_VERTEX_SHADERS)
