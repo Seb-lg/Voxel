@@ -20,8 +20,8 @@ std::shared_ptr<Chunk> Core::getChunk(sf::Vector2<int> chunk_idxes) {
                 return itY->second;
     }
     std::shared_ptr<Chunk> newChunk = std::make_shared<Chunk>(
-        sf::Vector2i(chunk_idxes.x, chunk_idxes.y),
-        map.perlin
+            sf::Vector2i(chunk_idxes.x, chunk_idxes.y),
+            map.perlin
     );
     map.chunks[chunk_idxes.x][chunk_idxes.y] = newChunk;
     return newChunk;
@@ -39,7 +39,7 @@ void Core::initChunks() {
     auto startTime = getTime();
     for (int x = 0; x < chunk_width_nbr; ++x) {
         for (int y = 0; y < chunk_height_nbr; ++y) {
-            float percentage = (float)(x*chunk_width_nbr+y) / (chunk_width_nbr*chunk_height_nbr) * 100.0;
+            float percentage = (float) (x * chunk_width_nbr + y) / (chunk_width_nbr * chunk_height_nbr) * 100.0;
             std::cout << "Map init: " << percentage << "\r" << std::flush;
             map.chunks[x][y] = std::make_shared<Chunk>(sf::Vector2i(x, y), map.perlin);
         }
@@ -49,54 +49,36 @@ void Core::initChunks() {
 }
 
 void Core::updateChunks() {
-    //TODO: thread line by line -> maybe hard af and render threading useless
-    std::map<int, std::list<s<Chunk>>, std::greater<int>> sortedChunkList;
+    std::vector<std::list<std::shared_ptr<Chunk>>> threadChunkList(4);
+
     for (auto &column : map.chunks) {
         for (auto &elem : column.second) {
             if (elem.second) {
-                sortedChunkList[elem.second->pos.y].emplace_back(elem.second);
+                auto tmp = elem.second;
+                if (tmp->pos.y % 2 == 0 && tmp->pos.x % 2 == 0)
+                    threadChunkList[0].push_back(elem.second);
+                else if (tmp->pos.y % 2 == 0 && (tmp->pos.x - 1) % 2 == 0)
+                    threadChunkList[1].push_back(elem.second);
+                else if (tmp->pos.y % 2 && tmp->pos.x % 2 == 0)
+                    threadChunkList[2].push_back(elem.second);
+                else
+                    threadChunkList[3].push_back(elem.second);
             }
         }
     }
 
-    std::list<std::thread> threads;
-    for( auto const &list : sortedChunkList) {
-//        for (auto &elem : list.second) {
-//            elem->update(map);
-//        }
-        for (auto &elem : list.second) {
-            if (elem->pos.x % 2) {
-                threads.emplace_back([this, &elem](){elem->update(map);});
-            }
-        }
-        for (auto &thread : threads) {
-            thread.join();
-        }
-        threads.clear();
-        for (auto &elem : list.second) {
-            if (!(elem->pos.x % 2)) {
-                threads.emplace_back([this, &elem](){elem->update(map);});
-            }
-        }
-        for (auto &thread : threads) {
-            thread.join();
-        }
-        threads.clear();
+    for (int i = 0; i < 4; ++i) {
+        threadPool.addData(threadChunkList[i]);
+        threadPool.waitForEnd();
     }
+
 
     for (auto &column : map.chunks) {
         for (auto &elem : column.second) {
             if (elem.second) {
                 rawGameTexture.draw(elem.second->vertices);
-// #ifdef DEBUG
-//                 sf::Transform pos;
-//                 pos.translate(elem.second->pos.x * CHUNK_SIZE * PIXEL_SIZE, elem.second->pos.y * CHUNK_SIZE * PIXEL_SIZE);
-//                 screen.draw(elem.second->wireframe, pos);
-// #endif
-                 for (auto &pixel : elem.second->pixels) {
-//                     pixel->draw(rawGameTexture);
-                     pixel->processed = false;
-                 }
+                for (auto &pixel : elem.second->pixels)
+                    pixel->processed = false;
             }
         }
     }

@@ -10,6 +10,7 @@
 #include "../Components/Tile.hpp"
 #include "../Components/Chunk.hpp"
 #include "Map.hpp"
+#include "../utils/ThreadPool.hpp"
 
 
 class Core {
@@ -47,6 +48,8 @@ public:
 
 private:
     sf::Vector2i position;
+
+    ThreadPool threadPool;
 
 //    siv::PerlinNoise perlin;
 //    std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks;

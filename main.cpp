@@ -5,7 +5,6 @@
 #include "Globals.hpp"
 
 int main() {
-    auto mesboules = PixelType::Concrete;
     std::cout << std::thread::hardware_concurrency() << " available CPU cores" << std::endl;
     auto &core = Core::get();
     while (core.run());

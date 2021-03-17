@@ -9,7 +9,7 @@
 
 
 Core::Core()
-    : activeMaterial(PixelType::Sand)
+    : threadPool(), activeMaterial(PixelType::Sand)
 {
     std::cout << "Seed: " << RANDOM_SEED << std::endl;
     screen.create(
@@ -30,6 +30,8 @@ Core::Core()
     materialsMapping[sf::Keyboard::Num3] = PixelType::Water;
 
     initChunks();
+
+    threadPool.map = &map;
 }
 
 bool Core::run() {
