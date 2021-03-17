@@ -60,7 +60,7 @@ void Core::updateChunks() {
     for( auto const &list : sortedChunkList) {
         for (auto &elem : list.second) {
             if (elem->pos.x % 2) {
-                threads.emplace_back([&](){elem->update(map.chunks);});
+                threads.emplace_back([&](){elem->update(map);});
             }
         }
         for (auto &thread : threads) {
@@ -69,7 +69,7 @@ void Core::updateChunks() {
         threads.clear();
         for (auto &elem : list.second) {
             if (!(elem->pos.x % 2)) {
-                threads.emplace_back([&](){elem->update(map.chunks);});
+                threads.emplace_back([&](){elem->update(map);});
             }
         }
         for (auto &thread : threads) {

@@ -9,7 +9,7 @@
 
 
 Core::Core()
-    : perlin(RANDOM_SEED), activeMaterial(PixelType::Sand)
+    : activeMaterial(PixelType::Sand)
 {
     std::cout << "Seed: " << RANDOM_SEED << std::endl;
     screen.create(
@@ -47,7 +47,7 @@ bool Core::run() {
     // Perform drawing
     rawGameTexture.clear();
     // for each chunk call draw()
-    for (auto xChunks: chunks) {
+    for (auto xChunks: map.chunks) {
         for (auto chunk: xChunks.second)
             screen.draw(chunk.second->vertices);
     }

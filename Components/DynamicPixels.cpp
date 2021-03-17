@@ -22,7 +22,7 @@ bool Water::update(Map map, PixelSwitch &nextPixelData) {
     // for delta in (list of delta positions):
     // if ...
 
-    // D
+    /*// D
     map.lookup(sf::Vector2i(0, 1), nextPixelData);
     if (nextPixelData && density > nextPixelData->nextPixel->density)
         return true;
@@ -41,7 +41,7 @@ bool Water::update(Map map, PixelSwitch &nextPixelData) {
     // L
     map.lookup(sf::Vector2i(-1, 0), nextPixelData);
     if (nextPixelData && density > nextPixelData->nextPixel->density)
-        return true;
+        return true;*/
     return false;
 }
 
@@ -55,7 +55,7 @@ Sand::Sand(sf::Vector2i globalIdx):
 
 bool Sand::update(Map map, PixelSwitch &nextPixelData) {
     // D
-    map.lookup(sf::Vector2i(0, 1), nextPixelData);
+    /*map.lookup(sf::Vector2i(0, 1), nextPixelData);
     if (nextPixelData && density > nextPixelData->nextPixel->density)
         return true;
     // DL
@@ -65,6 +65,6 @@ bool Sand::update(Map map, PixelSwitch &nextPixelData) {
     // DR
     map.lookup(sf::Vector2i(1, 1), nextPixelData);
     if (nextPixelData && density > nextPixelData->nextPixel->density)
-        return true;
+        return true;*/
     return false;
 }
