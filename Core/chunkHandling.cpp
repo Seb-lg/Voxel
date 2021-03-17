@@ -60,7 +60,6 @@ void Core::updateChunks() {
     std::list<std::thread> threads;
     for( auto const &list : sortedChunkList) {
         for (auto &elem : list.second) {
-//                [this, &elem](){elem->update(map);}();
             elem->update(map);
         }
 //        for (auto &elem : list.second) {

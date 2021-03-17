@@ -4,7 +4,7 @@
 
 #include "ChunkHelper.hpp"
 
-std::shared_ptr<Pixel> *ChunkHelper::LookBasedOnVelocity(sf::Vector2f velocity, std::shared_ptr<Chunk> &chunk, int pos, std::map<int, std::map<int, std::shared_ptr<Chunk>>, std::greater<int>> &map) {
+std::shared_ptr<Tile> *ChunkHelper::LookBasedOnVelocity(sf::Vector2f velocity, std::shared_ptr<Chunk> &chunk, int pos, std::map<int, std::map<int, std::shared_ptr<Chunk>>, std::greater<int>> &map) {
     auto const static get = [&](int x, int y) -> cptr {
         if (map[x][y])
             return map[x][y]->pixels.data();

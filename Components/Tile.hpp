@@ -16,9 +16,9 @@
 struct PixelSwitch;
 class Map;
 
-class Pixel {
+class Tile {
 public:
-    Pixel(
+    Tile(
         sf::Vector2i globalIdx, PixelType type=PixelType::Air,
         sf::Color colorTarget=sf::Color(0, 0, 0), int colorVar=1,
         sf::Vector2i densityParams=sf::Vector2i(0, 1), uint life=0
@@ -36,19 +36,19 @@ public:
     int density;
 };
 
-class Concrete: public Pixel {
+class Concrete: public Tile {
 public:
     Concrete(sf::Vector2i globalIdx);
 };
 
 
-class Water: public Pixel {
+class Water: public Tile {
 public:
     Water(sf::Vector2i globalIdx);
     bool update(Map &map, PixelSwitch &nextPixelData) override;
 };
 
-class Sand: public Pixel {
+class Sand: public Tile {
 public:
     Sand(sf::Vector2i globalIdx);
     bool update(Map &map, PixelSwitch &nextPixelData) override;
@@ -57,11 +57,11 @@ public:
 // Utils
 struct PixelSwitch {
     uint pixel1Idx;
-    std::shared_ptr<Pixel> *pixel1 = nullptr;
+    std::shared_ptr<Tile> *pixel1 = nullptr;
     // 2 = Wanted pos
     sf::Vector2i chunk2Pos;
     uint pixel2Idx;
-    std::shared_ptr<Pixel> *pixel2 = nullptr;
+    std::shared_ptr<Tile> *pixel2 = nullptr;
     // 1 = actual pos
     sf::Vector2i chunk1Pos;
 };

@@ -7,7 +7,7 @@
 #include <memory>
 #include <string>
 #include <sstream>
-#include "../Components/Pixel.hpp"
+#include "../Components/Tile.hpp"
 #include "../Components/Chunk.hpp"
 #include "Map.hpp"
 

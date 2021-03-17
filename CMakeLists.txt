@@ -20,7 +20,7 @@ add_executable(Voxel
 
         Components/DynamicPixels.cpp
         Components/StaticPixels.cpp
-        Components/Pixel.hpp
+        Components/Tile.hpp
         Components/Chunk.cpp
         Components/Chunk.hpp
         Components/ChunkHelper.cpp Components/ChunkHelper.hpp Core/Map.cpp Core/Map.hpp Globals.hpp)

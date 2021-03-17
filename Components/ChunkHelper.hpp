@@ -3,10 +3,10 @@
 //
 
 #pragma once
-#include "Pixel.hpp"
+#include "Tile.hpp"
 #include "Chunk.hpp"
 
-#define cptr std::shared_ptr<Pixel>*
+#define cptr std::shared_ptr<Tile>*
 
 namespace ChunkHelper {
     cptr LookBasedOnVelocity(sf::Vector2f velocity, std::shared_ptr<Chunk> &chunk, int pos, std::map<int, std::map<int, std::shared_ptr<Chunk>>, std::greater<int>> &map);

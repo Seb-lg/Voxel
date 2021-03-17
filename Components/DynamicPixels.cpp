@@ -5,12 +5,12 @@
 //   ███╔╝  ██║   ██║██║  ██║██║██╔══██║██║
 //  ███████╗╚██████╔╝██████╔╝██║██║  ██║╚██████╗
 //  ╚══════╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═╝ ╚═════╝
-#include "Pixel.hpp"
+#include "Tile.hpp"
 #include "../Core/Map.hpp"
 
 
 Water::Water(sf::Vector2i globalIdx):
-    Pixel(
+        Tile(
         globalIdx, PixelType::Water,
         sf::Color(108, 177, 202), 5,
         sf::Vector2i(50, 10)
@@ -37,7 +37,7 @@ bool Water::update(Map &map, PixelSwitch &nextPixelData) {
 }
 
 Sand::Sand(sf::Vector2i globalIdx):
-    Pixel(
+        Tile(
         globalIdx, PixelType::Sand,
         sf::Color(194, 178, 128), 30,
         sf::Vector2i(59, 12)

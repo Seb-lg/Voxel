@@ -2,11 +2,11 @@
 // Created by seub on 07/03/2021.
 //
 
-#include "Pixel.hpp"
+#include "Tile.hpp"
 #include "../Core/Map.hpp"
 #include "Chunk.hpp"
 
-Pixel::Pixel(
+Tile::Tile(
     sf::Vector2i globalIdx, PixelType type,
     sf::Color colorTarget, int colorVar, sf::Vector2i densityParams, uint life
 ):
@@ -19,13 +19,13 @@ Pixel::Pixel(
     density = densityParams.x + (std::rand() % densityParams.y - int(densityParams.y / 2));
 };
 
-bool Pixel::update(Map &map, PixelSwitch &nextPixelData)
+bool Tile::update(Map &map, PixelSwitch &nextPixelData)
 {
     return false;
 }
 
 Concrete::Concrete(sf::Vector2i globalIdx):
-    Pixel(
+        Tile(
         globalIdx, PixelType::Concrete,
         sf::Color(100, 100, 100), 10,
         sf::Vector2i(5000, 20)

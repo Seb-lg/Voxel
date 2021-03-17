@@ -3,7 +3,7 @@
 //
 #include <iostream>
 #include "Chunk.hpp"
-#include "Pixel.hpp"
+#include "Tile.hpp"
 #include "../Core/Core.hpp"
 #include "../Core/Map.hpp"
 
@@ -23,7 +23,7 @@ Chunk::Chunk(sf::Vector2i chunkPos, siv::PerlinNoise perlin):
     auto ptr = pixels.data();
     for (int y = 0; y < CHUNK_SIZE; ++y) {
         for (int x = 0; x < CHUNK_SIZE; ++x) {
-            // Create the Pixel object and data
+            // Create the Tile object and data
             *ptr = createTileFromPerlin(
                 sf::Vector2i(
                     chunkPos.x * CHUNK_SIZE + x,
@@ -38,7 +38,7 @@ Chunk::Chunk(sf::Vector2i chunkPos, siv::PerlinNoise perlin):
             quad[1].position = sf::Vector2f((chunkPos.x * CHUNK_SIZE + x+1) * PIXEL_SIZE, (chunkPos.y * CHUNK_SIZE + y) * PIXEL_SIZE);
             quad[2].position = sf::Vector2f((chunkPos.x * CHUNK_SIZE + x+1) * PIXEL_SIZE, (chunkPos.y * CHUNK_SIZE + y+1) * PIXEL_SIZE);
             quad[3].position = sf::Vector2f((chunkPos.x * CHUNK_SIZE + x) * PIXEL_SIZE, (chunkPos.y * CHUNK_SIZE + y+1) * PIXEL_SIZE);
-            // Set color from the created Pixel object
+            // Set color from the created Tile object
             quad[0].color = (*ptr)->color;
             quad[1].color = (*ptr)->color;
             quad[2].color = (*ptr)->color;
@@ -58,7 +58,7 @@ Chunk::Chunk(sf::Vector2i chunkPos, siv::PerlinNoise perlin):
 }
 
 
-TileResponse Chunk::replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Pixel> newTile, bool override) {
+TileResponse Chunk::replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Tile> newTile, bool override) {
     int idx = tilePos.y * CHUNK_SIZE + tilePos.x;
     if (idx > CHUNK_SIZE * CHUNK_SIZE || idx < 0)
         return (TileResponse)TileResponse::OOB;
@@ -78,7 +78,7 @@ TileResponse Chunk::replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Pixel>
     return (TileResponse)TileResponse::CREATED;
 }
 
-std::shared_ptr<Pixel> Chunk::createTileFromPerlin(sf::Vector2i pos, siv::PerlinNoise perlin) {
+std::shared_ptr<Tile> Chunk::createTileFromPerlin(sf::Vector2i pos, siv::PerlinNoise perlin) {
     // Called by the Chunk class constructor, will determine which pixel type
     // is created, based on the perlin noise
     static const double frequency = 50;
@@ -95,7 +95,7 @@ std::shared_ptr<Pixel> Chunk::createTileFromPerlin(sf::Vector2i pos, siv::Perlin
         return std::make_shared<Sand>(pos);
     if (noise > 0.8)
         return std::make_shared<Water>(pos);
-    return std::make_shared<Pixel>(pos);
+    return std::make_shared<Tile>(pos);
 }
 
 

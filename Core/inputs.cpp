@@ -43,7 +43,7 @@ void Core::handleInputs() {
         // maybe create a getTile() function with this?
         std::shared_ptr<Chunk> chunk = getChunk(centerPos / CHUNK_SIZE);
         sf::Vector2<int> offset = sf::Vector2i(centerPos.x % CHUNK_SIZE, centerPos.y % CHUNK_SIZE);
-        std::shared_ptr<Pixel> pixel = chunk->pixels[offset.y * CHUNK_SIZE + offset.x];
+        std::shared_ptr<Tile> pixel = chunk->pixels[offset.y * CHUNK_SIZE + offset.x];
         std::ostringstream oss;
         oss << "(" << centerPos.x << "/" << centerPos.y << ") = " << pixelTypeToString(pixel->type);
         std::string var = oss.str();

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <thread>
 #include "Core/Core.hpp"
-#include "Components/Pixel.hpp"
+#include "Components/Tile.hpp"
 #include "Globals.hpp"
 
 int main() {

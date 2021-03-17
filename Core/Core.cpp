@@ -108,7 +108,7 @@ void Core::replaceTile(PixelType newTileType, sf::Vector2<int> pixelPos, bool ov
     sf::Vector2<int> offset = sf::Vector2i(pixelPos.x % CHUNK_SIZE, pixelPos.y % CHUNK_SIZE);
     TileResponse flag;
     if (newTileType == PixelType::Air)
-        flag = chunk->replaceTile(offset, std::make_shared<Pixel>(pixelPos), override);
+        flag = chunk->replaceTile(offset, std::make_shared<Tile>(pixelPos), override);
     if (newTileType == PixelType::Sand)
         flag = chunk->replaceTile(offset, std::make_shared<Sand>(pixelPos), override);
     if (newTileType == PixelType::Water)

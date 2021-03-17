@@ -25,7 +25,7 @@ void Map::swapPixels(PixelSwitch &nextPixelData) {
     quad2[1].color = tmp;
     quad2[2].color = tmp;
     quad2[3].color = tmp;
-    // Now swap the Pixel themselves
+    // Now swap the Tile themselves
 
     auto jej = *nextPixelData.pixel1;
     *nextPixelData.pixel1 = *nextPixelData.pixel2;
