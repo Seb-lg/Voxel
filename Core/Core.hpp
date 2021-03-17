@@ -37,7 +37,7 @@ private:
     // Shaders
     void loadShaders();
     sf::Sprite applyShaders(sf::RenderTexture &rawGameTexture);
-
+    void draw();
 
 public:
     sf::RenderWindow screen;

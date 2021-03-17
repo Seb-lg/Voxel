@@ -44,33 +44,7 @@ bool Core::run() {
     // Perform computations
     handleInputs();
     updateChunks();
-    // Perform drawing
-    rawGameTexture.clear();
-    // for each chunk call draw()
-    for (auto xChunks: map.chunks) {
-        for (auto chunk: xChunks.second)
-            if (chunk.second)
-                screen.draw(chunk.second->vertices);
-    }
-    rawGameTexture.display();
-
-    // Apply all the fragment shaders
-    sf::Sprite finalSprite;
-    if (USE_FRAGMENT_SHADERS)
-        finalSprite = applyShaders(rawGameTexture);
-    else
-        finalSprite = sf::Sprite(rawGameTexture.getTexture());
-    // Now do the final draw on the window
-    screen.clear(sf::Color::Black);
-    if (USE_VERTEX_SHADERS)
-      screen.draw(finalSprite, &pixelate_shader);
-    else
-      screen.draw(finalSprite);
-    if (DRAW_TILE_DEBUG) {
-        screen.draw(debugText);
-    }
-    screen.display();
-
+    draw();
     std::cout << "FPS : " << 1 / ((getTime() - now) / 1000000000.0) << "\r" << std::flush;
 
     /*static int oui = WIDTH/2;
@@ -80,6 +54,37 @@ bool Core::run() {
     sf::View jej(pos, size);
     this->screen.setView(jej);*/
     return true;
+}
+
+void Core::draw() {
+    // We use a rawGameTexture to draw all the pixels first,
+    // then create a sprite with it in order to apply the pixelated shader
+    rawGameTexture.clear();
+    // Draw each chunk
+    for (auto xChunks: map.chunks) {
+        for (auto chunk: xChunks.second)
+            if (chunk.second)
+                rawGameTexture.draw(chunk.second->vertices);
+    }
+    // Update the texture with the draws
+    rawGameTexture.display();
+    // Now do the final draw on the window
+    screen.clear(sf::Color::Black);
+
+    sf::Sprite finalSprite;
+    if (USE_FRAGMENT_SHADERS)
+        finalSprite = applyShaders(rawGameTexture);
+    else
+        finalSprite = sf::Sprite(rawGameTexture.getTexture());
+
+    if (USE_VERTEX_SHADERS)
+        screen.draw(finalSprite, &pixelate_shader);
+    else
+        screen.draw(finalSprite);
+    if (DRAW_TILE_DEBUG)
+        screen.draw(debugText);
+    // Draw to screen
+    screen.display();
 }
 
 void Core::dynamicTileDrawing(PixelType newTileType, bool override) {
