@@ -57,11 +57,11 @@ public:
 // Utils
 struct PixelSwitch {
     uint pixel1Idx;
-    std::shared_ptr<Pixel> *pixel1;
+    std::shared_ptr<Pixel> *pixel1 = nullptr;
     // 2 = Wanted pos
     sf::Vector2i chunk2Pos;
     uint pixel2Idx;
-    std::shared_ptr<Pixel> *pixel2;
+    std::shared_ptr<Pixel> *pixel2 = nullptr;
     // 1 = actual pos
     sf::Vector2i chunk1Pos;
 };

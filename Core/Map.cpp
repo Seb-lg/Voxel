@@ -36,8 +36,7 @@ bool Map::lookup(sf::Vector2i relativeTestPos, PixelSwitch &data) {
     auto x = data.pixel1Idx % CHUNK_SIZE + relativeTestPos.x;
     auto y = data.pixel1Idx / CHUNK_SIZE + relativeTestPos.y;
 
-    data.chunk2Pos.x = data.chunk1Pos.x;
-    data.chunk2Pos.y = data.chunk1Pos.y;
+    data.chunk2Pos = data.chunk1Pos;
 
     /** Check if the position is out of chunk bound */
     if (x < 0) {
@@ -45,7 +44,7 @@ bool Map::lookup(sf::Vector2i relativeTestPos, PixelSwitch &data) {
         x = CHUNK_SIZE - 1;
     } else if (x >= CHUNK_SIZE) {
         data.chunk2Pos.x++;
-        x = CHUNK_SIZE + 1;
+        x = 0;
     }
 
     if (y < 0) {
@@ -53,7 +52,7 @@ bool Map::lookup(sf::Vector2i relativeTestPos, PixelSwitch &data) {
         y = CHUNK_SIZE - 1;
     } else if (y >= CHUNK_SIZE) {
         data.chunk2Pos.y++;
-        y = CHUNK_SIZE + 1;
+        y = 0;
     }
 
     data.pixel2Idx = y * CHUNK_SIZE + x;

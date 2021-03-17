@@ -111,7 +111,7 @@ void Chunk::update(Map &map) {
             }
             if (!(*ptr)->processed) {
                 PixelSwitch nextPixelData;
-                nextPixelData.chunk1Pos = sf::Vector2i(x, y);
+                nextPixelData.chunk1Pos = pos;
                 nextPixelData.pixel1Idx = x + y * CHUNK_SIZE;
                 nextPixelData.pixel1 = ptr;
 
