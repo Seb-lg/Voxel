@@ -9,8 +9,8 @@ Map::Map():perlin(RANDOM_SEED) {
 }
 
 void Map::swapPixels(PixelSwitch &nextPixelData) {
-    sf::VertexArray chunk1Vertices = chunks[nextPixelData.chunk1Pos.x][nextPixelData.chunk1Pos.y]->vertices;
-    sf::VertexArray chunk2Vertices = chunks[nextPixelData.chunk2Pos.x][nextPixelData.chunk2Pos.y]->vertices;
+    sf::VertexArray &chunk1Vertices = chunks[nextPixelData.chunk1Pos.x][nextPixelData.chunk1Pos.y]->vertices;
+    sf::VertexArray &chunk2Vertices = chunks[nextPixelData.chunk2Pos.x][nextPixelData.chunk2Pos.y]->vertices;
     // First swap the colors of the vertices
     // in the vertices VertexArray buffer
     sf::Vertex *quad1 = &chunk1Vertices[nextPixelData.pixel1Idx * 4];

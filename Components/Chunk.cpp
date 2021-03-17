@@ -109,7 +109,7 @@ void Chunk::update(Map &map) {
                 --ptr;
                 continue;
             }
-            if (!(*ptr)->processed) {
+//            if (!(*ptr)->processed) {
                 PixelSwitch nextPixelData;
                 nextPixelData.chunk1Pos = pos;
                 nextPixelData.pixel1Idx = x + y * CHUNK_SIZE;
@@ -119,7 +119,7 @@ void Chunk::update(Map &map) {
                     (*ptr)->processed = true;
                     map.swapPixels(nextPixelData);
                 }
-            }
+//            }
             --ptr;
         }
     }
