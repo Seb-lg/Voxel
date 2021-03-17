@@ -17,7 +17,7 @@ Water::Water(sf::Vector2i globalIdx):
     )
 {};
 
-bool Water::update(Map map, PixelSwitch &nextPixelData) {
+bool Water::update(Map &map, PixelSwitch &nextPixelData) {
     // D
     if (map.lookup(sf::Vector2i(0, 1), nextPixelData) && density > (*nextPixelData.pixel2)->density)
         return true;
@@ -44,7 +44,7 @@ Sand::Sand(sf::Vector2i globalIdx):
     )
 {};
 
-bool Sand::update(Map map, PixelSwitch &nextPixelData) {
+bool Sand::update(Map &map, PixelSwitch &nextPixelData) {
     // D
     if (map.lookup(sf::Vector2i(0, 1), nextPixelData) && density > (*nextPixelData.pixel2)->density)
         return true;

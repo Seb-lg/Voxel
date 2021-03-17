@@ -57,7 +57,10 @@ bool Map::lookup(sf::Vector2i relativeTestPos, PixelSwitch &data) {
 
     data.pixel2Idx = y * CHUNK_SIZE + x;
 
-    if (chunks[data.chunk2Pos.x][data.chunk2Pos.y]) {
+    if (data.chunk2Pos == data.chunk1Pos) {
+        data.pixel2 = data.pixel1 + relativeTestPos.x + relativeTestPos.y * CHUNK_SIZE;
+        return true;
+    } else if (chunks[data.chunk2Pos.x][data.chunk2Pos.y]) {
         data.pixel2 = chunks[data.chunk2Pos.x][data.chunk2Pos.y]->pixels.data() + data.pixel2Idx;
         return true;
     }

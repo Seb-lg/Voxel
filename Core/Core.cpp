@@ -49,7 +49,8 @@ bool Core::run() {
     // for each chunk call draw()
     for (auto xChunks: map.chunks) {
         for (auto chunk: xChunks.second)
-            screen.draw(chunk.second->vertices);
+            if (chunk.second)
+                screen.draw(chunk.second->vertices);
     }
     rawGameTexture.display();
 

@@ -59,23 +59,26 @@ void Core::updateChunks() {
     std::list<std::thread> threads;
     for( auto const &list : sortedChunkList) {
         for (auto &elem : list.second) {
-            if (elem->pos.x % 2) {
-                threads.emplace_back([&](){elem->update(map);});
-            }
+                [this, &elem](){elem->update(map);}();
         }
-        for (auto &thread : threads) {
-            thread.join();
-        }
-        threads.clear();
-        for (auto &elem : list.second) {
-            if (!(elem->pos.x % 2)) {
-                threads.emplace_back([&](){elem->update(map);});
-            }
-        }
-        for (auto &thread : threads) {
-            thread.join();
-        }
-        threads.clear();
+//        for (auto &elem : list.second) {
+//            if (elem->pos.x % 2) {
+//                threads.emplace_back([this, &elem](){elem->update(map);});
+//            }
+//        }
+//        for (auto &thread : threads) {
+//            thread.join();
+//        }
+//        threads.clear();
+//        for (auto &elem : list.second) {
+//            if (!(elem->pos.x % 2)) {
+//                threads.emplace_back([this, &elem](){elem->update(map);});
+//            }
+//        }
+//        for (auto &thread : threads) {
+//            thread.join();
+//        }
+//        threads.clear();
     }
 
     for (auto &column : map.chunks) {

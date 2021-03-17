@@ -19,7 +19,7 @@ Pixel::Pixel(
     density = densityParams.x + (std::rand() % densityParams.y - int(densityParams.y / 2));
 };
 
-bool Pixel::update(Map map, PixelSwitch &nextPixelData)
+bool Pixel::update(Map &map, PixelSwitch &nextPixelData)
 {
     return false;
 }
