@@ -33,7 +33,7 @@ void Core::handleInputs() {
     else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
         dynamicTileDrawing(PixelType::Air, true);
 
-    if (drawTileDebug) {
+    if (DRAW_TILE_DEBUG) {
         // Debug text
         sf::Vector2<int> mousePos = sf::Mouse::getPosition(screen);
         debugText.setPosition(mousePos.x, mousePos.y);

@@ -6,6 +6,7 @@
 //  ███████╗╚██████╔╝██████╔╝██║██║  ██║╚██████╗
 //  ╚══════╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═╝ ╚═════╝
 #include "Pixel.hpp"
+#include "../Core/Map.hpp"
 
 
 Water::Water(sf::Vector2i globalIdx):
@@ -22,7 +23,7 @@ std::shared_ptr<PixelSwitch> Water::update(Map map, PixelSwitch &nextPixelData) 
     // if ...
 
 
-    (*ptr)->processed = true;
+    /*(*ptr)->processed = true;
     // D
     std::shared_ptr<PixelSwitch> nextPixelData;
     nextPixelData = map.lookup(sf::Vector2i(0, 1), nextPixelData);
@@ -45,7 +46,7 @@ std::shared_ptr<PixelSwitch> Water::update(Map map, PixelSwitch &nextPixelData) 
     if (nextPixelData && density > nextPixelData->nextPixel->density)
         return nextPixelData;
     (*ptr)->processed = false;
-    return std::make_shared<PixelSwitch>(nullptr);
+    return std::make_shared<PixelSwitch>(nullptr);*/
 }
 
 Sand::Sand(sf::Vector2i globalIdx):
@@ -57,7 +58,7 @@ Sand::Sand(sf::Vector2i globalIdx):
 {};
 
 std::shared_ptr<PixelSwitch> Sand::update(Map map, PixelSwitch &nextPixelData) {
-    (*ptr)->processed = true;
+    /*(*ptr)->processed = true;
     // D
     std::shared_ptr<PixelSwitch> nextPixelData;
     nextPixelData = map.lookup(sf::Vector2i(0, 1), nextPixelData);
@@ -72,5 +73,5 @@ std::shared_ptr<PixelSwitch> Sand::update(Map map, PixelSwitch &nextPixelData) {
     if (nextPixelData && density > nextPixelData->nextPixel->density)
         return nextPixelData;
     (*ptr)->processed = false;
-    return std::make_shared<PixelSwitch>(nullptr);
+    return std::make_shared<PixelSwitch>(nullptr);*/
 }

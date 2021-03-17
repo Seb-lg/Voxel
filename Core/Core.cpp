@@ -9,15 +9,15 @@
 
 
 Core::Core()
-    : perlin(rand_seed), activeMaterial(PixelType::Sand)
+    : perlin(RANDOM_SEED), activeMaterial(PixelType::Sand)
 {
-    std::cout << "Seed: " << rand_seed << std::endl;
+    std::cout << "Seed: " << RANDOM_SEED << std::endl;
     screen.create(
-        sf::VideoMode(width, height, 32),
+        sf::VideoMode(WIDTH, HEIGHT, 32),
         "SandEngine",
         sf::Style::Titlebar | sf::Style::Close
     );
-    screen.setFramerateLimit(fps);
+    screen.setFramerateLimit(FPS);
     if (!font.loadFromFile("./Assets/CozetteVector.ttf"))
         std::cout << "loading font error" << std::endl;
     debugText.setFont(font); // font is a sf::Font
@@ -55,26 +55,26 @@ bool Core::run() {
 
     // Apply all the fragment shaders
     sf::Sprite finalSprite;
-    if (useFragmentShaders)
+    if (USE_FRAGMENT_SHADERS)
         finalSprite = applyShaders(rawGameTexture);
     else
         finalSprite = sf::Sprite(rawGameTexture.getTexture());
     // Now do the final draw on the window
     screen.clear(sf::Color::Black);
-    if (useVertexShaders)
+    if (USE_VERTEX_SHADERS)
       screen.draw(finalSprite, &pixelate_shader);
     else
       screen.draw(finalSprite);
-    if (drawTileDebug) {
+    if (DRAW_TILE_DEBUG) {
         screen.draw(debugText);
     }
     screen.display();
 
-    std::cout << "fps : " << 1 / ((getTime() - now) / 1000000000.0) << "\r" << std::flush;
+    std::cout << "FPS : " << 1 / ((getTime() - now) / 1000000000.0) << "\r" << std::flush;
 
-    /*static int oui = width/2;
-    auto pos = sf::Vector2f(oui, height/2);
-    auto size = sf::Vector2f(width, height);
+    /*static int oui = WIDTH/2;
+    auto pos = sf::Vector2f(oui, HEIGHT/2);
+    auto size = sf::Vector2f(WIDTH, HEIGHT);
     oui++;
     sf::View jej(pos, size);
     this->screen.setView(jej);*/

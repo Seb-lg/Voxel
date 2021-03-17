@@ -3,7 +3,9 @@
 //
 #include <iostream>
 #include "Chunk.hpp"
+#include "Pixel.hpp"
 #include "../Core/Core.hpp"
+#include "../Core/Map.hpp"
 
 
 Chunk::Chunk(sf::Vector2i chunkPos, siv::PerlinNoise perlin):
@@ -59,11 +61,11 @@ Chunk::Chunk(sf::Vector2i chunkPos, siv::PerlinNoise perlin):
 TileResponse Chunk::replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Pixel> newTile, bool override) {
     int idx = tilePos.y * CHUNK_SIZE + tilePos.x;
     if (idx > CHUNK_SIZE * CHUNK_SIZE || idx < 0)
-        return TileResponse::OOB;
+        return (TileResponse)TileResponse::OOB;
     if (pixels[idx]->type == newTile->type)
-        return TileResponse::ALREADY_CREATED;
+        return (TileResponse)TileResponse::ALREADY_CREATED;
     if (!override && pixels[idx]->type != PixelType::Air)
-        return TileResponse::NOT_EMPTY;
+        return (TileResponse)TileResponse::NOT_EMPTY;
     pixels[idx] = newTile;
     // get a pointer to the current tile's sf::quad
     sf::Vertex* quad = &vertices[idx * 4];
@@ -73,7 +75,7 @@ TileResponse Chunk::replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Pixel>
     quad[2].color = newTile->color;
     quad[3].color = newTile->color;
 
-    return TileResponse::CREATED;
+    return (TileResponse)TileResponse::CREATED;
 }
 
 std::shared_ptr<Pixel> Chunk::createTileFromPerlin(sf::Vector2i pos, siv::PerlinNoise perlin) {
@@ -97,7 +99,7 @@ std::shared_ptr<Pixel> Chunk::createTileFromPerlin(sf::Vector2i pos, siv::Perlin
 }
 
 
-void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks) {
+void Chunk::update(Map &map) {
     auto &scrn = Core::get().screen;
     /** update bottom row */
     auto ptr = pixels.data() + CHUNK_SIZE * CHUNK_SIZE - 1;
@@ -107,188 +109,188 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                 --ptr;
                 continue;
             }
-            Surrounding surround(ptr);
+//            Surrounding surround(ptr);
+//
+//            /** Checking Y axis first */
+//            /** First row */
+//            if (y == 0) {
+//                /** Checking X axis */
+//                /** First column */
+//                if (x == 0) {
+//                    // left
+//                    if (map.chunks[pos.x - 1][pos.y]) {
+//                        auto left = map.chunks[pos.x - 1][pos.y]->pixels.data();
+//                        surround.l = left + CHUNK_SIZE - 1;
+//                        surround.dl = left + 2 * CHUNK_SIZE - 1;
+//                    } else {
+//                        surround.l = nullptr;
+//                        surround.dl = nullptr;
+//                    }
+//                    // up Left
+//                    if (map.chunks[pos.x - 1][pos.y - 1]) {
+//                        auto up = map.chunks[pos.x - 1][pos.y - 1]->pixels.data();
+//                        surround.ul = up + CHUNK_SIZE* CHUNK_SIZE - 1;
+//                    } else {
+//                        surround.ul = nullptr;
+//                    }
+//                    // up
+//                    if (map.chunks[pos.x][pos.y - 1]) {
+//                        auto up = map.chunks[pos.x][pos.y - 1]->pixels.data();
+//                        surround.u = up + x + (CHUNK_SIZE - 1) * CHUNK_SIZE;
+//                        surround.ur = up + x + 1 + (CHUNK_SIZE - 1) * CHUNK_SIZE;
+//                    } else {
+//                        surround.u = nullptr;
+//                        surround.ur = nullptr;
+//                    }
+//                }
+//                /** Last column */
+//                else if (x == CHUNK_SIZE - 1) {
+//                    // right
+//                    if (map.chunks[pos.x + 1][pos.y]) {
+//                        auto right = map.chunks[pos.x + 1][pos.y]->pixels.data();
+//                        surround.r = right;
+//                        surround.dr = right + CHUNK_SIZE;
+//                    } else {
+//                        surround.r = nullptr;
+//                        surround.dr = nullptr;
+//                    }
+//                    // right up
+//                    if (map.chunks[pos.x + 1][pos.y - 1]) {
+//                        auto up = map.chunks[pos.x + 1][pos.y - 1]->pixels.data();
+//                        surround.ur = up + (CHUNK_SIZE - 1) * CHUNK_SIZE;
+//                    } else {
+//                        surround.ur = nullptr;
+//                    }
+//                    // up
+//                    if (map.chunks[pos.x][pos.y - 1]) {
+//                        auto up = map.chunks[pos.x][pos.y - 1]->pixels.data();
+//                        surround.ul = up + x - 1 + (CHUNK_SIZE - 1) * CHUNK_SIZE;
+//                        surround.u = up + x + (CHUNK_SIZE - 1) * CHUNK_SIZE;
+//                    } else {
+//                        surround.ul = nullptr;
+//                        surround.u = nullptr;
+//                    }
+//                }
+//                /** Intermediate column */
+//                else {
+//                    // up
+//                    if (map.chunks[pos.x][pos.y - 1]) {
+//                        auto up = map.chunks[pos.x][pos.y - 1]->pixels.data();
+//                        surround.ul = up + x - 1 + (CHUNK_SIZE - 1) * CHUNK_SIZE;
+//                        surround.u = up + x + (CHUNK_SIZE - 1) * CHUNK_SIZE;
+//                        surround.ur = up + x + 1 + (CHUNK_SIZE - 1) * CHUNK_SIZE;
+//                    } else {
+//                        surround.ul = nullptr;
+//                        surround.u = nullptr;
+//                        surround.ur = nullptr;
+//                    }
+//                }
+//            }
+//            /** Last row */
+//            else if (y == CHUNK_SIZE - 1) {
+//                /** Checking X axis */
+//                /** First column */
+//                if (x == 0) {
+//                    // left
+//                    if (map.chunks[pos.x - 1][pos.y]) {
+//                        auto left = map.chunks[pos.x-1][pos.y]->pixels.data();
+//                        surround.ul = left + (y - 1) * CHUNK_SIZE - 1;
+//                        surround.l = left + y * CHUNK_SIZE - 1;
+//                    } else {
+//                        surround.ul = nullptr;
+//                        surround.l = nullptr;
+//                    }
+//                    // down Left
+//                    if (map.chunks[pos.x - 1][pos.y + 1]) {
+//                        auto down = map.chunks[pos.x - 1][pos.y + 1]->pixels.data();
+//                        surround.dl = down + CHUNK_SIZE - 1;
+//                    } else {
+//                        surround.dl = nullptr;
+//                    }
+//                    // down
+//                    if (map.chunks[pos.x][pos.y + 1]) {
+//                        auto down = map.chunks[pos.x][pos.y + 1]->pixels.data();
+//                        surround.d = down + x;
+//                        surround.dr = down + x + 1;
+//                    } else {
+//                        surround.d = nullptr;
+//                        surround.dr = nullptr;
+//                    }
+//                }
+//                    /** Last column */
+//                else if (x == CHUNK_SIZE - 1) {
+//                    // right
+//                    if (map.chunks[pos.x + 1][pos.y]) {
+//                        auto right = map.chunks[pos.x + 1][pos.y]->pixels.data();
+//                        surround.r = right + (CHUNK_SIZE - 1) * CHUNK_SIZE;
+//                    } else {
+//                        surround.r = nullptr;
+//                    }
+//                    // right down
+//                    if (map.chunks[pos.x + 1][pos.y + 1]) {
+//                        auto down = map.chunks[pos.x + 1][pos.y + 1]->pixels.data();
+//                        surround.dr = down;
+//                    } else {
+//                        surround.dr = nullptr;
+//                    }
+//                    // down
+//                    if (map.chunks[pos.x][pos.y + 1]) {
+//                        auto up = map.chunks[pos.x][pos.y + 1]->pixels.data();
+//                        surround.d = up + x;
+//                        surround.dl = up + x - 1;
+//                    } else {
+//                        surround.d = nullptr;
+//                        surround.dl = nullptr;
+//                    }
+//                }
+//                    /** Intermediate column */
+//                else {
+//                    // down
+//                    if (map.chunks[pos.x][pos.y + 1]) {
+//                        auto down = map.chunks[pos.x][pos.y + 1]->pixels.data();
+//                        surround.dl = down + x - 1;
+//                        surround.d = down + x;
+//                        surround.dr = down + x + 1;
+//                    } else {
+//                        surround.dl = nullptr;
+//                        surround.d = nullptr;
+//                        surround.dr = nullptr;
+//                    }
+//                }
+//            }
+//            /** Intermediate row */
+//            else {
+//                /** Checking X axis */
+//                /** First column */
+//                if (x == 0) {
+//                    if (map.chunks[pos.x - 1][pos.y]) {
+//                        auto left = map.chunks[pos.x - 1][pos.y]->pixels.data();
+//                        surround.ul = left + (y - 0) * CHUNK_SIZE - 1;
+//                        surround.l = left + (y+1) * CHUNK_SIZE - 1;
+//                        surround.dl = left + (y + 2) * CHUNK_SIZE - 1;
+//                    } else {
+//                        surround.ul = nullptr;
+//                        surround.l = nullptr;
+//                        surround.dl = nullptr;
+//                    }
+//                }
+//                    /** First column */
+//                else if (x == CHUNK_SIZE - 1) {
+//                    if (map.chunks[pos.x + 1][pos.y]) {
+//                        auto right = map.chunks[pos.x + 1][pos.y]->pixels.data();
+//                        surround.ur = right + CHUNK_SIZE * (y - 1);
+//                        surround.r = right + CHUNK_SIZE * (y);
+//                        surround.dr = right + CHUNK_SIZE * (y + 1);
+//                    } else {
+//                        surround.ur = nullptr;
+//                        surround.r = nullptr;
+//                        surround.dr = nullptr;
+//                    }
+//                }
+//                /** Intermediate column handled by the constructor */
+//            }
 
-            /** Checking Y axis first */
-            /** First row */
-            if (y == 0) {
-                /** Checking X axis */
-                /** First column */
-                if (x == 0) {
-                    // left
-                    if (chunks[pos.x - 1][pos.y]) {
-                        auto left = chunks[pos.x - 1][pos.y]->pixels.data();
-                        surround.l = left + CHUNK_SIZE - 1;
-                        surround.dl = left + 2 * CHUNK_SIZE - 1;
-                    } else {
-                        surround.l = nullptr;
-                        surround.dl = nullptr;
-                    }
-                    // up Left
-                    if (chunks[pos.x - 1][pos.y - 1]) {
-                        auto up = chunks[pos.x - 1][pos.y - 1]->pixels.data();
-                        surround.ul = up + CHUNK_SIZE* CHUNK_SIZE - 1;
-                    } else {
-                        surround.ul = nullptr;
-                    }
-                    // up
-                    if (chunks[pos.x][pos.y - 1]) {
-                        auto up = chunks[pos.x][pos.y - 1]->pixels.data();
-                        surround.u = up + x + (CHUNK_SIZE - 1) * CHUNK_SIZE;
-                        surround.ur = up + x + 1 + (CHUNK_SIZE - 1) * CHUNK_SIZE;
-                    } else {
-                        surround.u = nullptr;
-                        surround.ur = nullptr;
-                    }
-                }
-                /** Last column */
-                else if (x == CHUNK_SIZE - 1) {
-                    // right
-                    if (chunks[pos.x + 1][pos.y]) {
-                        auto right = chunks[pos.x + 1][pos.y]->pixels.data();
-                        surround.r = right;
-                        surround.dr = right + CHUNK_SIZE;
-                    } else {
-                        surround.r = nullptr;
-                        surround.dr = nullptr;
-                    }
-                    // right up
-                    if (chunks[pos.x + 1][pos.y - 1]) {
-                        auto up = chunks[pos.x + 1][pos.y - 1]->pixels.data();
-                        surround.ur = up + (CHUNK_SIZE - 1) * CHUNK_SIZE;
-                    } else {
-                        surround.ur = nullptr;
-                    }
-                    // up
-                    if (chunks[pos.x][pos.y - 1]) {
-                        auto up = chunks[pos.x][pos.y - 1]->pixels.data();
-                        surround.ul = up + x - 1 + (CHUNK_SIZE - 1) * CHUNK_SIZE;
-                        surround.u = up + x + (CHUNK_SIZE - 1) * CHUNK_SIZE;
-                    } else {
-                        surround.ul = nullptr;
-                        surround.u = nullptr;
-                    }
-                }
-                /** Intermediate column */
-                else {
-                    // up
-                    if (chunks[pos.x][pos.y - 1]) {
-                        auto up = chunks[pos.x][pos.y - 1]->pixels.data();
-                        surround.ul = up + x - 1 + (CHUNK_SIZE - 1) * CHUNK_SIZE;
-                        surround.u = up + x + (CHUNK_SIZE - 1) * CHUNK_SIZE;
-                        surround.ur = up + x + 1 + (CHUNK_SIZE - 1) * CHUNK_SIZE;
-                    } else {
-                        surround.ul = nullptr;
-                        surround.u = nullptr;
-                        surround.ur = nullptr;
-                    }
-                }
-            }
-            /** Last row */
-            else if (y == CHUNK_SIZE - 1) {
-                /** Checking X axis */
-                /** First column */
-                if (x == 0) {
-                    // left
-                    if (chunks[pos.x - 1][pos.y]) {
-                        auto left = chunks[pos.x-1][pos.y]->pixels.data();
-                        surround.ul = left + (y - 1) * CHUNK_SIZE - 1;
-                        surround.l = left + y * CHUNK_SIZE - 1;
-                    } else {
-                        surround.ul = nullptr;
-                        surround.l = nullptr;
-                    }
-                    // down Left
-                    if (chunks[pos.x - 1][pos.y + 1]) {
-                        auto down = chunks[pos.x - 1][pos.y + 1]->pixels.data();
-                        surround.dl = down + CHUNK_SIZE - 1;
-                    } else {
-                        surround.dl = nullptr;
-                    }
-                    // down
-                    if (chunks[pos.x][pos.y + 1]) {
-                        auto down = chunks[pos.x][pos.y + 1]->pixels.data();
-                        surround.d = down + x;
-                        surround.dr = down + x + 1;
-                    } else {
-                        surround.d = nullptr;
-                        surround.dr = nullptr;
-                    }
-                }
-                    /** Last column */
-                else if (x == CHUNK_SIZE - 1) {
-                    // right
-                    if (chunks[pos.x + 1][pos.y]) {
-                        auto right = chunks[pos.x + 1][pos.y]->pixels.data();
-                        surround.r = right + (CHUNK_SIZE - 1) * CHUNK_SIZE;
-                    } else {
-                        surround.r = nullptr;
-                    }
-                    // right down
-                    if (chunks[pos.x + 1][pos.y + 1]) {
-                        auto down = chunks[pos.x + 1][pos.y + 1]->pixels.data();
-                        surround.dr = down;
-                    } else {
-                        surround.dr = nullptr;
-                    }
-                    // down
-                    if (chunks[pos.x][pos.y + 1]) {
-                        auto up = chunks[pos.x][pos.y + 1]->pixels.data();
-                        surround.d = up + x;
-                        surround.dl = up + x - 1;
-                    } else {
-                        surround.d = nullptr;
-                        surround.dl = nullptr;
-                    }
-                }
-                    /** Intermediate column */
-                else {
-                    // down
-                    if (chunks[pos.x][pos.y + 1]) {
-                        auto down = chunks[pos.x][pos.y + 1]->pixels.data();
-                        surround.dl = down + x - 1;
-                        surround.d = down + x;
-                        surround.dr = down + x + 1;
-                    } else {
-                        surround.dl = nullptr;
-                        surround.d = nullptr;
-                        surround.dr = nullptr;
-                    }
-                }
-            }
-            /** Intermediate row */
-            else {
-                /** Checking X axis */
-                /** First column */
-                if (x == 0) {
-                    if (chunks[pos.x - 1][pos.y]) {
-                        auto left = chunks[pos.x - 1][pos.y]->pixels.data();
-                        surround.ul = left + (y - 0) * CHUNK_SIZE - 1;
-                        surround.l = left + (y+1) * CHUNK_SIZE - 1;
-                        surround.dl = left + (y + 2) * CHUNK_SIZE - 1;
-                    } else {
-                        surround.ul = nullptr;
-                        surround.l = nullptr;
-                        surround.dl = nullptr;
-                    }
-                }
-                    /** First column */
-                else if (x == CHUNK_SIZE - 1) {
-                    if (chunks[pos.x + 1][pos.y]) {
-                        auto right = chunks[pos.x + 1][pos.y]->pixels.data();
-                        surround.ur = right + CHUNK_SIZE * (y - 1);
-                        surround.r = right + CHUNK_SIZE * (y);
-                        surround.dr = right + CHUNK_SIZE * (y + 1);
-                    } else {
-                        surround.ur = nullptr;
-                        surround.r = nullptr;
-                        surround.dr = nullptr;
-                    }
-                }
-                /** Intermediate column handled by the constructor */
-            }
-
-            surround.c = ptr;
+//            surround.c = ptr;
             if (!(*ptr)->processed) {
                 sf::Vector2i pos = sf::Vector2i(x, y);
                 // We should not use a std::shared_ptr<Pixel> here,
@@ -296,15 +298,15 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                 // to use the Surrounding class anymore
                 // (cuz we'll need more than just the immediate neighbors)
                 PixelSwitch nextPixelData;
-                nextPixelData->chunk1Pos = pos;
-                nextPixelData->pixel1Idx = x + y * CHUNK_SIZE;
-                nextPixelData->pixel1 = ptr;
+                nextPixelData.chunk1Pos = pos;
+                nextPixelData.pixel1Idx = x + y * CHUNK_SIZE;
+                nextPixelData.pixel1 = ptr;
 
                 (*ptr)->update(
-                    // CLASSE DE LOOKUP
+                    map,
                     nextPixelData
                 );
-                if (nextPixelData) {
+                if (nextPixelData.pixel1) {
                     // SWITCH(&nextPixelData);
                 }
                 (*ptr)->processed = true;

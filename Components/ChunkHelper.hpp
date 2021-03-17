@@ -9,7 +9,7 @@
 #define cptr std::shared_ptr<Pixel>*
 
 namespace ChunkHelper {
-    cptr LookBasedOnVelocity(sf::Vector2f velocity, std::shared_ptr<Chunk> &chunk, int pos, std::map<int, std::map<int, std::shared_ptr<Chunk>>> &map);
+    cptr LookBasedOnVelocity(sf::Vector2f velocity, std::shared_ptr<Chunk> &chunk, int pos, std::map<int, std::map<int, std::shared_ptr<Chunk>>, std::greater<int>> &map);
     cptr LookUpLeft(sf::Vector2f velocity, std::shared_ptr<Chunk> &chunk, int pos, cptr left, cptr upLeft, cptr up);
     cptr LookUpRight(sf::Vector2f velocity, std::shared_ptr<Chunk> &chunk, int pos, cptr right, cptr upRight, cptr up);
     cptr LookDownLeft(sf::Vector2f velocity, std::shared_ptr<Chunk> &chunk, int pos, cptr left, cptr downLeft, cptr down);

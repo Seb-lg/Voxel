@@ -10,15 +10,15 @@ static auto getTime = [](){return std::chrono::duration_cast<std::chrono::nanose
 
 #define PIXEL_SIZE 4
 #define CHUNK_SIZE 64
-#define width 1024
-#define height 1024
-#define fps 0
-#define drawTileDebug true
-#define useVertexShaders false
-#define useFragmentShaders false
+#define WIDTH 1024
+#define HEIGHT 1024
+#define FPS 0
+#define DRAW_TILE_DEBUG true
+#define USE_VERTEX_SHADERS false
+#define USE_FRAGMENT_SHADERS false
 
 #ifdef DEBUG
-#define rand_seed 6969420
+#define RANDOM_SEED 6969420
 #else
-#define rand_seed rd()
+#define RANDOM_SEED rd()
 #endif

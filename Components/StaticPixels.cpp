@@ -3,6 +3,8 @@
 //
 
 #include "Pixel.hpp"
+#include "../Core/Map.hpp"
+#include "Chunk.hpp"
 
 Pixel::Pixel(
     sf::Vector2i globalIdx, PixelType type,

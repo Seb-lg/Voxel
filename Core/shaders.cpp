@@ -70,7 +70,7 @@ void Core::loadShaders() {
 
     blur_shader.loadFromFile("./Shaders/boxblur.frag", sf::Shader::Fragment);
     blur_shader.setUniform("texture", sf::Shader::CurrentTexture);
-    blur_shader.setUniform("texture_inverse", 1.0f / width);
+    blur_shader.setUniform("texture_inverse", 1.0f / WIDTH);
 
     assemble_shader.loadFromFile("./Shaders/assemble.frag", sf::Shader::Fragment);
     assemble_shader.setUniform("texture", sf::Shader::CurrentTexture);
@@ -80,13 +80,13 @@ void Core::loadShaders() {
 
     context_settings.antialiasingLevel = 2;
 
-    rawGameTexture.create(width, height, context_settings);
-    luminescence_render.create(width, height, context_settings);
-    assemble_render.create(width, height, context_settings);
+    rawGameTexture.create(WIDTH, HEIGHT, context_settings);
+    luminescence_render.create(WIDTH, HEIGHT, context_settings);
+    assemble_render.create(WIDTH, HEIGHT, context_settings);
 
     // Addding multiple boxblurs with different radii looks really nice! in this case 4 layers
     for (int i = 0; i < blur_renders.size(); ++i) {
-        blur_renders[i].create(width, height, context_settings);
+        blur_renders[i].create(WIDTH, HEIGHT, context_settings);
     }
     blur_weight = blur_renders.empty() ? 0.0 : 1.0 / blur_renders.size();
 

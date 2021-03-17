@@ -10,12 +10,11 @@
 #include <memory>
 #include <random>
 #include <iostream>
-#include <bits/stdc++.h>
 #include "../conf.hpp"
+#include "../Globals.hpp"
 
-class PixelSwitch;
-enum class TileResponse;
-enum class PixelType;
+struct PixelSwitch;
+class Map;
 
 class Pixel {
 public:
@@ -56,29 +55,15 @@ public:
 };
 
 // Utils
-class PixelSwitch {
-    // 1 = actual pos
-    sf::Vector2i chunk1Pos;
+struct PixelSwitch {
     uint pixel1Idx;
     std::shared_ptr<Pixel> *pixel1;
     // 2 = Wanted pos
     sf::Vector2i chunk2Pos;
     uint pixel2Idx;
     std::shared_ptr<Pixel> *pixel2;
-};
-
-enum class TileResponse {
-    OOB = -1,
-    ALREADY_CREATED = 0,
-    CREATED = 1,
-    NOT_EMPTY = 2,
-};
-
-enum class PixelType {
-    Air = 0,
-    Sand = 1,
-    Concrete = 2,
-    Water = 3,
+    // 1 = actual pos
+    sf::Vector2i chunk1Pos;
 };
 
 inline const char* pixelTypeToString(PixelType v)

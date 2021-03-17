@@ -6,14 +6,16 @@
 #include <memory>
 #include <vector>
 #include "../Perlin/PerlinNoise.hpp"
+#include "../Globals.hpp"
 #include "Pixel.hpp"
 
+class Map;
 
 class Chunk {
 public:
     Chunk(sf::Vector2i chunkPos, siv::PerlinNoise perlin);
 
-    void update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks);
+    void update(Map &map);
     TileResponse replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Pixel> newTile, bool override);
 
     bool initialised;

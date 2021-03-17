@@ -9,6 +9,7 @@
 #include <sstream>
 #include "../Components/Pixel.hpp"
 #include "../Components/Chunk.hpp"
+#include "Map.hpp"
 
 
 class Core {
@@ -42,11 +43,13 @@ public:
     sf::RenderWindow screen;
     sf::RenderTexture rawGameTexture;
 
+    Map map;
+
 private:
     sf::Vector2i position;
 
-    siv::PerlinNoise perlin;
-    std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks;
+//    siv::PerlinNoise perlin;
+//    std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks;
 
     // Font stuff
     sf::Font font;

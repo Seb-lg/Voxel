@@ -23,7 +23,7 @@ add_executable(Voxel
         Components/Pixel.hpp
         Components/Chunk.cpp
         Components/Chunk.hpp
-        Components/ChunkHelper.cpp Components/ChunkHelper.hpp)
+        Components/ChunkHelper.cpp Components/ChunkHelper.hpp Core/Map.cpp Core/Map.hpp Globals.hpp)
 
 find_package(Threads)
 target_link_libraries(Voxel ${CMAKE_THREAD_LIBS_INIT})
