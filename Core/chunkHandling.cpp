@@ -16,7 +16,8 @@ std::shared_ptr<Chunk> Core::getChunk(sf::Vector2<int> chunk_idxes) {
     if (itX != map.chunks.end()) {
         auto itY = itX->second.find(chunk_idxes.y);
         if (itY != itX->second.end())
-            return itY->second;
+            if (itY->second)
+                return itY->second;
     }
     std::shared_ptr<Chunk> newChunk = std::make_shared<Chunk>(
         sf::Vector2i(chunk_idxes.x, chunk_idxes.y),
@@ -59,7 +60,8 @@ void Core::updateChunks() {
     std::list<std::thread> threads;
     for( auto const &list : sortedChunkList) {
         for (auto &elem : list.second) {
-                [this, &elem](){elem->update(map);}();
+//                [this, &elem](){elem->update(map);}();
+            elem->update(map);
         }
 //        for (auto &elem : list.second) {
 //            if (elem->pos.x % 2) {
@@ -90,10 +92,10 @@ void Core::updateChunks() {
 //                 pos.translate(elem.second->pos.x * CHUNK_SIZE * PIXEL_SIZE, elem.second->pos.y * CHUNK_SIZE * PIXEL_SIZE);
 //                 screen.draw(elem.second->wireframe, pos);
 // #endif
-//                 for (auto &pixel : elem.second->pixels) {
+                 for (auto &pixel : elem.second->pixels) {
 //                     pixel->draw(rawGameTexture);
-//                     pixel->processed = false;
-//                 }
+                     pixel->processed = false;
+                 }
             }
         }
     }
