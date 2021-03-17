@@ -9,7 +9,7 @@
 
 
 Core::Core()
-    : threadPool(), lastSimTime(0), lastFrameDrawTime(0), lastSpsDrawTime(0),
+    : threadPool(), lastSimTime(0), lastFrameDrawTime(0),
     activeMaterial(PixelType::Sand)
 {
     std::cout << "Seed: " << RANDOM_SEED << std::endl;
@@ -57,14 +57,14 @@ bool Core::run() {
         lastFrameDrawTime = now;
     }
     // Simulation frequency limiter
-    auto msToNextSimStep = (NS_PER_SEC / SPS) - (getTime() - startTime);
-    if (msToNextSimStep > 0) {
-       std::cout << "Sleeping for " << msToNextSimStep << " ms" << std::endl;
-        std::this_thread::sleep_for(std::chrono::nanoseconds(msToNextSimStep));
-    }
-    else {
-        std::cout << "Lagging behind by " << -msToNextSimStep << " ms" << std::endl;
-    }
+    // auto msToNextSimStep = (NS_PER_SEC / SPS) - (getTime() - startTime);
+    // if (msToNextSimStep > 0) {
+    //    std::cout << "Sleeping for " << msToNextSimStep << " ms" << std::endl;
+    //     std::this_thread::sleep_for(std::chrono::nanoseconds(msToNextSimStep));
+    // }
+    // else {
+    //     std::cout << "Lagging behind by " << -msToNextSimStep << " ms" << std::endl;
+    // }
     return true;
 }
 
