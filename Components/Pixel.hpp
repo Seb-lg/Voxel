@@ -13,45 +13,9 @@
 #include <bits/stdc++.h>
 #include "../conf.hpp"
 
-enum class PixelType {
-    Air = 0,
-    Sand = 1,
-    Concrete = 2,
-    Water = 3,
-};
-
-inline const char* pixelTypeToString(PixelType v)
-{
-    switch (v)
-    {
-        case PixelType::Air:        return "Air";
-        case PixelType::Sand:       return "Sand";
-        case PixelType::Concrete:   return "Concrete";
-        case PixelType::Water:      return "Water";
-        default:                    return "[Unknown PixelType]";
-    }
-}
-
-enum class TileResponse {
-    OOB = -1,
-    ALREADY_CREATED = 0,
-    CREATED = 1,
-    NOT_EMPTY = 2,
-};
-
-enum class NeighborsIdxDeltas {
-    ul = -CHUNK_SIZE - 1,
-    u = -CHUNK_SIZE,
-    ur = -CHUNK_SIZE + 1,
-    l = -1,
-    c = 0,
-    r = +1,
-    dl = CHUNK_SIZE - 1,
-    d = CHUNK_SIZE,
-    dr = CHUNK_SIZE + 1,
-};
-
-struct Surrounding;
+class PixelSwitch;
+enum class TileResponse;
+enum class PixelType;
 
 class Pixel {
 public:
@@ -61,17 +25,8 @@ public:
         sf::Vector2i densityParams=sf::Vector2i(0, 1), uint life=0
     );
 
-    virtual std::shared_ptr<Pixel> update(
-        Surrounding surround,
-        sf::Vector2<int> pos,
-        sf::Vector2<int> chunk_pos
-    );
-    // virtual sf::Vector2i getNextPos(Surrounding surrounding, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos);
+    virtual std::shared_ptr<PixelSwitch> update(Map map, PixelSwitch &nextPixelData);
     void draw(sf::RenderTexture &rawGameTexture);
-    // void swapTiles(
-    //     std::shared_ptr<Pixel> *fst, std::shared_ptr<Pixel> *snd,
-    //     sf::Vector2<int> pos, sf::Vector2<int> chunk_pos
-    // );
 
 public:
     int processed;
@@ -91,35 +46,49 @@ public:
 class Water: public Pixel {
 public:
     Water(sf::Vector2i globalIdx);
-    std::shared_ptr<Pixel> update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) override;
+    std::shared_ptr<PixelSwitch> update(Map map, PixelSwitch &nextPixelData) override;
 };
 
 class Sand: public Pixel {
 public:
     Sand(sf::Vector2i globalIdx);
-    std::shared_ptr<Pixel> update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) override;
+    std::shared_ptr<PixelSwitch> update(Map map, PixelSwitch &nextPixelData) override;
 };
 
+// Utils
+class PixelSwitch {
+    // 1 = actual pos
+    sf::Vector2i chunk1Pos;
+    uint pixel1Idx;
+    std::shared_ptr<Pixel> *pixel1;
+    // 2 = Wanted pos
+    sf::Vector2i chunk2Pos;
+    uint pixel2Idx;
+    std::shared_ptr<Pixel> *pixel2;
+};
 
-struct Surrounding{
-    Surrounding(std::shared_ptr<Pixel>* ptr) {
-        ul = ptr - 1 - CHUNK_SIZE;
-        u = ptr - CHUNK_SIZE;
-        ur = ptr + 1 - CHUNK_SIZE;
-        l = ptr - 1;
-        c = ptr;
-        r = ptr + 1;
-        dl = ptr - 1 + CHUNK_SIZE;
-        d = ptr + CHUNK_SIZE;
-        dr = ptr + 1 + CHUNK_SIZE;
+enum class TileResponse {
+    OOB = -1,
+    ALREADY_CREATED = 0,
+    CREATED = 1,
+    NOT_EMPTY = 2,
+};
+
+enum class PixelType {
+    Air = 0,
+    Sand = 1,
+    Concrete = 2,
+    Water = 3,
+};
+
+inline const char* pixelTypeToString(PixelType v)
+{
+    switch (v)
+    {
+        case PixelType::Air:        return "Air";
+        case PixelType::Sand:       return "Sand";
+        case PixelType::Concrete:   return "Concrete";
+        case PixelType::Water:      return "Water";
+        default:                    return "[Unknown PixelType]";
     }
-    std::shared_ptr<Pixel> *ul;
-    std::shared_ptr<Pixel> *u;
-    std::shared_ptr<Pixel> *ur;
-    std::shared_ptr<Pixel> *l;
-    std::shared_ptr<Pixel> *c;
-    std::shared_ptr<Pixel> *r;
-    std::shared_ptr<Pixel> *dl;
-    std::shared_ptr<Pixel> *d;
-    std::shared_ptr<Pixel> *dr;
-};
+}

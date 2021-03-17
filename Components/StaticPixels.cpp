@@ -17,9 +17,9 @@ Pixel::Pixel(
     density = densityParams.x + (std::rand() % densityParams.y - int(densityParams.y / 2));
 };
 
-std::shared_ptr<Pixel> Pixel::update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos)
+std::shared_ptr<PixelSwitch> Pixel::update(Map map, PixelSwitch &nextPixelData)
 {
-    return (*surround.c);
+    return std::make_shared<PixelSwitch>(nullptr);
 }
 
 Concrete::Concrete(sf::Vector2i globalIdx):

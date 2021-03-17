@@ -295,11 +295,18 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                 // as when we'll implement velocity we wont be able
                 // to use the Surrounding class anymore
                 // (cuz we'll need more than just the immediate neighbors)
-                std::shared_ptr<Pixel> nextPosPixel = (*ptr)->update(
-                    surround,
-                    sf::Vector2i(x, y),
-                    sf::Vector2i(pos.x, pos.y)
+                PixelSwitch nextPixelData;
+                nextPixelData->chunk1Pos = pos;
+                nextPixelData->pixel1Idx = x + y * CHUNK_SIZE;
+                nextPixelData->pixel1 = ptr;
+
+                (*ptr)->update(
+                    // CLASSE DE LOOKUP
+                    nextPixelData
                 );
+                if (nextPixelData) {
+                    // SWITCH(&nextPixelData);
+                }
                 (*ptr)->processed = true;
                 // Now swap the colors of the vertices
                 // in the vertices VertexArray buffer
@@ -311,9 +318,6 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                 quad[1].color = (*ptr)->color;
                 quad[2].color = (*ptr)->color;
                 quad[3].color = (*ptr)->color;
-
-
-
             }
             --ptr;
         }

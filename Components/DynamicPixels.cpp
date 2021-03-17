@@ -16,25 +16,36 @@ Water::Water(sf::Vector2i globalIdx):
     )
 {};
 
-std::shared_ptr<Pixel> Water::update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) {
-    auto density = (*surround.c)->density;
-    if (surround.d && density > (*surround.d)->density) {
-        return (*surround.d);
-        //swapTiles(surround.c, surround.d, pos + sf::Vector2i(0, 1), chunk_pos);
-    } else if (surround.dl && density > (*surround.dl)->density) {
-        return (*surround.dl);
-        //swapTiles(surround.c, surround.dl, pos + sf::Vector2i(-1, 1), chunk_pos);
-    } else if (surround.dr && density > (*surround.dr)->density) {
-        return (*surround.dr);
-        //swapTiles(surround.c, surround.dr, pos + sf::Vector2i(1, 1), chunk_pos);
-    } else if (surround.r && density > (*surround.r)->density) {
-        return (*surround.r);
-        //swapTiles(surround.c, surround.r, pos + sf::Vector2i(1, 0), chunk_pos);
-    } else if (surround.l && density > (*surround.l)->density) {
-        return (*surround.l);
-        //swapTiles(surround.c, surround.l, pos + sf::Vector2i(-1, 0), chunk_pos);
-    }
-    return (*surround.c);
+std::shared_ptr<PixelSwitch> Water::update(Map map, PixelSwitch &nextPixelData) {
+    // DO a:
+    // for delta in (list of delta positions):
+    // if ...
+
+
+    (*ptr)->processed = true;
+    // D
+    std::shared_ptr<PixelSwitch> nextPixelData;
+    nextPixelData = map.lookup(sf::Vector2i(0, 1), nextPixelData);
+    if (nextPixelData && density > nextPixelData->nextPixel->density)
+        return nextPixelData;
+    // DL
+    nextPixelData = map.lookup(sf::Vector2i(-1, 1), nextPixelData);
+    if (nextPixelData && density > nextPixelData->nextPixel->density)
+        return nextPixelData;
+    // DR
+    nextPixelData = map.lookup(sf::Vector2i(1, 1), nextPixelData);
+    if (nextPixelData && density > nextPixelData->nextPixel->density)
+        return nextPixelData;
+    // R
+    nextPixelData = map.lookup(sf::Vector2i(1, 0), nextPixelData);
+    if (nextPixelData && density > nextPixelData->nextPixel->density)
+        return nextPixelData;
+    // L
+    nextPixelData = map.lookup(sf::Vector2i(-1, 0), nextPixelData);
+    if (nextPixelData && density > nextPixelData->nextPixel->density)
+        return nextPixelData;
+    (*ptr)->processed = false;
+    return std::make_shared<PixelSwitch>(nullptr);
 }
 
 Sand::Sand(sf::Vector2i globalIdx):
@@ -45,17 +56,21 @@ Sand::Sand(sf::Vector2i globalIdx):
     )
 {};
 
-std::shared_ptr<Pixel> Sand::update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) {
-    auto density = (*surround.c)->density;
-    if (surround.d && density > (*surround.d)->density) {
-        return (*surround.d);
-        //swapTiles(surround.c, surround.d, pos + sf::Vector2i(0, 1), chunk_pos);
-    } else if (surround.dl && density > (*surround.dl)->density) {
-        return (*surround.dl);
-        //swapTiles(surround.c, surround.dl, pos + sf::Vector2i(-1, 1), chunk_pos);
-    } else if (surround.dr && density > (*surround.dr)->density) {
-        return (*surround.dr);
-        //swapTiles(surround.c, surround.dr, pos + sf::Vector2i(1, 1), chunk_pos);
-    }
-    return (*surround.c);
+std::shared_ptr<PixelSwitch> Sand::update(Map map, PixelSwitch &nextPixelData) {
+    (*ptr)->processed = true;
+    // D
+    std::shared_ptr<PixelSwitch> nextPixelData;
+    nextPixelData = map.lookup(sf::Vector2i(0, 1), nextPixelData);
+    if (nextPixelData && density > nextPixelData->nextPixel->density)
+        return nextPixelData;
+    // DL
+    nextPixelData = map.lookup(sf::Vector2i(-1, 1), nextPixelData);
+    if (nextPixelData && density > nextPixelData->nextPixel->density)
+        return nextPixelData;
+    // DR
+    nextPixelData = map.lookup(sf::Vector2i(1, 1), nextPixelData);
+    if (nextPixelData && density > nextPixelData->nextPixel->density)
+        return nextPixelData;
+    (*ptr)->processed = false;
+    return std::make_shared<PixelSwitch>(nullptr);
 }
