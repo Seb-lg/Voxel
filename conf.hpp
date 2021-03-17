@@ -16,6 +16,7 @@ static auto getTime = [](){return std::chrono::duration_cast<std::chrono::nanose
 #define USE_FRAGMENT_SHADERS false
 #define USE_VERTEX_SHADERS true
 #define DRAW_TILE_DEBUG true
+#define DEBUG
 
 #ifdef DEBUG
 #define RANDOM_SEED 6969420
