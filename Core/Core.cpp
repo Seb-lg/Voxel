@@ -45,7 +45,7 @@ bool Core::run() {
     handleInputs();
     updateChunks();
     draw();
-    std::cout << "FPS : " << 1 / ((getTime() - now) / 1000000000.0) << "\r" << std::flush;
+    std::cout << "FPS : " << (int)(1 / ((getTime() - now) / 1000.0)) << "\r" << std::flush;
 
     /*static int oui = WIDTH/2;
     auto pos = sf::Vector2f(oui, HEIGHT/2);
