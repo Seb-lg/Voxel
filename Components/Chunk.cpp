@@ -109,16 +109,14 @@ void Chunk::update(Map &map) {
                 --ptr;
                 continue;
             }
-            if (!(*ptr)->processed) {
-                PixelSwitch nextPixelData;
-                nextPixelData.chunk1Pos = pos;
-                nextPixelData.pixel1Idx = x + y * CHUNK_SIZE;
-                nextPixelData.pixel1 = ptr;
+            PixelSwitch nextPixelData;
+            nextPixelData.chunk1Pos = pos;
+            nextPixelData.pixel1Idx = x + y * CHUNK_SIZE;
+            nextPixelData.pixel1 = ptr;
 
-                if ((*ptr)->update(map, nextPixelData)) {
-                    (*ptr)->processed = true;
-                    map.swapPixels(nextPixelData);
-                }
+            if ((*ptr)->update(map, nextPixelData)) {
+                (*ptr)->processed = true;
+                map.swapPixels(nextPixelData);
             }
             --ptr;
         }

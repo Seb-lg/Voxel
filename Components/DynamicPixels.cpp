@@ -18,20 +18,23 @@ Water::Water(sf::Vector2i globalIdx):
 {};
 
 bool Water::update(Map &map, PixelSwitch &nextPixelData) {
+    bool forceUpdate = std::rand()%2;
+    if (processed && forceUpdate)
+        return false;
     // D
-    if (map.lookup(sf::Vector2i(0, 1), nextPixelData) && density > (*nextPixelData.pixel2)->density)
+    if (map.lookup(sf::Vector2i(0, 1), nextPixelData) && ((*nextPixelData.pixel2)->processed || forceUpdate) && density > (*nextPixelData.pixel2)->density)
         return true;
     // DL
-    if (map.lookup(sf::Vector2i(-1, 1), nextPixelData) && density > (*nextPixelData.pixel2)->density)
+    if (map.lookup(sf::Vector2i(-1, 1), nextPixelData) && ((*nextPixelData.pixel2)->processed || forceUpdate) && density > (*nextPixelData.pixel2)->density)
         return true;
     // DR
-    if (map.lookup(sf::Vector2i(1, 1), nextPixelData) && density > (*nextPixelData.pixel2)->density)
+    if (map.lookup(sf::Vector2i(1, 1), nextPixelData) && ((*nextPixelData.pixel2)->processed || forceUpdate) && density > (*nextPixelData.pixel2)->density)
         return true;
     // R
-    if (map.lookup(sf::Vector2i(1, 0), nextPixelData) && density > (*nextPixelData.pixel2)->density)
+    if (map.lookup(sf::Vector2i(1, 0), nextPixelData) && ((*nextPixelData.pixel2)->processed || forceUpdate) && density > (*nextPixelData.pixel2)->density)
         return true;
     // L
-    if (map.lookup(sf::Vector2i(-1, 0), nextPixelData) && density > (*nextPixelData.pixel2)->density)
+    if (map.lookup(sf::Vector2i(-1, 0), nextPixelData) && ((*nextPixelData.pixel2)->processed || forceUpdate) && density > (*nextPixelData.pixel2)->density)
         return true;
     return false;
 }
