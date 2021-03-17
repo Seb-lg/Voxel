@@ -44,7 +44,7 @@ void Core::initChunks() {
             map.chunks[x][y] = std::make_shared<Chunk>(sf::Vector2i(x, y), map.perlin);
         }
     }
-    std::cout << "Map init: " << (getTime() - startTime) << " ms" << std::endl;
+    std::cout << "Map init: " << (getTime() - startTime) / 1000000 << " ms" << std::endl;
     printf("%d chunks loaded (%d/%d)\n", chunk_width_nbr * chunk_height_nbr, chunk_width_nbr, chunk_height_nbr);
 }
 

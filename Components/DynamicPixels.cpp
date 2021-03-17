@@ -22,9 +22,10 @@ bool Water::update(Map &map, PixelSwitch &nextPixelData) {
     // if (processed && forceUpdate)
     if (processed)
         return false;
-    // D
-    if (map.lookup(sf::Vector2i(0, 1), nextPixelData) && ((*nextPixelData.pixel2)->processed || forceUpdate) && density > (*nextPixelData.pixel2)->density)
-        return true;
+    for (int i = 3 ; i > 0 ; i--) {  // D
+        if (map.lookup(sf::Vector2i(0, i), nextPixelData) && ((*nextPixelData.pixel2)->processed || forceUpdate) && density > (*nextPixelData.pixel2)->density)
+            return true;
+    }
     // DL
     if (map.lookup(sf::Vector2i(-1, 1), nextPixelData) && ((*nextPixelData.pixel2)->processed || forceUpdate) && density > (*nextPixelData.pixel2)->density)
         return true;

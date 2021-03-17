@@ -48,8 +48,10 @@ public:
 
 private:
     sf::Vector2i position;
-
     ThreadPool threadPool;
+
+    long lastSimTime;
+    long lastFrameDrawTime;
 
 //    siv::PerlinNoise perlin;
 //    std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks;
