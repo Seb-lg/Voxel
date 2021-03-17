@@ -57,8 +57,8 @@ bool Core::run() {
 }
 
 void Core::draw() {
-    // We use a rawGameTexture to draw all the pixels first,
-    // then create a sprite with it in order to apply the pixelated shader
+    // First render the pixels to the rawGameTexture, not to the screen
+    // this way, we can apply the shaders at the end
     rawGameTexture.clear();
     // Draw each chunk
     for (auto xChunks: map.chunks) {
@@ -68,22 +68,24 @@ void Core::draw() {
     }
     // Update the texture with the draws
     rawGameTexture.display();
-    // Now do the final draw on the window
-    screen.clear(sf::Color::Black);
 
+    // Create a sprite with the rawGameTexture
+    // (in order to able to apply the shaders)
     sf::Sprite finalSprite;
     if (USE_FRAGMENT_SHADERS)
         finalSprite = applyShaders(rawGameTexture);
     else
         finalSprite = sf::Sprite(rawGameTexture.getTexture());
 
+    // Now do the final draw on the window, with the vertex shaders if needed
+    screen.clear(sf::Color::Black);
     if (USE_VERTEX_SHADERS)
         screen.draw(finalSprite, &pixelate_shader);
     else
         screen.draw(finalSprite);
     if (DRAW_TILE_DEBUG)
         screen.draw(debugText);
-    // Draw to screen
+    // Final draw to screen call
     screen.display();
 }
 
