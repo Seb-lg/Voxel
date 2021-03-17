@@ -17,36 +17,32 @@ Water::Water(sf::Vector2i globalIdx):
     )
 {};
 
-std::shared_ptr<PixelSwitch> Water::update(Map map, PixelSwitch &nextPixelData) {
+bool Water::update(Map map, PixelSwitch &nextPixelData) {
     // DO a:
     // for delta in (list of delta positions):
     // if ...
 
-
-    /*(*ptr)->processed = true;
     // D
-    std::shared_ptr<PixelSwitch> nextPixelData;
-    nextPixelData = map.lookup(sf::Vector2i(0, 1), nextPixelData);
+    map.lookup(sf::Vector2i(0, 1), nextPixelData);
     if (nextPixelData && density > nextPixelData->nextPixel->density)
-        return nextPixelData;
+        return true;
     // DL
-    nextPixelData = map.lookup(sf::Vector2i(-1, 1), nextPixelData);
+    map.lookup(sf::Vector2i(-1, 1), nextPixelData);
     if (nextPixelData && density > nextPixelData->nextPixel->density)
-        return nextPixelData;
+        return true;
     // DR
-    nextPixelData = map.lookup(sf::Vector2i(1, 1), nextPixelData);
+    map.lookup(sf::Vector2i(1, 1), nextPixelData);
     if (nextPixelData && density > nextPixelData->nextPixel->density)
-        return nextPixelData;
+        return true;
     // R
-    nextPixelData = map.lookup(sf::Vector2i(1, 0), nextPixelData);
+    map.lookup(sf::Vector2i(1, 0), nextPixelData);
     if (nextPixelData && density > nextPixelData->nextPixel->density)
-        return nextPixelData;
+        return true;
     // L
-    nextPixelData = map.lookup(sf::Vector2i(-1, 0), nextPixelData);
+    map.lookup(sf::Vector2i(-1, 0), nextPixelData);
     if (nextPixelData && density > nextPixelData->nextPixel->density)
-        return nextPixelData;
-    (*ptr)->processed = false;
-    return std::make_shared<PixelSwitch>(nullptr);*/
+        return true;
+    return false;
 }
 
 Sand::Sand(sf::Vector2i globalIdx):
@@ -57,21 +53,18 @@ Sand::Sand(sf::Vector2i globalIdx):
     )
 {};
 
-std::shared_ptr<PixelSwitch> Sand::update(Map map, PixelSwitch &nextPixelData) {
-    /*(*ptr)->processed = true;
+bool Sand::update(Map map, PixelSwitch &nextPixelData) {
     // D
-    std::shared_ptr<PixelSwitch> nextPixelData;
-    nextPixelData = map.lookup(sf::Vector2i(0, 1), nextPixelData);
+    map.lookup(sf::Vector2i(0, 1), nextPixelData);
     if (nextPixelData && density > nextPixelData->nextPixel->density)
-        return nextPixelData;
+        return true;
     // DL
-    nextPixelData = map.lookup(sf::Vector2i(-1, 1), nextPixelData);
+    map.lookup(sf::Vector2i(-1, 1), nextPixelData);
     if (nextPixelData && density > nextPixelData->nextPixel->density)
-        return nextPixelData;
+        return true;
     // DR
-    nextPixelData = map.lookup(sf::Vector2i(1, 1), nextPixelData);
+    map.lookup(sf::Vector2i(1, 1), nextPixelData);
     if (nextPixelData && density > nextPixelData->nextPixel->density)
-        return nextPixelData;
-    (*ptr)->processed = false;
-    return std::make_shared<PixelSwitch>(nullptr);*/
+        return true;
+    return false;
 }

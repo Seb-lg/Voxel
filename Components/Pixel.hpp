@@ -24,7 +24,7 @@ public:
         sf::Vector2i densityParams=sf::Vector2i(0, 1), uint life=0
     );
 
-    virtual std::shared_ptr<PixelSwitch> update(Map map, PixelSwitch &nextPixelData);
+    virtual bool update(Map map, PixelSwitch &nextPixelData);
     void draw(sf::RenderTexture &rawGameTexture);
 
 public:
@@ -45,13 +45,13 @@ public:
 class Water: public Pixel {
 public:
     Water(sf::Vector2i globalIdx);
-    std::shared_ptr<PixelSwitch> update(Map map, PixelSwitch &nextPixelData) override;
+    bool update(Map map, PixelSwitch &nextPixelData) override;
 };
 
 class Sand: public Pixel {
 public:
     Sand(sf::Vector2i globalIdx);
-    std::shared_ptr<PixelSwitch> update(Map map, PixelSwitch &nextPixelData) override;
+    bool update(Map map, PixelSwitch &nextPixelData) override;
 };
 
 // Utils
