@@ -117,7 +117,7 @@ void Chunk::update(Map &map) {
 
                 if ((*ptr)->update(map, nextPixelData)) {
                     (*ptr)->processed = true;
-                    map.swapPixels(&nextPixelData);
+                    map.swapPixels(nextPixelData);
                 }
             }
             --ptr;
