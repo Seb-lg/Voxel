@@ -21,7 +21,7 @@ public:
 
 private:
     Core();
-    ~Core();
+    ~Core() {};
 
     void handleInputs();
     void dynamicTileDrawing(PixelType newTileType, bool override);

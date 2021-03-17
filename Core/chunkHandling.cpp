@@ -26,7 +26,7 @@ std::shared_ptr<Chunk> Core::getChunk(sf::Vector2<int> chunk_idxes) {
 
 void Core::initChunks() {
     // Create each chunks, which handle their own pixels creation (based on perlin noise)
-    auto tmp = chunk_size * pixel_size;
+    auto tmp = CHUNK_SIZE * PIXEL_SIZE;
     auto chunk_width_nbr = width / tmp;
     auto chunk_height_nbr = height / tmp;
     if (width % tmp > 0)
@@ -79,15 +79,16 @@ void Core::updateChunks() {
     for (auto &column : chunks) {
         for (auto &elem : column.second) {
             if (elem.second) {
-#ifdef DEBUG
-                sf::Transform pos;
-                pos.translate(elem.second->pos.x * chunk_size * pixel_size, elem.second->pos.y * chunk_size * pixel_size);
-                screen.draw(elem.second->wireframe, pos);
-#endif
-                for (auto &pixel : elem.second->pixels) {
-                    pixel->draw(rawGameTexture);
-                    pixel->processed = false;
-                }
+                rawGameTexture.draw(elem.second->vertices);
+// #ifdef DEBUG
+//                 sf::Transform pos;
+//                 pos.translate(elem.second->pos.x * CHUNK_SIZE * PIXEL_SIZE, elem.second->pos.y * CHUNK_SIZE * PIXEL_SIZE);
+//                 screen.draw(elem.second->wireframe, pos);
+// #endif
+//                 for (auto &pixel : elem.second->pixels) {
+//                     pixel->draw(rawGameTexture);
+//                     pixel->processed = false;
+//                 }
             }
         }
     }

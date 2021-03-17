@@ -9,29 +9,71 @@
 Chunk::Chunk(sf::Vector2i chunkPos, siv::PerlinNoise perlin):
     pos(chunkPos), wireframe(sf::LineStrip, 4)
 {
-    pixels.resize(chunk_size*chunk_size);
+    // All std::Quads will be stored in a single sf::VertexArray so we can draw
+    // the whole chunk in one pass
+    // We set all the Vertex positions at init (here) and we'll only change colors
+    vertices.setPrimitiveType(sf::Quads);
+    vertices.resize(CHUNK_SIZE * CHUNK_SIZE * 4);
+    // The particles "data" (position, type, life etc) is stored in a separate vector (pixels)
+    pixels.resize(CHUNK_SIZE * CHUNK_SIZE);
+    // It's IMPERATIVE to change BOTH the colors in "vertices" and the objects in "pixels"
+    // EVERYTIME
     auto ptr = pixels.data();
-    for (int y = 0; y < chunk_size; ++y) {
-        for (int x = 0; x < chunk_size; ++x) {
+    for (int y = 0; y < CHUNK_SIZE; ++y) {
+        for (int x = 0; x < CHUNK_SIZE; ++x) {
+            // Create the Pixel object and data
             *ptr = createTileFromPerlin(
                 sf::Vector2i(
-                    chunkPos.x * chunk_size + x,
-                    chunkPos.y * chunk_size + y
+                    chunkPos.x * CHUNK_SIZE + x,
+                    chunkPos.y * CHUNK_SIZE + y
                 ),
                 perlin
             );
+            // get a pointer to the current tile's sf::quad
+            sf::Vertex* quad = &vertices[(x + y * CHUNK_SIZE) * 4];
+            // define its 4 corners
+            quad[0].position = sf::Vector2f((chunkPos.x * CHUNK_SIZE + x) * PIXEL_SIZE, (chunkPos.y * CHUNK_SIZE + y) * PIXEL_SIZE);
+            quad[1].position = sf::Vector2f((chunkPos.x * CHUNK_SIZE + x+1) * PIXEL_SIZE, (chunkPos.y * CHUNK_SIZE + y) * PIXEL_SIZE);
+            quad[2].position = sf::Vector2f((chunkPos.x * CHUNK_SIZE + x+1) * PIXEL_SIZE, (chunkPos.y * CHUNK_SIZE + y+1) * PIXEL_SIZE);
+            quad[3].position = sf::Vector2f((chunkPos.x * CHUNK_SIZE + x) * PIXEL_SIZE, (chunkPos.y * CHUNK_SIZE + y+1) * PIXEL_SIZE);
+            // Set color from the created Pixel object
+            quad[0].color = (*ptr)->color;
+            quad[1].color = (*ptr)->color;
+            quad[2].color = (*ptr)->color;
+            quad[3].color = (*ptr)->color;
             ++ptr;
         }
     }
     wireframe[0].position = sf::Vector2f(0, 0);
-    wireframe[1].position = sf::Vector2f(chunk_size * pixel_size, 0);
-    wireframe[2].position = sf::Vector2f(chunk_size * pixel_size, chunk_size * pixel_size);
-    wireframe[3].position = sf::Vector2f(0, chunk_size * pixel_size);
+    wireframe[1].position = sf::Vector2f(CHUNK_SIZE * PIXEL_SIZE, 0);
+    wireframe[2].position = sf::Vector2f(CHUNK_SIZE * PIXEL_SIZE, CHUNK_SIZE * PIXEL_SIZE);
+    wireframe[3].position = sf::Vector2f(0, CHUNK_SIZE * PIXEL_SIZE);
 
     wireframe[0].color = sf::Color(199, 199, 199);
     wireframe[1].color = sf::Color(199, 199, 199);
     wireframe[2].color = sf::Color(199, 199, 199);
     wireframe[3].color = sf::Color(199, 199, 199);
+}
+
+
+TileResponse Chunk::replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Pixel> newTile, bool override) {
+    int idx = tilePos.y * CHUNK_SIZE + tilePos.x;
+    if (idx > CHUNK_SIZE * CHUNK_SIZE || idx < 0)
+        return TileResponse::OOB;
+    if (pixels[idx]->type == newTile->type)
+        return TileResponse::ALREADY_CREATED;
+    if (!override && pixels[idx]->type != PixelType::Air)
+        return TileResponse::NOT_EMPTY;
+    pixels[idx] = newTile;
+    // get a pointer to the current tile's sf::quad
+    sf::Vertex* quad = &vertices[idx * 4];
+    // We don't change the previous position, only the color, to match the one of the new tile
+    quad[0].color = newTile->color;
+    quad[1].color = newTile->color;
+    quad[2].color = newTile->color;
+    quad[3].color = newTile->color;
+
+    return TileResponse::CREATED;
 }
 
 std::shared_ptr<Pixel> Chunk::createTileFromPerlin(sf::Vector2i pos, siv::PerlinNoise perlin) {
@@ -54,24 +96,13 @@ std::shared_ptr<Pixel> Chunk::createTileFromPerlin(sf::Vector2i pos, siv::Perlin
     return std::make_shared<Pixel>(pos);
 }
 
-TileResponse Chunk::replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Pixel> newTile, bool override) {
-    int idx = tilePos.y * chunk_size + tilePos.x;
-    if (idx > chunk_size * chunk_size || idx < 0)
-        return TileResponse::OOB;
-    if (pixels[idx]->type == newTile->type)
-        return TileResponse::ALREADY_CREATED;
-    if (!override && pixels[idx]->type != PixelType::Air)
-        return TileResponse::NOT_EMPTY;
-    pixels[idx] = newTile;
-    return TileResponse::CREATED;
-}
 
 void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::greater<int>>> chunks) {
     auto &scrn = Core::get().screen;
     /** update bottom row */
-    auto ptr = pixels.data() + chunk_size * chunk_size - 1;
-    for (int y = chunk_size - 1; y >= 0; --y) {
-        for (int x = chunk_size - 1; x >= 0; --x) {
+    auto ptr = pixels.data() + CHUNK_SIZE * CHUNK_SIZE - 1;
+    for (int y = CHUNK_SIZE - 1; y >= 0; --y) {
+        for (int x = CHUNK_SIZE - 1; x >= 0; --x) {
             if (ptr->get()->type == PixelType::Air) {
                 --ptr;
                 continue;
@@ -87,8 +118,8 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                     // left
                     if (chunks[pos.x - 1][pos.y]) {
                         auto left = chunks[pos.x - 1][pos.y]->pixels.data();
-                        surround.l = left + chunk_size - 1;
-                        surround.dl = left + 2 * chunk_size - 1;
+                        surround.l = left + CHUNK_SIZE - 1;
+                        surround.dl = left + 2 * CHUNK_SIZE - 1;
                     } else {
                         surround.l = nullptr;
                         surround.dl = nullptr;
@@ -96,27 +127,27 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                     // up Left
                     if (chunks[pos.x - 1][pos.y - 1]) {
                         auto up = chunks[pos.x - 1][pos.y - 1]->pixels.data();
-                        surround.ul = up + chunk_size* chunk_size - 1;
+                        surround.ul = up + CHUNK_SIZE* CHUNK_SIZE - 1;
                     } else {
                         surround.ul = nullptr;
                     }
                     // up
                     if (chunks[pos.x][pos.y - 1]) {
                         auto up = chunks[pos.x][pos.y - 1]->pixels.data();
-                        surround.u = up + x + (chunk_size - 1) * chunk_size;
-                        surround.ur = up + x + 1 + (chunk_size - 1) * chunk_size;
+                        surround.u = up + x + (CHUNK_SIZE - 1) * CHUNK_SIZE;
+                        surround.ur = up + x + 1 + (CHUNK_SIZE - 1) * CHUNK_SIZE;
                     } else {
                         surround.u = nullptr;
                         surround.ur = nullptr;
                     }
                 }
                 /** Last column */
-                else if (x == chunk_size - 1) {
+                else if (x == CHUNK_SIZE - 1) {
                     // right
                     if (chunks[pos.x + 1][pos.y]) {
                         auto right = chunks[pos.x + 1][pos.y]->pixels.data();
                         surround.r = right;
-                        surround.dr = right + chunk_size;
+                        surround.dr = right + CHUNK_SIZE;
                     } else {
                         surround.r = nullptr;
                         surround.dr = nullptr;
@@ -124,15 +155,15 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                     // right up
                     if (chunks[pos.x + 1][pos.y - 1]) {
                         auto up = chunks[pos.x + 1][pos.y - 1]->pixels.data();
-                        surround.ur = up + (chunk_size - 1) * chunk_size;
+                        surround.ur = up + (CHUNK_SIZE - 1) * CHUNK_SIZE;
                     } else {
                         surround.ur = nullptr;
                     }
                     // up
                     if (chunks[pos.x][pos.y - 1]) {
                         auto up = chunks[pos.x][pos.y - 1]->pixels.data();
-                        surround.ul = up + x - 1 + (chunk_size - 1) * chunk_size;
-                        surround.u = up + x + (chunk_size - 1) * chunk_size;
+                        surround.ul = up + x - 1 + (CHUNK_SIZE - 1) * CHUNK_SIZE;
+                        surround.u = up + x + (CHUNK_SIZE - 1) * CHUNK_SIZE;
                     } else {
                         surround.ul = nullptr;
                         surround.u = nullptr;
@@ -143,9 +174,9 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                     // up
                     if (chunks[pos.x][pos.y - 1]) {
                         auto up = chunks[pos.x][pos.y - 1]->pixels.data();
-                        surround.ul = up + x - 1 + (chunk_size - 1) * chunk_size;
-                        surround.u = up + x + (chunk_size - 1) * chunk_size;
-                        surround.ur = up + x + 1 + (chunk_size - 1) * chunk_size;
+                        surround.ul = up + x - 1 + (CHUNK_SIZE - 1) * CHUNK_SIZE;
+                        surround.u = up + x + (CHUNK_SIZE - 1) * CHUNK_SIZE;
+                        surround.ur = up + x + 1 + (CHUNK_SIZE - 1) * CHUNK_SIZE;
                     } else {
                         surround.ul = nullptr;
                         surround.u = nullptr;
@@ -154,15 +185,15 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                 }
             }
             /** Last row */
-            else if (y == chunk_size - 1) {
+            else if (y == CHUNK_SIZE - 1) {
                 /** Checking X axis */
                 /** First column */
                 if (x == 0) {
                     // left
                     if (chunks[pos.x - 1][pos.y]) {
                         auto left = chunks[pos.x-1][pos.y]->pixels.data();
-                        surround.ul = left + (y - 1) * chunk_size - 1;
-                        surround.l = left + y * chunk_size - 1;
+                        surround.ul = left + (y - 1) * CHUNK_SIZE - 1;
+                        surround.l = left + y * CHUNK_SIZE - 1;
                     } else {
                         surround.ul = nullptr;
                         surround.l = nullptr;
@@ -170,7 +201,7 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                     // down Left
                     if (chunks[pos.x - 1][pos.y + 1]) {
                         auto down = chunks[pos.x - 1][pos.y + 1]->pixels.data();
-                        surround.dl = down + chunk_size - 1;
+                        surround.dl = down + CHUNK_SIZE - 1;
                     } else {
                         surround.dl = nullptr;
                     }
@@ -185,11 +216,11 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                     }
                 }
                     /** Last column */
-                else if (x == chunk_size - 1) {
+                else if (x == CHUNK_SIZE - 1) {
                     // right
                     if (chunks[pos.x + 1][pos.y]) {
                         auto right = chunks[pos.x + 1][pos.y]->pixels.data();
-                        surround.r = right + (chunk_size - 1) * chunk_size;
+                        surround.r = right + (CHUNK_SIZE - 1) * CHUNK_SIZE;
                     } else {
                         surround.r = nullptr;
                     }
@@ -232,9 +263,9 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                 if (x == 0) {
                     if (chunks[pos.x - 1][pos.y]) {
                         auto left = chunks[pos.x - 1][pos.y]->pixels.data();
-                        surround.ul = left + (y - 0) * chunk_size - 1;
-                        surround.l = left + (y+1) * chunk_size - 1;
-                        surround.dl = left + (y + 2) * chunk_size - 1;
+                        surround.ul = left + (y - 0) * CHUNK_SIZE - 1;
+                        surround.l = left + (y+1) * CHUNK_SIZE - 1;
+                        surround.dl = left + (y + 2) * CHUNK_SIZE - 1;
                     } else {
                         surround.ul = nullptr;
                         surround.l = nullptr;
@@ -242,12 +273,12 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
                     }
                 }
                     /** First column */
-                else if (x == chunk_size - 1) {
+                else if (x == CHUNK_SIZE - 1) {
                     if (chunks[pos.x + 1][pos.y]) {
                         auto right = chunks[pos.x + 1][pos.y]->pixels.data();
-                        surround.ur = right + chunk_size * (y - 1);
-                        surround.r = right + chunk_size * (y);
-                        surround.dr = right + chunk_size * (y + 1);
+                        surround.ur = right + CHUNK_SIZE * (y - 1);
+                        surround.r = right + CHUNK_SIZE * (y);
+                        surround.dr = right + CHUNK_SIZE * (y + 1);
                     } else {
                         surround.ur = nullptr;
                         surround.r = nullptr;
@@ -258,7 +289,32 @@ void Chunk::update(std::map<int, std::map<int, std::shared_ptr<Chunk>, std::grea
             }
 
             surround.c = ptr;
-            (*ptr)->update(surround, sf::Vector2i(x, y), sf::Vector2i(pos.x, pos.y));
+            if (!(*ptr)->processed) {
+                sf::Vector2i pos = sf::Vector2i(x, y);
+                // We should not use a std::shared_ptr<Pixel> here,
+                // as when we'll implement velocity we wont be able
+                // to use the Surrounding class anymore
+                // (cuz we'll need more than just the immediate neighbors)
+                std::shared_ptr<Pixel> nextPosPixel = (*ptr)->update(
+                    surround,
+                    sf::Vector2i(x, y),
+                    sf::Vector2i(pos.x, pos.y)
+                );
+                (*ptr)->processed = true;
+                // Now swap the colors of the vertices
+                // in the vertices VertexArray buffer
+
+                // get a pointer to the current tile's sf::quad
+                sf::Vertex* quad = &vertices[(x + y * CHUNK_SIZE) * 4];
+                sf::Color tmp = quad[0].color;
+                quad[0].color = (*ptr)->color;
+                quad[1].color = (*ptr)->color;
+                quad[2].color = (*ptr)->color;
+                quad[3].color = (*ptr)->color;
+
+
+
+            }
             --ptr;
         }
     }

@@ -32,8 +32,6 @@ Core::Core()
     initChunks();
 }
 
-Core::~Core() noexcept = default;
-
 bool Core::run() {
     auto now = getTime();
     sf::Event event{};
@@ -43,15 +41,20 @@ bool Core::run() {
             || event.type == sf::Event::Closed)
             return false;
     }
-
+    // Perform computations
     handleInputs();
-
-    // Draw on the 1st Texture
-    rawGameTexture.clear();
     updateChunks();
+    // Perform drawing
+    rawGameTexture.clear();
+    // for each chunk call draw()
+    for (auto xChunks: chunks) {
+        for (auto chunk: xChunks.second)
+            screen.draw(chunk.second->vertices);
+    }
     rawGameTexture.display();
+
+    // Apply all the fragment shaders
     sf::Sprite finalSprite;
-    // Apply all the shaders
     if (useFragmentShaders)
         finalSprite = applyShaders(rawGameTexture);
     else
@@ -62,8 +65,9 @@ bool Core::run() {
       screen.draw(finalSprite, &pixelate_shader);
     else
       screen.draw(finalSprite);
-    if (drawTileDebug)
+    if (drawTileDebug) {
         screen.draw(debugText);
+    }
     screen.display();
 
     std::cout << "fps : " << 1 / ((getTime() - now) / 1000.0) << "\r" << std::flush;
@@ -79,7 +83,7 @@ bool Core::run() {
 
 void Core::dynamicTileDrawing(PixelType newTileType, bool override) {
     // Used to replace a tile with another (used when mouse drawing)
-    sf::Vector2<int> centerPos = sf::Mouse::getPosition(screen) / pixel_size;
+    sf::Vector2<int> centerPos = sf::Mouse::getPosition(screen) / PIXEL_SIZE;
     if (centerPos.x < 0 || centerPos.y < 0)
         return;
     std::vector<sf::Vector2<int>> pixelsPoses = { centerPos };
@@ -94,8 +98,8 @@ void Core::dynamicTileDrawing(PixelType newTileType, bool override) {
 void Core::replaceTile(PixelType newTileType, sf::Vector2<int> pixelPos, bool override) {
     // TMP HACK, AS IT ASSUMES CHUNK (0,0) IS AT TOP LEFT
     // WILL BREAK WITH PLAYER MOVEMENT IMPLEMENTATION
-    std::shared_ptr<Chunk> chunk = getChunk(pixelPos / chunk_size);
-    sf::Vector2<int> offset = sf::Vector2i(pixelPos.x % chunk_size, pixelPos.y % chunk_size);
+    std::shared_ptr<Chunk> chunk = getChunk(pixelPos / CHUNK_SIZE);
+    sf::Vector2<int> offset = sf::Vector2i(pixelPos.x % CHUNK_SIZE, pixelPos.y % CHUNK_SIZE);
     TileResponse flag;
     if (newTileType == PixelType::Air)
         flag = chunk->replaceTile(offset, std::make_shared<Pixel>(pixelPos), override);

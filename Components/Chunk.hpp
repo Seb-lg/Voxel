@@ -17,10 +17,13 @@ public:
     TileResponse replaceTile(sf::Vector2<int> tilePos, std::shared_ptr<Pixel> newTile, bool override);
 
     bool initialised;
-    std::vector<std::shared_ptr<Pixel>> pixels;
     sf::Vector2i pos;
     sf::VertexArray wireframe;
 
+    std::vector<std::shared_ptr<Pixel>> pixels;
+    sf::VertexArray vertices;
+
 private:
+
     std::shared_ptr<Pixel> createTileFromPerlin(sf::Vector2i pos, siv::PerlinNoise perlin);
 };

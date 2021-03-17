@@ -37,13 +37,13 @@ void Core::handleInputs() {
         // Debug text
         sf::Vector2<int> mousePos = sf::Mouse::getPosition(screen);
         debugText.setPosition(mousePos.x, mousePos.y);
-        sf::Vector2<int> centerPos = mousePos / pixel_size;
+        sf::Vector2<int> centerPos = mousePos / PIXEL_SIZE;
         if (centerPos.x < 0 || centerPos.y < 0)
             return;
         // maybe create a getTile() function with this?
-        std::shared_ptr<Chunk> chunk = getChunk(centerPos / chunk_size);
-        sf::Vector2<int> offset = sf::Vector2i(centerPos.x % chunk_size, centerPos.y % chunk_size);
-        std::shared_ptr<Pixel> pixel = chunk->pixels[offset.y * chunk_size + offset.x];
+        std::shared_ptr<Chunk> chunk = getChunk(centerPos / CHUNK_SIZE);
+        sf::Vector2<int> offset = sf::Vector2i(centerPos.x % CHUNK_SIZE, centerPos.y % CHUNK_SIZE);
+        std::shared_ptr<Pixel> pixel = chunk->pixels[offset.y * CHUNK_SIZE + offset.x];
         std::ostringstream oss;
         oss << "(" << centerPos.x << "/" << centerPos.y << ") = " << pixelTypeToString(pixel->type);
         std::string var = oss.str();

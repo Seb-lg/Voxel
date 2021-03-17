@@ -39,32 +39,45 @@ enum class TileResponse {
     NOT_EMPTY = 2,
 };
 
+enum class NeighborsIdxDeltas {
+    ul = -CHUNK_SIZE - 1,
+    u = -CHUNK_SIZE,
+    ur = -CHUNK_SIZE + 1,
+    l = -1,
+    c = 0,
+    r = +1,
+    dl = CHUNK_SIZE - 1,
+    d = CHUNK_SIZE,
+    dr = CHUNK_SIZE + 1,
+};
+
 struct Surrounding;
 
 class Pixel {
 public:
     Pixel(
         sf::Vector2i globalIdx, PixelType type=PixelType::Air,
-        sf::Color color=sf::Color(255, 105, 180), int var=1,
+        sf::Color colorTarget=sf::Color(0, 0, 0), int colorVar=1,
         sf::Vector2i densityParams=sf::Vector2i(0, 1), uint life=0
     );
 
-    virtual void update(Surrounding surrounding, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos);
-    void draw(sf::RenderTexture &rawGameTexture);
-    void swapTiles(
-        std::shared_ptr<Pixel> *fst, std::shared_ptr<Pixel> *snd,
-        sf::Vector2<int> pos, sf::Vector2<int> chunk_pos
+    virtual std::shared_ptr<Pixel> update(
+        Surrounding surround,
+        sf::Vector2<int> pos,
+        sf::Vector2<int> chunk_pos
     );
+    // virtual sf::Vector2i getNextPos(Surrounding surrounding, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos);
+    void draw(sf::RenderTexture &rawGameTexture);
+    // void swapTiles(
+    //     std::shared_ptr<Pixel> *fst, std::shared_ptr<Pixel> *snd,
+    //     sf::Vector2<int> pos, sf::Vector2<int> chunk_pos
+    // );
 
 public:
-    uchar r;
-    uchar g;
-    uchar b;
-    uchar a;
+    int processed;
 
     PixelType type;
-    int processed;
-    sf::VertexArray sprite;
+    sf::Color color;
     uint life;
     int density;
 };
@@ -78,27 +91,27 @@ public:
 class Water: public Pixel {
 public:
     Water(sf::Vector2i globalIdx);
-    void update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) override;
+    std::shared_ptr<Pixel> update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) override;
 };
 
 class Sand: public Pixel {
 public:
     Sand(sf::Vector2i globalIdx);
-    void update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) override;
+    std::shared_ptr<Pixel> update(Surrounding surround, sf::Vector2<int> pos, sf::Vector2<int> chunk_pos) override;
 };
 
 
 struct Surrounding{
     Surrounding(std::shared_ptr<Pixel>* ptr) {
-        ul = ptr - 1 - chunk_size;
-        u = ptr - chunk_size;
-        ur = ptr + 1 - chunk_size;
+        ul = ptr - 1 - CHUNK_SIZE;
+        u = ptr - CHUNK_SIZE;
+        ur = ptr + 1 - CHUNK_SIZE;
         l = ptr - 1;
         c = ptr;
         r = ptr + 1;
-        dl = ptr - 1 + chunk_size;
-        d = ptr + chunk_size;
-        dr = ptr + 1 + chunk_size;
+        dl = ptr - 1 + CHUNK_SIZE;
+        d = ptr + CHUNK_SIZE;
+        dr = ptr + 1 + CHUNK_SIZE;
     }
     std::shared_ptr<Pixel> *ul;
     std::shared_ptr<Pixel> *u;
