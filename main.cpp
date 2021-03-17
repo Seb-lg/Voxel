@@ -6,7 +6,7 @@
 
 int main() {
     auto mesboules = PixelType::Concrete;
-    std::cout << "Cpu count: " << std::thread::hardware_concurrency() << std::endl;
+    std::cout << std::thread::hardware_concurrency() << " available CPU cores" << std::endl;
     auto &core = Core::get();
     while (core.run());
     core.screen.close();

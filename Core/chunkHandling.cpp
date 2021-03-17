@@ -36,6 +36,7 @@ void Core::initChunks() {
         chunk_width_nbr++;
     if (HEIGHT % tmp > 0)
         chunk_height_nbr++;
+    auto startTime = getTime();
     for (int x = 0; x < chunk_width_nbr; ++x) {
         for (int y = 0; y < chunk_height_nbr; ++y) {
             float percentage = (float)(x*chunk_width_nbr+y) / (chunk_width_nbr*chunk_height_nbr) * 100.0;
@@ -43,7 +44,8 @@ void Core::initChunks() {
             map.chunks[x][y] = std::make_shared<Chunk>(sf::Vector2i(x, y), map.perlin);
         }
     }
-    std::cout << "Map init: 100%" << std::endl << chunk_width_nbr * chunk_height_nbr << " ("<<chunk_width_nbr<<"/"<<chunk_width_nbr<<") Chunks loaded" << std::endl;
+    std::cout << "Map init: " << (getTime() - startTime) / 1000000 << " ms" << std::endl;
+    printf("%d chunks loaded (%d/%d)\n", chunk_width_nbr * chunk_height_nbr, chunk_width_nbr, chunk_height_nbr);
 }
 
 void Core::updateChunks() {
