@@ -38,8 +38,9 @@ bool Map::lookup(sf::Vector2i relativeTestPos, PixelSwitch &data) {
 
     data.chunk2Pos = data.chunk1Pos;
 
+
     /** Check if the position is out of chunk bound */
-    if (x < 0) {
+    if (x <= 0) {
         data.chunk2Pos.x--;
         x = CHUNK_SIZE - 1;
     } else if (x >= CHUNK_SIZE) {
@@ -47,7 +48,7 @@ bool Map::lookup(sf::Vector2i relativeTestPos, PixelSwitch &data) {
         x = 0;
     }
 
-    if (y < 0) {
+    if (y <= 0) {
         data.chunk2Pos.y--;
         y = CHUNK_SIZE - 1;
     } else if (y >= CHUNK_SIZE) {
