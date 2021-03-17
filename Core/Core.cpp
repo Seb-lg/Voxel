@@ -53,18 +53,19 @@ bool Core::run() {
     now = getTime();
     if (now - lastFrameDrawTime > (NS_PER_SEC / FPS)) {
         draw();
-        // std::cout << "FPS : " << NS_PER_SEC / (now - lastFrameDrawTime) << "\r" << std::flush;
+        // std::cout << "FPS : " << NS_PER_SEC / (now - lastFrameDrawTime) << std::endl;
         lastFrameDrawTime = now;
     }
     // Simulation frequency limiter
-    // auto msToNextSimStep = (NS_PER_SEC / SPS) - (getTime() - startTime);
-    // if (msToNextSimStep > 0) {
-    //    std::cout << "Sleeping for " << msToNextSimStep << " ms" << std::endl;
-    //     std::this_thread::sleep_for(std::chrono::nanoseconds(msToNextSimStep));
-    // }
-    // else {
-    //     std::cout << "Lagging behind by " << -msToNextSimStep << " ms" << std::endl;
-    // }
+    auto elapsed = getTime() - startTime;
+    auto nsToNextSimStep = ((NS_PER_SEC / SPS) - elapsed);
+    // std::cout << "-> " << nsToNextSimStep << " ns" << std::endl;
+    if (nsToNextSimStep > 0) {
+        std::this_thread::sleep_for(std::chrono::nanoseconds(nsToNextSimStep));
+    }
+    else if (nsToNextSimStep < -20000000) {  // If more than 2 milliseconds
+        std::cout << "Lagging behind by " << -nsToNextSimStep / 1000000 << " ms" << std::endl;
+    }
     return true;
 }
 
