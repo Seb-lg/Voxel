@@ -70,7 +70,7 @@ bool Core::run() {
     }
     screen.display();
 
-    std::cout << "fps : " << 1 / ((getTime() - now) / 1000.0) << "\r" << std::flush;
+    std::cout << "fps : " << 1 / ((getTime() - now) / 1000000000.0) << "\r" << std::flush;
 
     /*static int oui = width/2;
     auto pos = sf::Vector2f(oui, height/2);

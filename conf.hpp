@@ -6,7 +6,7 @@
 #include <chrono>
 
 static auto rd = [](){std::srand(std::time(nullptr));return std::rand();};
-static auto getTime = [](){return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();};
+static auto getTime = [](){return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();};
 
 #define PIXEL_SIZE 4
 #define CHUNK_SIZE 64
