@@ -15,7 +15,10 @@ Water::Water(sf::Vector2i globalIdx):
         sf::Color(108, 177, 202), 5,
         sf::Vector2i(50, 10)
     )
-{};
+{
+    velocity.x = std::rand() % 2 ? -1 : 1;
+    velocity.y = 1;
+}
 
 bool Water::update(Map &map, PixelSwitch &nextPixelData) {
     bool forceUpdate = std::rand()%2;
@@ -32,14 +35,25 @@ bool Water::update(Map &map, PixelSwitch &nextPixelData) {
     // DR
     if (map.lookup(sf::Vector2i(1, 1), nextPixelData) && ((*nextPixelData.pixel2)->processed || forceUpdate) && density > (*nextPixelData.pixel2)->density)
         return true;
-    for (int i = 4 ; i > 0 ; i--) {  // R
-        if (map.lookup(sf::Vector2i(i, 0), nextPixelData) && ((*nextPixelData.pixel2)->processed || forceUpdate) && density > (*nextPixelData.pixel2)->density)
-            return true;
+    if (velocity.x > 0){
+        for (int i = 4 ; i > 0 ; i--) {  // R
+            if (map.lookup(sf::Vector2i(i, 0), nextPixelData) && ((*nextPixelData.pixel2)->processed || forceUpdate) &&
+                density > (*nextPixelData.pixel2)->density)
+                return true;
+        }
+        nextPixelData.pixel1->get()->velocity.x = -nextPixelData.pixel1->get()->velocity.x;// - BOUNCE_COST *  relativeTestPos.x);
+        nextPixelData.pixel1->get()->velocity.y = -nextPixelData.pixel1->get()->velocity.y;// - BOUNCE_COST *  relativeTestPos.y);
     }
-    for (int i = 4 ; i > 0 ; i--) {  // R
-        if (map.lookup(sf::Vector2i(-i, 0), nextPixelData) && ((*nextPixelData.pixel2)->processed || forceUpdate) && density > (*nextPixelData.pixel2)->density)
-            return true;
+    else if (velocity.x < 0) {
+        for (int i = 4 ; i > 0 ; i--) {  // L
+            if (map.lookup(sf::Vector2i(-i, 0), nextPixelData) && ((*nextPixelData.pixel2)->processed || forceUpdate) && density > (*nextPixelData.pixel2)->density)
+                return true;
+        }
+        nextPixelData.pixel1->get()->velocity.x = -nextPixelData.pixel1->get()->velocity.x;// - BOUNCE_COST *  relativeTestPos.x);
+        nextPixelData.pixel1->get()->velocity.y = -nextPixelData.pixel1->get()->velocity.y;// - BOUNCE_COST *  relativeTestPos.y);
     }
+    else
+        std::cout << "jej" << std::endl;
     return false;
 }
 
@@ -49,7 +63,8 @@ Sand::Sand(sf::Vector2i globalIdx):
         sf::Color(194, 178, 128), 30,
         sf::Vector2i(59, 12)
     )
-{};
+{
+}
 
 bool Sand::update(Map &map, PixelSwitch &nextPixelData) {
     bool forceUpdate = std::rand()%2;

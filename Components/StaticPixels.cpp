@@ -10,7 +10,7 @@ Tile::Tile(
     sf::Vector2i globalIdx, PixelType type,
     sf::Color colorTarget, int colorVar, sf::Vector2i densityParams, uint life
 ):
-    processed(false), type(type), life(life)
+    processed(false), type(type), life(life), velocity(0.0, 0.0)
 {
     // Set color
     colorVar = std::rand() % colorVar - int(colorVar / 2);

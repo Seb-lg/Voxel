@@ -34,6 +34,7 @@ public:
     sf::Color color;
     uint life;
     int density;
+    sf::Vector2f velocity;
 };
 
 class Concrete: public Tile {
