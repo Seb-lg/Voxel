@@ -9,5 +9,6 @@ int main() {
     auto &core = Core::get();
     while (core.run());
     core.screen.close();
+    core.threadPool.joinThreads();
     return 0;
 }

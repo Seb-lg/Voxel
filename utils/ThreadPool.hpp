@@ -15,9 +15,8 @@ class Map;
 class ThreadPool {
 public:
     ThreadPool(int nbThread=std::thread::hardware_concurrency());
-
     void addData(std::list<std::shared_ptr<Chunk>> data);
-
+    void joinThreads();
     void waitForEnd();
 
     std::mutex mutex;
@@ -26,4 +25,3 @@ public:
     std::list<std::shared_ptr<Chunk>> data;
     Map *map;
 };
-

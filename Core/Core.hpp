@@ -43,12 +43,12 @@ private:
 public:
     sf::RenderWindow screen;
     sf::RenderTexture rawGameTexture;
+    ThreadPool threadPool;
 
     Map map;
 
 private:
     sf::Vector2i position;
-    ThreadPool threadPool;
 
     long lastSimTime;
     long lastFrameDrawTime;

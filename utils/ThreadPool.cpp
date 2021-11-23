@@ -35,6 +35,12 @@ ThreadPool::ThreadPool(int nbThread) {
     }
 }
 
+void ThreadPool::joinThreads()
+{
+    for (auto& it : threads)
+        std::get<1>(it).join();
+}
+
 void ThreadPool::addData(std::list<std::shared_ptr<Chunk>> dataIn) {
     mutex.lock();
     for (auto &elem : dataIn) {
